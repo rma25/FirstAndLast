@@ -13,6 +13,9 @@ var bombs;
 var groundHeight = 73;
 var groundWidth = 110;
 var IsGameOver = false;
+var originalPlayerWidth = 32;
+var originalPlayerHeight = 48;
+var fx;
 
 var config = {
     type: Phaser.AUTO,
@@ -48,6 +51,8 @@ function preload() {
         './Assets/images/dude.png',
         { frameWidth: 32, frameHeight: 48 }
     );
+
+    this.load.audio('sfx', './Assets/phaser-assets/audio/SoundEffects/fx_mixdown.ogg');
 }
 /********************************** PRELOAD *******************************************************/
 
@@ -58,10 +63,9 @@ function create() {
     ItemsToCollect(this);
     ScoreDisplay(this);
     Enemy(this);
-    SpecialAttackKeys(this);
-
-    //Always call this last
+    SpecialAttackKeys(this);      
     Collision(this);
+    GameSounnd(this);
 }
 
 function Collision(parent) {
@@ -106,6 +110,13 @@ function Platform(parent) {
     platforms.create(centerWidth - (groundWidth * 4), firstHeight, 'ground');
 }
 
+function GameSounnd(parent){
+    fx = parent.add.audio('sfx');
+    fx.allowMultiple = true;
+
+    fx.addMarker('collectingItem', 10, 1.0);
+}
+
 function Player(parent) {
     //Player
     player = parent.physics.add.sprite(100, windowHeight - 250, 'dude');
@@ -133,6 +144,10 @@ function Player(parent) {
         frameRate: 10,
         repeat: -1
     });
+
+    //Set original player size
+    originalPlayerWidth = player.displayWidth;
+    originalPlayerHeight = player.displayHeight;
 }
 
 /** Collection **/
@@ -151,6 +166,8 @@ function ItemsToCollect(parent) {
 function CollectStar(player, star) {
     //Makes the star disappear
     star.disableBody(true, true);
+
+    fx.play('collectingItem');
 
     //Update Score
     scoreText.setText('Score: ' + (++score));
@@ -211,7 +228,7 @@ function HitBomb(player, bomb) {
 }
 /** Enemies **/
 
-function SpecialAttackKeys(parent){
+function SpecialAttackKeys(parent) {
     parent.specialAttack = parent.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
 }
 
@@ -250,8 +267,18 @@ function Controller(parent) {
 
         //TODO: Set up special attack (Q)
         if (parent.specialAttack.isDown) {
+            //Shrink
+            if (player.body.touching.down && player.displayWidth > originalPlayerWidth && player.displayHeight >= originalPlayerHeight) {
+                player.setDisplaySize(originalPlayerWidth, originalPlayerHeight);                
+            }
+            //Grow
+            else if (!player.body.touching.down && player.displayWidth <= originalPlayerWidth && player.displayHeight <= originalPlayerHeight) {
+                player.setDisplaySize((originalPlayerWidth + 20), (originalPlayerHeight + 20));                
+            }
+
+
             //Update Score
-            scoreText.setText('Score: ' + (++score));
+            // scoreText.setText('Score: ' + (++score));
         }
     }
 }
