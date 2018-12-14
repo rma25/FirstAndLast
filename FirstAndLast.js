@@ -15,7 +15,9 @@ var groundWidth = 110;
 var IsGameOver = false;
 var originalPlayerWidth = 32;
 var originalPlayerHeight = 48;
-var fx;
+var IsPlayerBig = false;
+var bgImage;
+var bgMusic;
 
 var config = {
     type: Phaser.AUTO,
@@ -37,6 +39,7 @@ var config = {
 };
 
 var game = new Phaser.Game(config);
+
 /********************************** GLOBAL *******************************************************/
 
 /********************************** PRELOAD *******************************************************/
@@ -44,6 +47,7 @@ var game = new Phaser.Game(config);
 //Phaser will automatically look for this function when it starts and load anything defined within it
 function preload() {
     //Sky, ground, etc, is the link in the code when creating game objects    
+    this.load.image('background', './Assets/unity3d-assets/TooCubeForest/backgrounds/BG_cave2_1024.png');
     this.load.image('ground', './Assets/images/ground.png');
     this.load.image('star', './Assets/images/star.png');
     this.load.image('bomb', './Assets/images/green-orb-collect.png');
@@ -52,7 +56,10 @@ function preload() {
         { frameWidth: 32, frameHeight: 48 }
     );
 
-    this.load.audio('sfx', './Assets/phaser-assets/audio/SoundEffects/fx_mixdown.ogg');
+    //Audio
+    this.load.audio('collectingSound', './Assets/phaser-assets/audio/SoundEffects/p-ping.mp3');
+    this.load.audio('jump', './Assets/audio/bounce.wav');
+    this.load.audio('gameMusic', './Assets/audio/Pamgaea.ogg');
 }
 /********************************** PRELOAD *******************************************************/
 
@@ -63,7 +70,7 @@ function create() {
     ItemsToCollect(this);
     ScoreDisplay(this);
     Enemy(this);
-    SpecialAttackKeys(this);      
+    SpecialAttackKeys(this);
     Collision(this);
     GameSounnd(this);
 }
@@ -82,7 +89,10 @@ function Collision(parent) {
 function Platform(parent) {
     var firstHeight = (centerHeight + 300);
     var secondHeight = (centerHeight + (groundHeight * 2))
-    // parent.add.image(centerWidth, (centerHeight + 50), 'ground');
+
+    bgImage = parent.add.image(0, 0, 'background');
+    bgImage.setOrigin(0, 0);
+    bgImage.setDisplaySize(windowWidth, windowHeight);
 
     //Platform (where user walks on)
     platforms = parent.physics.add.staticGroup();
@@ -110,11 +120,13 @@ function Platform(parent) {
     platforms.create(centerWidth - (groundWidth * 4), firstHeight, 'ground');
 }
 
-function GameSounnd(parent){
-    fx = parent.add.audio('sfx');
-    fx.allowMultiple = true;
+function GameSounnd(parent) {
+    parent.sound.add('collectingSound');
+    parent.sound.add('jumpSound');
+    bgMusic = parent.sound.add('gameMusic');
+    bgMusic.config.loop = true;    
 
-    fx.addMarker('collectingItem', 10, 1.0);
+    bgMusic.play();
 }
 
 function Player(parent) {
@@ -167,7 +179,7 @@ function CollectStar(player, star) {
     //Makes the star disappear
     star.disableBody(true, true);
 
-    fx.play('collectingItem');
+    game.sound.play('collectingSound');
 
     //Update Score
     scoreText.setText('Score: ' + (++score));
@@ -215,9 +227,7 @@ function HitBomb(player, bomb) {
     //Change color to red
     // player.setTint(0xff0000);
 
-    var playerWidth = player.displayWidth;
-    var playerHeight = player.displayHeight;
-    player.setDisplaySize((playerWidth + 5), (playerHeight + 5));
+    player.setDisplaySize((player.displayWidth + 5), (player.displayHeight + 5));
 
     bomb.disableBody(true, true);
 
@@ -263,26 +273,24 @@ function Controller(parent) {
         //Jump
         if (cursors.up.isDown && player.body.touching.down) {
             player.setVelocityY(-450);
+            game.sound.play('jump');
         }
 
         //TODO: Set up special attack (Q)
         if (parent.specialAttack.isDown) {
             //Shrink
-            if (player.body.touching.down && player.displayWidth > originalPlayerWidth && player.displayHeight >= originalPlayerHeight) {
-                player.setDisplaySize(originalPlayerWidth, originalPlayerHeight);                
+            if (IsPlayerBig) {
+                IsPlayerBig = false;
+                player.setDisplaySize(originalPlayerWidth, originalPlayerHeight);
             }
-            //Grow
-            else if (!player.body.touching.down && player.displayWidth <= originalPlayerWidth && player.displayHeight <= originalPlayerHeight) {
-                player.setDisplaySize((originalPlayerWidth + 20), (originalPlayerHeight + 20));                
+            //Grow (the player cant be touching the ground or he will fall through it when he grows)
+            else if (!IsPlayerBig && !player.body.touching.down) {
+                IsPlayerBig = true;
+                player.setDisplaySize((originalPlayerWidth + 20), (originalPlayerHeight + 20));
             }
-
-
-            //Update Score
-            // scoreText.setText('Score: ' + (++score));
         }
     }
 }
-
 
 /** GAME OVER **/
 function GameOver(parent) {
