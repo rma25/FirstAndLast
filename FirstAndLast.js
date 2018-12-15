@@ -15,12 +15,17 @@ var groundWidth = 64;
 var IsGameOver = false;
 var originalPlayerWidth = 32;
 var originalPlayerHeight = 48;
-var IsPlayerBig = false;
 var bgImage;
 var bgMusic;
 var IsMainPlayerFacingLeft = false;
 var arrows;
 var lasers;
+var speedBuff;
+var DoesPlayerHasSpeedBuff = false;
+var strengthBuff;
+var DoesPlayerHasStrengthBuff = false;
+var grassGroundHeight = 27;
+var grassGroundWidth = 87;
 
 var config = {
     type: Phaser.AUTO,
@@ -63,23 +68,30 @@ function preload() {
         { frameWidth: 64, frameHeight: 64 }
     );
 
-    this.load.spritesheet('floatingGround1',
-        './Assets/unity3d-assets/TooCubeForest/images/Forest_deco_covers(spring).png',
-        { frameWidth: 129, frameHeight: 41 }
-    );
+    this.load.image('floatingGround1', './Assets/unity3d-assets/TooCubeForest/images/Forest_deco_covers(spring)-1.png');
 
     //Load animated plants
     for (var i = 0; i <= 60; i++) {
-        this.load.image('alg' + i, './Assets/unity3d-assets/2D-Handcrafted-Art/Sprite/Alg2/Algae1-animation_' + i + '.png')
+        this.load.image('alg' + i, './Assets/unity3d-assets/2D-Handcrafted-Art/Sprite/Alg2/Algae1-animation_' + i + '.png');
     }
 
     //Load sprites for Main Player
     MainPlayerLoad(this);
 
+    //Buff
+    BuffsLoad(this);
+
     //Audio
     this.load.audio('collectingSound', './Assets/phaser-assets/audio/SoundEffects/p-ping.mp3');
     this.load.audio('jump', './Assets/audio/bounce.wav');
     this.load.audio('gameMusic', './Assets/audio/Pamgaea.ogg');
+    this.load.audio('speedBuffSound', './Assets/phaser-assets/audio/SoundEffects/pickup.wav');
+    this.load.audio('strengthBuffSound', './Assets/phaser-assets/audio/SoundEffects/door_open.wav');
+}
+
+function BuffsLoad(parent) {
+    parent.load.image('speedBuff', './Assets/unity3d-assets/TooCubeForest/images/rock-speed-buff.png');
+    parent.load.image('strengthBuff', './Assets/unity3d-assets/TooCubeForest/images/rock-strength-buff.png');
 }
 
 function MainPlayerLoad(parent) {
@@ -152,6 +164,14 @@ function Collision(parent) {
 
     //Allow player to overlap with a star
     parent.physics.add.overlap(player, stars, CollectStar, null, parent);
+
+    //Allow player to interact with speed buff
+    parent.physics.add.collider(speedBuff, platforms);
+    parent.physics.add.overlap(player, speedBuff, CollectSpeedBuff, null, parent);
+
+    //Allow player to interact with speed buff
+    parent.physics.add.collider(strengthBuff, platforms);
+    parent.physics.add.overlap(player, strengthBuff, CollectStrengthBuff, null, parent);
 }
 
 function LiveBackground(parent) {
@@ -180,7 +200,8 @@ function LiveBackground(parent) {
 
 function Platform(parent) {
     var firstHeight = (centerHeight + 300);
-    var secondHeight = (centerHeight + (groundHeight * 2))
+    var secondHeight = (centerHeight + (groundHeight * 1.5));
+    var thirdHeight = (centerHeight / 2);
 
     bgImage = parent.add.image(0, 0, 'background');
     bgImage.setOrigin(0, 0);
@@ -201,17 +222,41 @@ function Platform(parent) {
     platforms.create(centerWidth, centerHeight, 'ground');
     platforms.create((centerWidth - groundWidth), centerHeight, 'ground');
     platforms.create((centerWidth - (groundWidth * 2)), centerHeight, 'ground');
-    platforms.create((centerWidth - (groundWidth * 4)), centerHeight, 'ground');
+    platforms.create((centerWidth - (groundWidth * 5)), centerHeight, 'ground');
     platforms.create((centerWidth + groundWidth), (centerHeight + groundHeight), 'ground');
     platforms.create((centerWidth + (groundWidth * 2)), secondHeight, 'ground');
+    platforms.create((centerWidth + (groundWidth * 3)), secondHeight + 20, 'ground');
 
-    //Right
-    platforms.create(centerWidth + (groundWidth * 2), firstHeight, 'floatingGround1');
-    platforms.create(centerWidth + (groundWidth * 4), firstHeight, 'floatingGround1');
-
+    /*First floor*/
     //Left
-    platforms.create(centerWidth - (groundWidth * 1), firstHeight, 'floatingGround1');
-    platforms.create(centerWidth - (groundWidth * 4), firstHeight, 'floatingGround1');
+    platforms.create(centerWidth - (grassGroundWidth), firstHeight, 'floatingGround1');
+    platforms.create(centerWidth - (grassGroundWidth * 2), firstHeight, 'floatingGround1');
+    platforms.create(centerWidth, firstHeight, 'floatingGround1');
+    //Right    
+    platforms.create(centerWidth + grassGroundWidth, firstHeight, 'floatingGround1');
+    platforms.create(centerWidth + (grassGroundWidth * 2), firstHeight, 'floatingGround1');
+    platforms.create(centerWidth + (grassGroundWidth * 3), firstHeight, 'floatingGround1');
+    platforms.create(centerWidth + (grassGroundWidth * 4), firstHeight, 'floatingGround1');
+    /***************/
+
+    /*Second floor*/
+    //Right
+    platforms.create(centerWidth + (grassGroundWidth * 7), (secondHeight + (grassGroundHeight * 1.5)), 'floatingGround1');
+    platforms.create(centerWidth + (grassGroundWidth * 6), (secondHeight + (grassGroundHeight * 1.5)), 'floatingGround1');
+    platforms.create(centerWidth + (grassGroundWidth * 5), (secondHeight + (grassGroundHeight * 1.5)), 'floatingGround1');
+    /***************/
+
+    /*Third floor*/
+    //left
+    platforms.create((centerWidth - groundWidth), thirdHeight, 'ground');
+    platforms.create((centerWidth - (groundWidth * 2)), thirdHeight + groundHeight, 'ground');
+    platforms.create((centerWidth - (groundWidth * 5)), thirdHeight, 'ground');
+    platforms.create((centerWidth - (groundWidth * 6)), thirdHeight, 'ground');
+    platforms.create((centerWidth - (groundWidth * 7)), thirdHeight, 'ground');
+    platforms.create((centerWidth - (groundWidth * 8)), thirdHeight, 'ground');
+    platforms.create((centerWidth - (groundWidth * 9)), thirdHeight, 'ground');
+    platforms.create((centerWidth - (groundWidth * 10)), thirdHeight, 'ground');
+    /***************/
 }
 
 function GameSounnd(parent) {
@@ -281,7 +326,7 @@ function Player(parent) {
     player.setDisplaySize(81, 81);
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
-    player.body.setGravityY(300);
+    player.body.setGravityY(400);
 
     //Set original player size
     originalPlayerWidth = player.displayWidth;
@@ -296,13 +341,13 @@ function Player(parent) {
     parent.anims.create({
         key: 'attack1-left',
         frames: attack1FramesLeft,
-        frameRate: 10,
+        frameRate: 15,
         repeat: -1
     });
     parent.anims.create({
         key: 'attack1-right',
         frames: attack1FramesRight,
-        frameRate: 10,
+        frameRate: 15,
         repeat: -1
     });
 
@@ -314,14 +359,14 @@ function Player(parent) {
     parent.anims.create({
         key: 'attack2-left',
         frames: attack2FramesLeft,
-        frameRate: 10,
+        frameRate: 15,
         repeat: -1
     });
 
     parent.anims.create({
         key: 'attack2-right',
         frames: attack2FramesRight,
-        frameRate: 10,
+        frameRate: 15,
         repeat: -1
     });
 
@@ -442,6 +487,11 @@ function Player(parent) {
 
 /** Collection **/
 function ItemsToCollect(parent) {
+    var speedRockWidth = 111;
+    var speedRockHeight = 100;
+    var strengthRockWidth = 109;
+    var strengthRockHeight = 98;
+
     stars = parent.physics.add.group({
         key: 'star',
         repeat: (Math.round(windowWidth / 100) + 1), //Total (1 default + 11)
@@ -450,6 +500,17 @@ function ItemsToCollect(parent) {
 
     stars.children.iterate(function (child) {
         child.setBounceY(Phaser.Math.FloatBetween(0.2, 0.4));
+    });
+
+    // parent.add.image((windowWidth - speedRockWidth), (windowHeight - speedRockHeight), 'speedBuff');
+    speedBuff = parent.physics.add.group({
+        key: 'speedBuff',
+        setXY: { x: (windowWidth - speedRockWidth), y: (windowHeight - speedRockHeight - 20) }
+    });
+
+    strengthBuff = parent.physics.add.group({
+        key: 'strengthBuff',
+        setXY: { x: (windowWidth - strengthRockWidth - speedRockWidth), y: ((centerHeight + (groundHeight * 1.5)) - (strengthRockHeight)) }
     });
 }
 
@@ -479,6 +540,22 @@ function CollectStar(player, star) {
         bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
         bomb.allowGravity = false;
     }
+}
+
+function CollectSpeedBuff(player, buff) {
+    buff.disableInteractive();
+    if (!DoesPlayerHasSpeedBuff) {
+        game.sound.play('speedBuffSound');
+    }
+    DoesPlayerHasSpeedBuff = true;
+}
+
+function CollectStrengthBuff(player, buff) {
+    buff.disableInteractive();
+    if (!DoesPlayerHasStrengthBuff) {
+        game.sound.play('strengthBuffSound');
+    }
+    DoesPlayerHasStrengthBuff = true;
 }
 /** Collection **/
 
@@ -518,6 +595,7 @@ function HitBomb(player, bomb) {
 
 function SpecialAttackKeys(parent) {
     parent.specialAttack = parent.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
+    parent.jumpAlt = parent.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 }
 
 /********************************** CREATE *******************************************************/
@@ -535,13 +613,26 @@ function Controller(parent) {
         //Player Left
         if (cursors.left.isDown) {
             IsMainPlayerFacingLeft = true;
-            player.setVelocityX(-160);
+
+            if (DoesPlayerHasSpeedBuff) {
+                player.setVelocityX(-300);
+            }
+            else {
+                player.setVelocityX(-190);
+            }
+
             player.anims.play('walk-left', true);
         }
         //Player Right
         else if (cursors.right.isDown) {
             IsMainPlayerFacingLeft = false;
-            player.setVelocityX(160);
+
+            if (DoesPlayerHasSpeedBuff) {
+                player.setVelocityX(300);
+            }
+            else {
+                player.setVelocityX(190);
+            }
             player.anims.play('walk-right', true);
         }
         //Player Not Moving
@@ -552,12 +643,18 @@ function Controller(parent) {
             //Special Attack, change Size
             if (parent.specialAttack.isDown) {
                 if (IsMainPlayerFacingLeft) {
-                    player.anims.play('attack1-left', true);
-                    //FireArrow();
+                    var attacking1 = player.anims.play('attack1-left', true);
+                    if (!attacking1.isPlaying) {
+                        //FireArrow();
+                        console.log('Done Loading Arrow Left - On the Ground');
+                    }
                 }
                 else {
-                    player.anims.play('attack1-right', true);
-                    //FireArrow();
+                    var attacking1 = player.anims.play('attack1-right', true);
+                    if (!attacking1.isPlaying) {
+                        //FireArrow();
+                        console.log('Done Loading Arrow right');
+                    }
                 }
             }
             else if (IsMainPlayerFacingLeft && player.body.touching.down && !player.body.isMoving) {
@@ -569,14 +666,15 @@ function Controller(parent) {
         }
 
         //Player Jump
-        if (cursors.up.isDown && player.body.touching.down) {
+        if ((cursors.up.isDown || parent.jumpAlt.isDown) && player.body.touching.down) {
             //Although I know I could use a ternary operator, I plan on adding more to these statements
-            if (IsPlayerBig) {
-                player.setVelocityY(-550);
+            if (DoesPlayerHasStrengthBuff) {
+                player.setVelocityY(-670);
             }
             else {
-                player.setVelocityY(-450);
+                player.setVelocityY(-550);
             }
+
             if (IsMainPlayerFacingLeft) {
                 player.anims.play('jump-left', true);
             }
