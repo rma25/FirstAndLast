@@ -18,6 +18,9 @@ var originalPlayerHeight = 48;
 var IsPlayerBig = false;
 var bgImage;
 var bgMusic;
+var IsMainPlayerFacingLeft = false;
+var arrows;
+var lasers;
 
 var config = {
     type: Phaser.AUTO,
@@ -121,6 +124,9 @@ function MainPlayerLoad(parent) {
         parent.load.image('mainplayer-walk-left' + i, './Assets/unity3d-assets/SpritesArchers/Archer2/FantasyArcher_02_walk_' + i + 'left.png');
         parent.load.image('mainplayer-walk-right' + i, './Assets/unity3d-assets/SpritesArchers/Archer2/FantasyArcher_02_walk_' + i + 'right.png');
     }
+
+    parent.load.image('arrow-left', './Assets/unity3d-assets/SpritesArchers/Archer2/FantasyArcher_02_Attack2_arrow-left.png');
+    parent.load.image('arrow-right', './Assets/unity3d-assets/SpritesArchers/Archer2/FantasyArcher_02_Attack2_arrow-right.png');
 }
 /********************************** PRELOAD *******************************************************/
 
@@ -134,6 +140,7 @@ function create() {
     SpecialAttackKeys(this);
     Collision(this);
     GameSounnd(this);
+    // Arrow(this);
 }
 
 function Collision(parent) {
@@ -151,6 +158,7 @@ function LiveBackground(parent) {
     var algHeight = 117;
     var algWidth = 56;
     var algFrames = [];
+
     //Load animated plants
     for (var i = 0; i <= 60; i++) {
         algFrames.push({ key: 'alg' + i });
@@ -213,8 +221,40 @@ function GameSounnd(parent) {
     bgMusic.config.loop = true;
 
     //TODO: Uncomment this once done testing or Implement a Mute button
-    //bgMusic.play();
+    bgMusic.play();
 }
+
+// function Arrow(parent) {
+//     arrows = parent.add.group();
+//     arrows.enableBody = true;
+//     arrows.physicsBodyType = Phaser.Physics.ARCADE;
+//     arrows.createMultipleCallback(30, 'arrow-right');
+//     arrows.setAll('anchor.x', 0.5);
+//     arrows.setAll('anchor.y', 1);
+//     arrows.setAll('outOfBoundsKill', true);
+//     arrows.setAll('checkWorldBounds', true);
+// }
+
+// function FireArrow() {
+//     //  To avoid them being allowed to fire too fast we set a time limit
+//     if (game.time.now > arrowTime) {
+//         //  Grab the first bullet we can from the pool
+//         arrow = arrows.getFirstExists(false);
+
+//         if (arrow) {
+//             //  And fire it
+//             arrow.reset(player.x, player.y + 8);
+//             arrow.body.velocity.y = -400;
+//             arrowTime = game.time.now + 200;
+//         }
+//     }
+// }
+
+
+// function resetArrow(arrow) {
+//     // Destroy the laser
+//     arrow.kill();
+// }
 
 function Player(parent) {
     var attack1FramesLeft = [];
@@ -237,9 +277,8 @@ function Player(parent) {
     //Player
     // player = parent.physics.add.sprite(100, windowHeight - 250, 'dude');    
     //Add starting image of player, width, height
-    player = parent.physics.add.sprite(192, 192, 'mainplayer-idle1-left0');
+    player = parent.physics.add.sprite(100, (windowHeight - groundHeight - 81), 'mainplayer-idle1-left0');
     player.setDisplaySize(81, 81);
-
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
     player.body.setGravityY(300);
@@ -331,14 +370,14 @@ function Player(parent) {
         key: 'idle2-left',
         frames: idle2FramesLeft,
         frameRate: 10,
-        repeat: -1
+        repeat: 1
     });
 
     parent.anims.create({
         key: 'idle2-right',
         frames: idle2FramesRight,
         frameRate: 10,
-        repeat: -1
+        repeat: 1
     });
 
     for (var i = 0; i <= 14; i++) {
@@ -350,14 +389,14 @@ function Player(parent) {
         key: 'idle1-left',
         frames: idle1FramesLeft,
         frameRate: 10,
-        repeat: -1
+        repeat: 1
     });
 
     parent.anims.create({
         key: 'idle1-right',
         frames: idle1FramesRight,
         frameRate: 10,
-        repeat: -1
+        repeat: 1
     });
 
     for (var i = 0; i <= 12; i++) {
@@ -397,6 +436,8 @@ function Player(parent) {
         frameRate: 10,
         repeat: -1
     });
+
+    player.anims.play('idle2-right');
 }
 
 /** Collection **/
@@ -487,8 +528,6 @@ function update() {
     GameOver(this);
 }
 
-var IsMainPlayerFacingLeft = false;
-
 function Controller(parent) {
     cursors = parent.input.keyboard.createCursorKeys();
 
@@ -509,11 +548,23 @@ function Controller(parent) {
         else {
             //Stop moving
             player.setVelocityX(0);
-            if (IsMainPlayerFacingLeft) {
-                player.anims.play('idle2-left');
+
+            //Special Attack, change Size
+            if (parent.specialAttack.isDown) {
+                if (IsMainPlayerFacingLeft) {
+                    player.anims.play('attack1-left', true);
+                    //FireArrow();
+                }
+                else {
+                    player.anims.play('attack1-right', true);
+                    //FireArrow();
+                }
             }
-            else {
-                player.anims.play('idle2-right');
+            else if (IsMainPlayerFacingLeft && player.body.touching.down && !player.body.isMoving) {
+                player.anims.play('idle2-left', true);
+            }
+            else if (!IsMainPlayerFacingLeft && player.body.touching.down && !player.body.isMoving) {
+                player.anims.play('idle2-right', true);
             }
         }
 
@@ -527,35 +578,14 @@ function Controller(parent) {
                 player.setVelocityY(-450);
             }
             if (IsMainPlayerFacingLeft) {
-                player.anims.play('jump-left');
+                player.anims.play('jump-left', true);
             }
             else {
-                player.anims.play('jump-right');
+                player.anims.play('jump-right', true);
             }
 
             //Jumping sound
             game.sound.play('jump');
-        }
-
-        //Special Attack, change Size
-        if (parent.specialAttack.isDown) {
-            // //Shrink
-            // if (IsPlayerBig) {
-            //     IsPlayerBig = false;
-            //     player.setDisplaySize(originalPlayerWidth, originalPlayerHeight);
-            // }
-            // //Grow (the player cant be touching the ground or he will fall through it when he grows)
-            // else if (!IsPlayerBig && !player.body.touching.down) {
-            //     IsPlayerBig = true;
-            //     player.setDisplaySize((originalPlayerWidth + 20), (originalPlayerHeight + 20));
-            // }
-
-            if (IsMainPlayerFacingLeft) {
-                player.anims.play('attack1-left');
-            }
-            else {
-                player.anims.play('attack1-right');
-            }
         }
     }
 }
