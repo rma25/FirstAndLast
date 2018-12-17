@@ -28,6 +28,7 @@ var grassGroundHeight = 27;
 var grassGroundWidth = 87;
 var IsArrowShot = false;
 var emitter;
+var particles;
 
 var config = {
     type: Phaser.AUTO,
@@ -81,6 +82,7 @@ function preload() {
     this.load.image('arrow-left', './Assets/unity3d-assets/SpritesArchers/Archer2/FantasyArcher_02_Attack2_arrow-left.png');
 
     //Particles
+    //TODO: Replace phaser-assets with other graphics
     this.load.image('fire1', './Assets/phaser-assets/particles/fire1.png');
     this.load.image('fire2', './Assets/phaser-assets/particles/fire2.png');
     this.load.image('fire3', './Assets/phaser-assets/particles/fire3.png');
@@ -99,7 +101,7 @@ function preload() {
 function Audio(parent) {
     parent.load.audio('collectingSound', './Assets/phaser-assets/audio/SoundEffects/p-ping.mp3');
     parent.load.audio('jump', './Assets/audio/bounce.wav');
-    parent.load.audio('gameMusic', './Assets/audio/Pamgaea.ogg');
+    parent.load.audio('gameMusic', './Assets/unity3d-assets/2D-Handcrafted-Art/Music/Tropical moments - loop version.wav');
     parent.load.audio('speedBuffSound', './Assets/phaser-assets/audio/SoundEffects/pickup.wav');
     parent.load.audio('strengthBuffSound', './Assets/phaser-assets/audio/SoundEffects/door_open.wav');
     parent.load.audio('shootingArrow', './Assets/unity3d-assets/BowAndArrow/Sounds/ArrowShoosh2.mp3');
@@ -117,41 +119,57 @@ function MainPlayerLoad(parent) {
     for (var i = 0; i <= 14; i++) {
         parent.load.image('mainplayer-attack1-left' + i, './Assets/unity3d-assets/SpritesArchers/Archer2/FantasyArcher_02_Attack1_' + i + 'left.png');
         parent.load.image('mainplayer-attack1-right' + i, './Assets/unity3d-assets/SpritesArchers/Archer2/FantasyArcher_02_Attack1_' + i + 'right.png');
+        parent.load.image('mainplayer-attack1-left2' + i, './Assets/unity3d-assets/SpritesArchers/Archer3/FantasyArcher_03_Attack1_' + i + 'left.png');
+        parent.load.image('mainplayer-attack1-right2' + i, './Assets/unity3d-assets/SpritesArchers/Archer3/FantasyArcher_03_Attack1_' + i + 'right.png');
     }
 
     for (var i = 0; i <= 14; i++) {
         parent.load.image('mainplayer-attack2-left' + i, './Assets/unity3d-assets/SpritesArchers/Archer2/FantasyArcher_02_Attack2_' + i + 'left.png');
         parent.load.image('mainplayer-attack2-right' + i, './Assets/unity3d-assets/SpritesArchers/Archer2/FantasyArcher_02_Attack2_' + i + 'right.png');
+        parent.load.image('mainplayer-attack2-left2' + i, './Assets/unity3d-assets/SpritesArchers/Archer3/FantasyArcher_03_Attack2_' + i + 'left.png');
+        parent.load.image('mainplayer-attack2-right2' + i, './Assets/unity3d-assets/SpritesArchers/Archer3/FantasyArcher_03_Attack2_' + i + 'right.png');
     }
 
     for (var i = 0; i <= 14; i++) {
         parent.load.image('mainplayer-death-left' + i, './Assets/unity3d-assets/SpritesArchers/Archer2/FantasyArcher_02_Death_' + i + 'left.png');
         parent.load.image('mainplayer-death-right' + i, './Assets/unity3d-assets/SpritesArchers/Archer2/FantasyArcher_02_Death_' + i + 'right.png');
+        parent.load.image('mainplayer-death-left2' + i, './Assets/unity3d-assets/SpritesArchers/Archer3/FantasyArcher_03_Death_' + i + 'left.png');
+        parent.load.image('mainplayer-death-right2' + i, './Assets/unity3d-assets/SpritesArchers/Archer3/FantasyArcher_03_Death_' + i + 'right.png');
     }
 
     for (var i = 0; i <= 4; i++) {
         parent.load.image('mainplayer-hit-left' + i, './Assets/unity3d-assets/SpritesArchers/Archer2/FantasyArcher_02_Hit_' + i + 'left.png');
         parent.load.image('mainplayer-hit-right' + i, './Assets/unity3d-assets/SpritesArchers/Archer2/FantasyArcher_02_Hit_' + i + 'right.png');
+        parent.load.image('mainplayer-hit-left2' + i, './Assets/unity3d-assets/SpritesArchers/Archer3/FantasyArcher_03_Hit_' + i + 'left.png');
+        parent.load.image('mainplayer-hit-right2' + i, './Assets/unity3d-assets/SpritesArchers/Archer3/FantasyArcher_03_Hit_' + i + 'right.png');
     }
 
     for (var i = 0; i <= 29; i++) {
         parent.load.image('mainplayer-idle2-left' + i, './Assets/unity3d-assets/SpritesArchers/Archer2/FantasyArcher_02_Idle2_' + i + 'left.png');
         parent.load.image('mainplayer-idle2-right' + i, './Assets/unity3d-assets/SpritesArchers/Archer2/FantasyArcher_02_Idle2_' + i + 'right.png');
+        parent.load.image('mainplayer-idle2-left2' + i, './Assets/unity3d-assets/SpritesArchers/Archer3/FantasyArcher_03_Idle2_' + i + 'left.png');
+        parent.load.image('mainplayer-idle2-right2' + i, './Assets/unity3d-assets/SpritesArchers/Archer3/FantasyArcher_03_Idle2_' + i + 'right.png');
     }
 
     for (var i = 0; i <= 14; i++) {
         parent.load.image('mainplayer-idle1-left' + i, './Assets/unity3d-assets/SpritesArchers/Archer2/FantasyArcher_02_idle_' + i + 'left.png');
         parent.load.image('mainplayer-idle1-right' + i, './Assets/unity3d-assets/SpritesArchers/Archer2/FantasyArcher_02_idle_' + i + 'right.png');
+        parent.load.image('mainplayer-idle1-left2' + i, './Assets/unity3d-assets/SpritesArchers/Archer3/FantasyArcher_03_idle_' + i + 'left.png');
+        parent.load.image('mainplayer-idle1-right2' + i, './Assets/unity3d-assets/SpritesArchers/Archer3/FantasyArcher_03_idle_' + i + 'right.png');
     }
 
     for (var i = 0; i <= 12; i++) {
         parent.load.image('mainplayer-jump-left' + i, './Assets/unity3d-assets/SpritesArchers/Archer2/FantasyArcher_02_Jump_' + i + 'left.png');
         parent.load.image('mainplayer-jump-right' + i, './Assets/unity3d-assets/SpritesArchers/Archer2/FantasyArcher_02_Jump_' + i + 'right.png');
+        parent.load.image('mainplayer-jump-left2' + i, './Assets/unity3d-assets/SpritesArchers/Archer3/FantasyArcher_03_Jump_' + i + 'left.png');
+        parent.load.image('mainplayer-jump-right2' + i, './Assets/unity3d-assets/SpritesArchers/Archer3/FantasyArcher_03_Jump_' + i + 'right.png');
     }
 
     for (var i = 0; i <= 14; i++) {
         parent.load.image('mainplayer-walk-left' + i, './Assets/unity3d-assets/SpritesArchers/Archer2/FantasyArcher_02_walk_' + i + 'left.png');
         parent.load.image('mainplayer-walk-right' + i, './Assets/unity3d-assets/SpritesArchers/Archer2/FantasyArcher_02_walk_' + i + 'right.png');
+        parent.load.image('mainplayer-walk-left2' + i, './Assets/unity3d-assets/SpritesArchers/Archer3/FantasyArcher_03_walk_' + i + 'left.png');
+        parent.load.image('mainplayer-walk-right2' + i, './Assets/unity3d-assets/SpritesArchers/Archer3/FantasyArcher_03_walk_' + i + 'right.png');
     }
 
     parent.load.image('arrow-left', './Assets/unity3d-assets/SpritesArchers/Archer2/FantasyArcher_02_Attack2_arrow-left.png');
@@ -170,29 +188,24 @@ function create() {
     SpecialAttackKeys(this);
     Collision(this);
     GameSounnd(this);
-
-    // emitter = this.add.particles('fire3');
-
-    // // emitter.makeParticles(['fire1', 'fire2', 'fire3', 'smoke']);
-
-    // emitter.gravity = 200;
-    // emitter.setAlpha(1, 0, 3000);
-    // emitter.setScale(0.8, 0, 0.8, 0, 3000);
-
-    // emitter.start(false, 3000, 5);
-    //ParticlesEffect(this);
+    ParticlesEffect(this);
 }
 
 function ParticlesEffect(parent) {
-    var particles = parent.add.particles('fire3');
+    particles = parent.add.particles('fire3');
+    // particles.scaleY = 0.2;
+    // particles.scaleX = 0.2;
+    // particles.x = player.x;
+    // particles.y = player.y;
 
-    var emitter = particles.createEmitter();
+    emitter = particles.createEmitter();
 
-    emitter.setPosition(player.x, player.y);
-    emitter.setSpeed(200);
-    // emitter.setScale(0.5);    
+    emitter.setPosition(player.x, player.y + (player.displayHeight / 2));
+    emitter.setSpeed(100);
+    emitter.setScale(0.05, 0.05);
     emitter.setAlpha(1, 0, 3000);
-    emitter.setScale(0.8, 0, 0.8, 0, 3000);
+    emitter.maxParticles = 10;
+    emitter.on = false;
 }
 
 function Collision(parent) {
@@ -329,11 +342,26 @@ function Player(parent) {
     var jumpFramesRight = [];
     var walkRightFramesLeft = [];
     var walkRightFramesRight = [];
+    var attack1FramesLeft2 = [];
+    var attack1FramesRight2 = [];
+    var attack2FramesLeft2 = [];
+    var attack2FramesRight2 = [];
+    var deathFramesLeft2 = [];
+    var deathFramesRight2 = [];
+    var hitFramesLeft2 = [];
+    var hitFramesRight2 = [];
+    var idle2FramesLeft2 = [];
+    var idle2FramesRight2 = [];
+    var idle1FramesLeft2 = [];
+    var idle1FramesRight2 = [];
+    var jumpFramesLeft2 = [];
+    var jumpFramesRight2 = [];
+    var walkRightFramesLeft2 = [];
+    var walkRightFramesRight2 = [];
 
-    //Player
-    // player = parent.physics.add.sprite(100, windowHeight - 250, 'dude');    
+    //Player    
     //Add starting image of player, width, height
-    player = parent.physics.add.sprite(100, (windowHeight - groundHeight - 81), 'mainplayer-idle1-left0');
+    player = parent.physics.add.sprite(100, (windowHeight - groundHeight - 91), 'mainplayer-idle1-left0');
     player.setDisplaySize(81, 81);
     player.setBounce(0.2);
     player.setCollideWorldBounds(true);
@@ -347,36 +375,64 @@ function Player(parent) {
     for (var i = 0; i <= 14; i++) {
         attack1FramesLeft.push({ key: 'mainplayer-attack1-left' + i });
         attack1FramesRight.push({ key: 'mainplayer-attack1-right' + i });
+        attack1FramesLeft2.push({ key: 'mainplayer-attack1-left2' + i });
+        attack1FramesRight2.push({ key: 'mainplayer-attack1-right2' + i });
     }
 
     parent.anims.create({
-        key: 'attack1-left',
+        key: 'archer1-attack1-left',
         frames: attack1FramesLeft,
         frameRate: 15,
         repeat: -1
     });
     parent.anims.create({
-        key: 'attack1-right',
+        key: 'archer1-attack1-right',
         frames: attack1FramesRight,
         frameRate: 15,
         repeat: -1
     });
-
-    for (var i = 0; i <= 14; i++) {
-        attack2FramesLeft.push({ key: 'mainplayer-attack2-left' + i });
-        attack2FramesRight.push({ key: 'mainplayer-attack2-right' + i });
-    }
-
     parent.anims.create({
-        key: 'attack2-left',
-        frames: attack2FramesLeft,
+        key: 'archer2-attack1-left',
+        frames: attack1FramesLeft2,
+        frameRate: 15,
+        repeat: -1
+    });
+    parent.anims.create({
+        key: 'archer2-attack1-right',
+        frames: attack1FramesRight2,
         frameRate: 15,
         repeat: -1
     });
 
+
+    for (var i = 0; i <= 14; i++) {
+        attack2FramesLeft.push({ key: 'mainplayer-attack2-left' + i });
+        attack2FramesRight.push({ key: 'mainplayer-attack2-right' + i });
+        attack2FramesLeft2.push({ key: 'mainplayer-attack2-left2' + i });
+        attack2FramesRight2.push({ key: 'mainplayer-attack2-right2' + i });
+    }
+
     parent.anims.create({
-        key: 'attack2-right',
+        key: 'archer1-attack2-left',
+        frames: attack2FramesLeft,
+        frameRate: 15,
+        repeat: -1
+    });
+    parent.anims.create({
+        key: 'archer1-attack2-right',
         frames: attack2FramesRight,
+        frameRate: 15,
+        repeat: -1
+    });
+    parent.anims.create({
+        key: 'archer2-attack2-left',
+        frames: attack2FramesLeft2,
+        frameRate: 15,
+        repeat: -1
+    });
+    parent.anims.create({
+        key: 'archer2-attack2-right',
+        frames: attack2FramesRight2,
         frameRate: 15,
         repeat: -1
     });
@@ -384,6 +440,8 @@ function Player(parent) {
     for (var i = 0; i <= 14; i++) {
         deathFramesLeft.push({ key: 'mainplayer-death-left' + i });
         deathFramesRight.push({ key: 'mainplayer-death-right' + i });
+        deathFramesLeft2.push({ key: 'mainplayer-death-left2' + i });
+        deathFramesRight2.push({ key: 'mainplayer-death-right2' + i });
     }
 
     parent.anims.create({
@@ -398,10 +456,24 @@ function Player(parent) {
         frameRate: 10,
         repeat: -1
     });
+    parent.anims.create({
+        key: 'death-left2',
+        frames: deathFramesLeft2,
+        frameRate: 10,
+        repeat: -1
+    });
+    parent.anims.create({
+        key: 'death-right2',
+        frames: deathFramesRight2,
+        frameRate: 10,
+        repeat: -1
+    });
 
     for (var i = 0; i <= 4; i++) {
         hitFramesLeft.push({ key: 'mainplayer-hit-left' + i });
         hitFramesRight.push({ key: 'mainplayer-hit-right' + i });
+        hitFramesLeft2.push({ key: 'mainplayer-hit-left2' + i });
+        hitFramesRight2.push({ key: 'mainplayer-hit-right2' + i });
     }
 
     parent.anims.create({
@@ -416,10 +488,24 @@ function Player(parent) {
         frameRate: 10,
         repeat: -1
     });
+    parent.anims.create({
+        key: 'hit-left2',
+        frames: hitFramesLeft2,
+        frameRate: 10,
+        repeat: -1
+    });
+    parent.anims.create({
+        key: 'hit-right2',
+        frames: hitFramesRight2,
+        frameRate: 10,
+        repeat: -1
+    });
 
     for (var i = 0; i <= 29; i++) {
         idle2FramesLeft.push({ key: 'mainplayer-idle2-left' + i });
         idle2FramesRight.push({ key: 'mainplayer-idle2-right' + i });
+        idle2FramesLeft2.push({ key: 'mainplayer-idle2-left2' + i });
+        idle2FramesRight2.push({ key: 'mainplayer-idle2-right2' + i });
     }
 
     parent.anims.create({
@@ -428,10 +514,21 @@ function Player(parent) {
         frameRate: 10,
         repeat: 1
     });
-
     parent.anims.create({
         key: 'idle2-right',
         frames: idle2FramesRight,
+        frameRate: 10,
+        repeat: 1
+    });
+    parent.anims.create({
+        key: 'idle2-left2',
+        frames: idle2FramesLeft2,
+        frameRate: 10,
+        repeat: 1
+    });
+    parent.anims.create({
+        key: 'idle2-right2',
+        frames: idle2FramesRight2,
         frameRate: 10,
         repeat: 1
     });
@@ -439,6 +536,8 @@ function Player(parent) {
     for (var i = 0; i <= 14; i++) {
         idle1FramesLeft.push({ key: 'mainplayer-idle1-left' + i });
         idle1FramesRight.push({ key: 'mainplayer-idle1-right' + i });
+        idle1FramesLeft2.push({ key: 'mainplayer-idle1-left2' + i });
+        idle1FramesRight2.push({ key: 'mainplayer-idle1-right2' + i });
     }
 
     parent.anims.create({
@@ -447,10 +546,21 @@ function Player(parent) {
         frameRate: 10,
         repeat: 1
     });
-
     parent.anims.create({
         key: 'idle1-right',
         frames: idle1FramesRight,
+        frameRate: 10,
+        repeat: 1
+    });
+    parent.anims.create({
+        key: 'idle1-left2',
+        frames: idle1FramesLeft2,
+        frameRate: 10,
+        repeat: 1
+    });
+    parent.anims.create({
+        key: 'idle1-right2',
+        frames: idle1FramesRight2,
         frameRate: 10,
         repeat: 1
     });
@@ -458,6 +568,8 @@ function Player(parent) {
     for (var i = 0; i <= 12; i++) {
         jumpFramesLeft.push({ key: 'mainplayer-jump-left' + i });
         jumpFramesRight.push({ key: 'mainplayer-jump-right' + i });
+        jumpFramesLeft2.push({ key: 'mainplayer-jump-left2' + i });
+        jumpFramesRight2.push({ key: 'mainplayer-jump-right2' + i });
     }
 
     parent.anims.create({
@@ -466,10 +578,21 @@ function Player(parent) {
         frameRate: 10,
         repeat: -1
     });
-
     parent.anims.create({
         key: 'jump-right',
         frames: jumpFramesRight,
+        frameRate: 10,
+        repeat: -1
+    });
+    parent.anims.create({
+        key: 'jump-left2',
+        frames: jumpFramesLeft2,
+        frameRate: 10,
+        repeat: -1
+    });
+    parent.anims.create({
+        key: 'jump-right2',
+        frames: jumpFramesRight2,
         frameRate: 10,
         repeat: -1
     });
@@ -477,6 +600,8 @@ function Player(parent) {
     for (var i = 0; i <= 14; i++) {
         walkRightFramesLeft.push({ key: 'mainplayer-walk-left' + i });
         walkRightFramesRight.push({ key: 'mainplayer-walk-right' + i });
+        walkRightFramesLeft2.push({ key: 'mainplayer-walk-left2' + i });
+        walkRightFramesRight2.push({ key: 'mainplayer-walk-right2' + i });
     }
 
     parent.anims.create({
@@ -485,10 +610,21 @@ function Player(parent) {
         frameRate: 10,
         repeat: -1
     });
-
     parent.anims.create({
         key: 'walk-right',
         frames: walkRightFramesRight,
+        frameRate: 10,
+        repeat: -1
+    });
+    parent.anims.create({
+        key: 'walk-left2',
+        frames: walkRightFramesLeft2,
+        frameRate: 10,
+        repeat: -1
+    });
+    parent.anims.create({
+        key: 'walk-right2',
+        frames: walkRightFramesRight2,
         frameRate: 10,
         repeat: -1
     });
@@ -568,8 +704,11 @@ function CollectStar(player, star) {
 }
 
 function CollectSpeedBuff(player, buff) {
-    buff.disableInteractive();
+    //Only allow player to collect buff once
+    buff.disableBody(true, true);
     if (!DoesPlayerHasSpeedBuff) {
+        //display particle effects
+        emitter.on = true;
         game.sound.play('speedBuffSound');
     }
     DoesPlayerHasSpeedBuff = true;
@@ -643,6 +782,7 @@ function Controller(parent) {
     cursors = parent.input.keyboard.createCursorKeys();
 
     if (!IsGameOver) {
+        console.log('DoesPlayerHasStrengthBuff ', DoesPlayerHasStrengthBuff);
         //Player Left
         if (cursors.left.isDown) {
             IsMainPlayerFacingLeft = true;
@@ -654,7 +794,12 @@ function Controller(parent) {
                 player.setVelocityX(-190);
             }
 
-            player.anims.play('walk-left', true);
+            if (DoesPlayerHasStrengthBuff) {
+                player.anims.play('walk-left2', true);
+            }
+            else {
+                player.anims.play('walk-left', true);
+            }
         }
         //Player Right
         else if (cursors.right.isDown) {
@@ -666,7 +811,13 @@ function Controller(parent) {
             else {
                 player.setVelocityX(190);
             }
-            player.anims.play('walk-right', true);
+
+            if (DoesPlayerHasStrengthBuff) {
+                player.anims.play('walk-right2', true);
+            }
+            else {
+                player.anims.play('walk-right', true);
+            }
         }
         //Player Not Moving
         else {
@@ -677,7 +828,12 @@ function Controller(parent) {
             if (parent.specialAttack.isDown && !IsArrowShot) {
 
                 if (IsMainPlayerFacingLeft) {
-                    player.anims.play('attack1-left', true);
+                    if (DoesPlayerHasStrengthBuff) {
+                        player.anims.play('attack1-left2', true);
+                    }
+                    else {
+                        player.anims.play('attack1-left', true);
+                    }
 
                     //Only attack on the last animation frame
                     if (player.anims.currentFrame.index >= 10) {
@@ -699,7 +855,12 @@ function Controller(parent) {
                     }
                 }
                 else {
-                    player.anims.play('attack1-right', true);
+                    if (DoesPlayerHasStrengthBuff) {
+                        player.anims.play('attack1-right2', true);
+                    }
+                    else {
+                        player.anims.play('attack1-right', true);
+                    }
 
                     //Only attack on the last animation frame
                     if (player.anims.currentFrame.index >= 10) {
@@ -722,10 +883,20 @@ function Controller(parent) {
                 }
             }
             else if (IsMainPlayerFacingLeft && player.body.touching.down && !player.body.isMoving) {
-                player.anims.play('idle2-left', true);
+                if (DoesPlayerHasStrengthBuff) {
+                    player.anims.play('idle2-left2', true);
+                }
+                else {
+                    player.anims.play('idle2-left', true);
+                }
             }
             else if (!IsMainPlayerFacingLeft && player.body.touching.down && !player.body.isMoving) {
-                player.anims.play('idle2-right', true);
+                if (DoesPlayerHasStrengthBuff) {
+                    player.anims.play('idle2-right2', true);
+                }
+                else {
+                    player.anims.play('idle2-right', true);
+                }
             }
         }
 
@@ -740,30 +911,32 @@ function Controller(parent) {
             }
 
             if (IsMainPlayerFacingLeft) {
-                player.anims.play('jump-left', true);
+                if (DoesPlayerHasStrengthBuff) {
+                    player.anims.play('jump-left2', true);
+                } else {
+                    player.anims.play('jump-left', true);
+                }
             }
             else {
-                player.anims.play('jump-right', true);
+                if (DoesPlayerHasStrengthBuff) {
+                    player.anims.play('jump-right2', true);
+                } else {
+                    player.anims.play('jump-right', true);
+                }
             }
 
             //Jumping sound
             game.sound.play('jump');
         }
+
+        ParticlesOnPlayer(this);
     }
 }
 
 function ParticlesOnPlayer(parent) {
-    // var px = player.body.velocity.x;
-    // var py = player.body.velocity.y;
-
-    // px *= -1;
-    // py *= -1;
-
-    // emitter.setSpeed(100);
-
-    // emitter.setPosition(player.x, player.y);
-
-    // game.world.wrap(player, 64);
+    emitter.setPosition(player.x, player.y + (player.displayHeight / 2));
+    // particles.x = player.x;
+    // particles.y = player.y;
 }
 
 /** GAME OVER **/
