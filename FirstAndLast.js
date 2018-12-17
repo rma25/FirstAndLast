@@ -18,14 +18,16 @@ var originalPlayerHeight = 48;
 var bgImage;
 var bgMusic;
 var IsMainPlayerFacingLeft = false;
-var arrows;
-var lasers;
+var arrowsRight;
+var arrowsLeft;
 var speedBuff;
 var DoesPlayerHasSpeedBuff = false;
 var strengthBuff;
 var DoesPlayerHasStrengthBuff = false;
 var grassGroundHeight = 27;
 var grassGroundWidth = 87;
+var IsArrowShot = false;
+var emitter;
 
 var config = {
     type: Phaser.AUTO,
@@ -75,6 +77,15 @@ function preload() {
         this.load.image('alg' + i, './Assets/unity3d-assets/2D-Handcrafted-Art/Sprite/Alg2/Algae1-animation_' + i + '.png');
     }
 
+    this.load.image('arrow-right', './Assets/unity3d-assets/SpritesArchers/Archer2/FantasyArcher_02_Attack2_arrow-right.png');
+    this.load.image('arrow-left', './Assets/unity3d-assets/SpritesArchers/Archer2/FantasyArcher_02_Attack2_arrow-left.png');
+
+    //Particles
+    this.load.image('fire1', './Assets/phaser-assets/particles/fire1.png');
+    this.load.image('fire2', './Assets/phaser-assets/particles/fire2.png');
+    this.load.image('fire3', './Assets/phaser-assets/particles/fire3.png');
+    this.load.image('smoke', './Assets/phaser-assets/particles/smoke-puff.png');
+
     //Load sprites for Main Player
     MainPlayerLoad(this);
 
@@ -82,11 +93,17 @@ function preload() {
     BuffsLoad(this);
 
     //Audio
-    this.load.audio('collectingSound', './Assets/phaser-assets/audio/SoundEffects/p-ping.mp3');
-    this.load.audio('jump', './Assets/audio/bounce.wav');
-    this.load.audio('gameMusic', './Assets/audio/Pamgaea.ogg');
-    this.load.audio('speedBuffSound', './Assets/phaser-assets/audio/SoundEffects/pickup.wav');
-    this.load.audio('strengthBuffSound', './Assets/phaser-assets/audio/SoundEffects/door_open.wav');
+    Audio(this)
+}
+
+function Audio(parent) {
+    parent.load.audio('collectingSound', './Assets/phaser-assets/audio/SoundEffects/p-ping.mp3');
+    parent.load.audio('jump', './Assets/audio/bounce.wav');
+    parent.load.audio('gameMusic', './Assets/audio/Pamgaea.ogg');
+    parent.load.audio('speedBuffSound', './Assets/phaser-assets/audio/SoundEffects/pickup.wav');
+    parent.load.audio('strengthBuffSound', './Assets/phaser-assets/audio/SoundEffects/door_open.wav');
+    parent.load.audio('shootingArrow', './Assets/unity3d-assets/BowAndArrow/Sounds/ArrowShoosh2.mp3');
+    parent.load.audio('arrowHit', './Assets/unity3d-assets/BowAndArrow/Sounds/ArrowImpactTarget.mp3');
 }
 
 function BuffsLoad(parent) {
@@ -146,13 +163,36 @@ function MainPlayerLoad(parent) {
 function create() {
     Platform(this);
     Player(this);
+    PlayerArrow(this);
     ItemsToCollect(this);
     ScoreDisplay(this);
     Enemy(this);
     SpecialAttackKeys(this);
     Collision(this);
     GameSounnd(this);
-    // Arrow(this);
+
+    // emitter = this.add.particles('fire3');
+
+    // // emitter.makeParticles(['fire1', 'fire2', 'fire3', 'smoke']);
+
+    // emitter.gravity = 200;
+    // emitter.setAlpha(1, 0, 3000);
+    // emitter.setScale(0.8, 0, 0.8, 0, 3000);
+
+    // emitter.start(false, 3000, 5);
+    //ParticlesEffect(this);
+}
+
+function ParticlesEffect(parent) {
+    var particles = parent.add.particles('fire3');
+
+    var emitter = particles.createEmitter();
+
+    emitter.setPosition(player.x, player.y);
+    emitter.setSpeed(200);
+    // emitter.setScale(0.5);    
+    emitter.setAlpha(1, 0, 3000);
+    emitter.setScale(0.8, 0, 0.8, 0, 3000);
 }
 
 function Collision(parent) {
@@ -172,6 +212,9 @@ function Collision(parent) {
     //Allow player to interact with speed buff
     parent.physics.add.collider(strengthBuff, platforms);
     parent.physics.add.overlap(player, strengthBuff, CollectStrengthBuff, null, parent);
+
+    parent.physics.add.collider(arrowsRight, platforms, CollideWithArrow, null, parent);
+    parent.physics.add.collider(arrowsLeft, platforms, CollideWithArrow, null, parent);
 }
 
 function LiveBackground(parent) {
@@ -268,38 +311,6 @@ function GameSounnd(parent) {
     //TODO: Uncomment this once done testing or Implement a Mute button
     bgMusic.play();
 }
-
-// function Arrow(parent) {
-//     arrows = parent.add.group();
-//     arrows.enableBody = true;
-//     arrows.physicsBodyType = Phaser.Physics.ARCADE;
-//     arrows.createMultipleCallback(30, 'arrow-right');
-//     arrows.setAll('anchor.x', 0.5);
-//     arrows.setAll('anchor.y', 1);
-//     arrows.setAll('outOfBoundsKill', true);
-//     arrows.setAll('checkWorldBounds', true);
-// }
-
-// function FireArrow() {
-//     //  To avoid them being allowed to fire too fast we set a time limit
-//     if (game.time.now > arrowTime) {
-//         //  Grab the first bullet we can from the pool
-//         arrow = arrows.getFirstExists(false);
-
-//         if (arrow) {
-//             //  And fire it
-//             arrow.reset(player.x, player.y + 8);
-//             arrow.body.velocity.y = -400;
-//             arrowTime = game.time.now + 200;
-//         }
-//     }
-// }
-
-
-// function resetArrow(arrow) {
-//     // Destroy the laser
-//     arrow.kill();
-// }
 
 function Player(parent) {
     var attack1FramesLeft = [];
@@ -485,6 +496,20 @@ function Player(parent) {
     player.anims.play('idle2-right');
 }
 
+function PlayerArrow(parent) {
+    arrowsRight = parent.physics.add.sprite(player.displayWidth, player.displayHeight, 'arrow-right');
+    arrowsRight.setDisplaySize(arrowsRight.displayWidth / 2.5, arrowsRight.displayHeight / 2.5);
+    arrowsRight.setCollideWorldBounds(true);
+    arrowsRight.body.setGravityY(0);
+    arrowsRight.disableBody(true, true);
+
+    arrowsLeft = parent.physics.add.sprite(player.displayWidth, player.displayHeight, 'arrow-left');
+    arrowsLeft.setDisplaySize(arrowsLeft.displayWidth / 2.5, arrowsLeft.displayHeight / 2.5);
+    arrowsLeft.setCollideWorldBounds(true);
+    arrowsLeft.body.setGravityY(0);
+    arrowsLeft.disableBody(true, true);
+}
+
 /** Collection **/
 function ItemsToCollect(parent) {
     var speedRockWidth = 111;
@@ -557,6 +582,13 @@ function CollectStrengthBuff(player, buff) {
     }
     DoesPlayerHasStrengthBuff = true;
 }
+
+function CollideWithArrow(arrow, platform) {
+    IsArrowShot = false;
+    arrow.setAngle(0);
+    arrow.disableBody(true, true);
+    game.sound.play('arrowHit');
+}
 /** Collection **/
 
 /** Display **/
@@ -604,6 +636,7 @@ function SpecialAttackKeys(parent) {
 function update() {
     Controller(this);
     GameOver(this);
+    ParticlesOnPlayer(this);
 }
 
 function Controller(parent) {
@@ -641,19 +674,50 @@ function Controller(parent) {
             player.setVelocityX(0);
 
             //Special Attack, change Size
-            if (parent.specialAttack.isDown) {
+            if (parent.specialAttack.isDown && !IsArrowShot) {
+
                 if (IsMainPlayerFacingLeft) {
-                    var attacking1 = player.anims.play('attack1-left', true);
-                    if (!attacking1.isPlaying) {
-                        //FireArrow();
-                        console.log('Done Loading Arrow Left - On the Ground');
+                    player.anims.play('attack1-left', true);
+
+                    //Only attack on the last animation frame
+                    if (player.anims.currentFrame.index >= 10) {
+                        IsArrowShot = true;
+                        arrowsLeft.enableBody(true, player.x - 16, player.y, true, true);
+                        arrowsLeft.body.setAllowRotation(true);
+                        arrowsLeft.body.setAngularVelocity(-15);
+                        arrowsLeft.body.setAngularAcceleration(-15);
+                        game.sound.play('shootingArrow');
+
+                        if (DoesPlayerHasStrengthBuff) {
+                            arrowsLeft.setVelocity(-600, -100);
+                            arrowsLeft.setAcceleration(-600, 100);
+                        }
+                        else {
+                            arrowsLeft.setVelocity(-400, -100);
+                            arrowsLeft.setAcceleration(-400, 100);
+                        }
                     }
                 }
                 else {
-                    var attacking1 = player.anims.play('attack1-right', true);
-                    if (!attacking1.isPlaying) {
-                        //FireArrow();
-                        console.log('Done Loading Arrow right');
+                    player.anims.play('attack1-right', true);
+
+                    //Only attack on the last animation frame
+                    if (player.anims.currentFrame.index >= 10) {
+                        IsArrowShot = true;
+                        arrowsRight.enableBody(true, player.x + 16, player.y, true, true);
+                        arrowsRight.body.setAllowRotation(true);
+                        arrowsRight.body.setAngularVelocity(15);
+                        arrowsRight.body.setAngularAcceleration(15);
+                        game.sound.play('shootingArrow');
+
+                        if (DoesPlayerHasStrengthBuff) {
+                            arrowsRight.setVelocity(600, -100);
+                            arrowsRight.setAcceleration(600, 100);
+                        }
+                        else {
+                            arrowsRight.setVelocity(400, -100);
+                            arrowsRight.setAcceleration(400, 100);
+                        }
                     }
                 }
             }
@@ -686,6 +750,20 @@ function Controller(parent) {
             game.sound.play('jump');
         }
     }
+}
+
+function ParticlesOnPlayer(parent) {
+    // var px = player.body.velocity.x;
+    // var py = player.body.velocity.y;
+
+    // px *= -1;
+    // py *= -1;
+
+    // emitter.setSpeed(100);
+
+    // emitter.setPosition(player.x, player.y);
+
+    // game.world.wrap(player, 64);
 }
 
 /** GAME OVER **/
