@@ -4,7 +4,7 @@ var windowWidth = window.innerWidth;
 var centerWidth = (windowWidth / 2);
 var centerHeight = (windowHeight / 2);
 var platforms;
-var player;
+var archerPlayer;
 var cursors;
 var stars;
 var score = 0;
@@ -27,8 +27,8 @@ var DoesPlayerHasStrengthBuff = false;
 var grassGroundHeight = 27;
 var grassGroundWidth = 87;
 var IsArrowShot = false;
-var emitter;
-var particles;
+var archerEmitter;
+var archerParticles;
 var DidArcherAttackOnce = false;
 
 var config = {
@@ -193,39 +193,39 @@ function create() {
 }
 
 function ParticlesEffect(parent) {
-    particles = parent.add.particles('fire3');
+    archerParticles = parent.add.particles('fire3');
     // particles.scaleY = 0.2;
     // particles.scaleX = 0.2;
     // particles.x = player.x;
     // particles.y = player.y;
 
-    emitter = particles.createEmitter();
+    archerEmitter = archerParticles.createEmitter();
 
-    emitter.setPosition(player.x, player.y + (player.displayHeight / 2));
-    emitter.setSpeed(100);
-    emitter.setScale(0.05, 0.05);
-    emitter.setAlpha(1, 0, 3000);
-    emitter.maxParticles = 10;
-    emitter.on = false;
+    archerEmitter.setPosition(archerPlayer.x, archerPlayer.y + (archerPlayer.displayHeight / 2));
+    archerEmitter.setSpeed(100);
+    archerEmitter.setScale(0.05, 0.05);
+    archerEmitter.setAlpha(1, 0, 3000);
+    archerEmitter.maxParticles = 10;
+    archerEmitter.on = false;
 }
 
 function Collision(parent) {
     //Allows the player to collide with the platforms
-    parent.physics.add.collider(player, platforms);
+    parent.physics.add.collider(archerPlayer, platforms);
 
     //Only this group will collide with each other
     parent.physics.add.collider(stars, platforms);
 
     //Allow player to overlap with a star
-    parent.physics.add.overlap(player, stars, CollectStar, null, parent);
+    parent.physics.add.overlap(archerPlayer, stars, CollectStar, null, parent);
 
     //Allow player to interact with speed buff
     parent.physics.add.collider(speedBuff, platforms);
-    parent.physics.add.overlap(player, speedBuff, CollectSpeedBuff, null, parent);
+    parent.physics.add.overlap(archerPlayer, speedBuff, CollectSpeedBuff, null, parent);
 
     //Allow player to interact with speed buff
     parent.physics.add.collider(strengthBuff, platforms);
-    parent.physics.add.overlap(player, strengthBuff, CollectStrengthBuff, null, parent);
+    parent.physics.add.overlap(archerPlayer, strengthBuff, CollectStrengthBuff, null, parent);
 
     parent.physics.add.collider(arrowsRight, platforms, CollideWithArrow, null, parent);
     parent.physics.add.collider(arrowsLeft, platforms, CollideWithArrow, null, parent);
@@ -362,15 +362,15 @@ function Player(parent) {
 
     //Player    
     //Add starting image of player, width, height
-    player = parent.physics.add.sprite(100, (windowHeight - groundHeight - 91), 'mainplayer-idle1-left0');
-    player.setDisplaySize(81, 81);
-    player.setBounce(0.2);
-    player.setCollideWorldBounds(true);
-    player.body.setGravityY(400);
+    archerPlayer = parent.physics.add.sprite(100, (windowHeight - groundHeight - 91), 'mainplayer-idle1-left0');
+    archerPlayer.setDisplaySize(81, 81);
+    archerPlayer.setBounce(0.2);
+    archerPlayer.setCollideWorldBounds(true);
+    archerPlayer.body.setGravityY(400);
 
     //Set original player size
-    originalPlayerWidth = player.displayWidth;
-    originalPlayerHeight = player.displayHeight;
+    originalPlayerWidth = archerPlayer.displayWidth;
+    originalPlayerHeight = archerPlayer.displayHeight;
 
     //Frames
     for (var i = 0; i <= 14; i++) {
@@ -634,13 +634,13 @@ function Player(parent) {
 }
 
 function PlayerArrow(parent) {
-    arrowsRight = parent.physics.add.sprite(player.displayWidth, player.displayHeight, 'arrow-right');
+    arrowsRight = parent.physics.add.sprite(archerPlayer.displayWidth, archerPlayer.displayHeight, 'arrow-right');
     arrowsRight.setDisplaySize(arrowsRight.displayWidth / 2.5, arrowsRight.displayHeight / 2.5);
     arrowsRight.setCollideWorldBounds(true);
     arrowsRight.body.setGravityY(0);
     arrowsRight.disableBody(true, true);
 
-    arrowsLeft = parent.physics.add.sprite(player.displayWidth, player.displayHeight, 'arrow-left');
+    arrowsLeft = parent.physics.add.sprite(archerPlayer.displayWidth, archerPlayer.displayHeight, 'arrow-left');
     arrowsLeft.setDisplaySize(arrowsLeft.displayWidth / 2.5, arrowsLeft.displayHeight / 2.5);
     arrowsLeft.setCollideWorldBounds(true);
     arrowsLeft.body.setGravityY(0);
@@ -709,7 +709,7 @@ function CollectSpeedBuff(player, buff) {
     buff.disableInteractive();
     if (!DoesPlayerHasSpeedBuff) {
         //display particle effects
-        emitter.on = true;
+        archerEmitter.on = true;
         game.sound.play('speedBuffSound');
     }
     DoesPlayerHasSpeedBuff = true;
@@ -744,7 +744,7 @@ function Enemy(parent) {
 
     parent.physics.add.collider(bombs, platforms);
 
-    parent.physics.add.collider(player, bombs, HitBomb, null, parent);
+    parent.physics.add.collider(archerPlayer, bombs, HitBomb, null, parent);
 }
 
 function HitBomb(player, bomb) {
@@ -786,30 +786,30 @@ function ArcherController(parent) {
         //Player Left
         if (cursors.left.isDown) {
             IsMainPlayerFacingLeft = true;
-            player.setVelocityX((DoesPlayerHasSpeedBuff ? -300 : -190));
-            player.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'walk-left', true);
+            archerPlayer.setVelocityX((DoesPlayerHasSpeedBuff ? -300 : -190));
+            archerPlayer.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'walk-left', true);
         }
         //Player Right
         else if (cursors.right.isDown) {
             IsMainPlayerFacingLeft = false;
-            player.setVelocityX((DoesPlayerHasSpeedBuff ? 300 : 190));
-            player.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'walk-right', true);
+            archerPlayer.setVelocityX((DoesPlayerHasSpeedBuff ? 300 : 190));
+            archerPlayer.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'walk-right', true);
         }
         //Player Not Moving
         else {
             //Stop moving
-            player.setVelocityX(0);
+            archerPlayer.setVelocityX(0);
 
             //Special Attack, change Size
             if (parent.specialAttack.isDown && !IsArrowShot) {
 
                 if (IsMainPlayerFacingLeft) {
-                    player.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'attack' + (DidArcherAttackOnce ? 2 : 1) + '-left', true);
+                    archerPlayer.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'attack' + (DidArcherAttackOnce ? 2 : 1) + '-left', true);
 
                     //Only attack on the last animation frame
-                    if (player.anims.currentFrame.index >= 10) {
+                    if (archerPlayer.anims.currentFrame.index >= 10) {
                         IsArrowShot = true;
-                        arrowsLeft.enableBody(true, player.x - 16, player.y, true, true);
+                        arrowsLeft.enableBody(true, archerPlayer.x - 16, archerPlayer.y, true, true);
                         arrowsLeft.body.setAllowRotation(true);
                         arrowsLeft.body.setAngularVelocity(-15);
                         arrowsLeft.body.setAngularAcceleration(-15);
@@ -824,16 +824,16 @@ function ArcherController(parent) {
                             arrowsLeft.setAcceleration(-400, 100);
                         }
 
-                        DidArcherAttackOnce = player.anims.currentFrame.textureKey.includes('attack1');
+                        DidArcherAttackOnce = archerPlayer.anims.currentFrame.textureKey.includes('attack1');
                     }
                 }
                 else {
-                    player.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'attack' + (DidArcherAttackOnce ? 2 : 1) + '-right', true);
+                    archerPlayer.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'attack' + (DidArcherAttackOnce ? 2 : 1) + '-right', true);
 
                     //Only attack on the last animation frame
-                    if (player.anims.currentFrame.index >= 10) {
+                    if (archerPlayer.anims.currentFrame.index >= 10) {
                         IsArrowShot = true;
-                        arrowsRight.enableBody(true, player.x + 16, player.y, true, true);
+                        arrowsRight.enableBody(true, archerPlayer.x + 16, archerPlayer.y, true, true);
                         arrowsRight.body.setAllowRotation(true);
                         arrowsRight.body.setAngularVelocity(15);
                         arrowsRight.body.setAngularAcceleration(15);
@@ -848,22 +848,22 @@ function ArcherController(parent) {
                             arrowsRight.setAcceleration(400, 100);
                         }
 
-                        DidArcherAttackOnce = player.anims.currentFrame.textureKey.includes('attack1');
+                        DidArcherAttackOnce = archerPlayer.anims.currentFrame.textureKey.includes('attack1');
                     }
                 }
             }
-            else if (IsMainPlayerFacingLeft && player.body.touching.down && !player.body.isMoving) {
-                player.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'idle2-left', true);
+            else if (IsMainPlayerFacingLeft && archerPlayer.body.touching.down && !archerPlayer.body.isMoving) {
+                archerPlayer.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'idle2-left', true);
             }
-            else if (!IsMainPlayerFacingLeft && player.body.touching.down && !player.body.isMoving) {
-                player.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'idle2-right', true);
+            else if (!IsMainPlayerFacingLeft && archerPlayer.body.touching.down && !archerPlayer.body.isMoving) {
+                archerPlayer.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'idle2-right', true);
             }
         }
 
         //Player Jump
-        if ((cursors.up.isDown || parent.jumpAlt.isDown) && player.body.touching.down) {
-            player.setVelocityY((DoesPlayerHasStrengthBuff ? -670 : -550));
-            player.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'jump-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
+        if ((cursors.up.isDown || parent.jumpAlt.isDown) && archerPlayer.body.touching.down) {
+            archerPlayer.setVelocityY((DoesPlayerHasStrengthBuff ? -670 : -550));
+            archerPlayer.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'jump-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
 
             //Jumping sound
             game.sound.play('jump');
@@ -874,9 +874,7 @@ function ArcherController(parent) {
 }
 
 function ParticlesOnPlayer(parent) {
-    emitter.setPosition(player.x, player.y + (player.displayHeight / 2));
-    // particles.x = player.x;
-    // particles.y = player.y;
+    archerEmitter.setPosition(archerPlayer.x, archerPlayer.y + (archerPlayer.displayHeight / 2));    
 }
 
 /** GAME OVER **/
