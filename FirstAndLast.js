@@ -29,6 +29,7 @@ var grassGroundWidth = 87;
 var IsArrowShot = false;
 var emitter;
 var particles;
+var DidArcherAttackOnce = false;
 
 var config = {
     type: Phaser.AUTO,
@@ -322,7 +323,7 @@ function GameSounnd(parent) {
     bgMusic.config.loop = true;
 
     //TODO: Uncomment this once done testing or Implement a Mute button
-    bgMusic.play();
+    // bgMusic.play();
 }
 
 function Player(parent) {
@@ -380,13 +381,13 @@ function Player(parent) {
     }
 
     parent.anims.create({
-        key: 'archer1-attack1-left',
+        key: 'attack1-left',
         frames: attack1FramesLeft,
         frameRate: 15,
         repeat: -1
     });
     parent.anims.create({
-        key: 'archer1-attack1-right',
+        key: 'attack1-right',
         frames: attack1FramesRight,
         frameRate: 15,
         repeat: -1
@@ -413,13 +414,13 @@ function Player(parent) {
     }
 
     parent.anims.create({
-        key: 'archer1-attack2-left',
+        key: 'attack2-left',
         frames: attack2FramesLeft,
         frameRate: 15,
         repeat: -1
     });
     parent.anims.create({
-        key: 'archer1-attack2-right',
+        key: 'attack2-right',
         frames: attack2FramesRight,
         frameRate: 15,
         repeat: -1
@@ -785,38 +786,14 @@ function ArcherController(parent) {
         //Player Left
         if (cursors.left.isDown) {
             IsMainPlayerFacingLeft = true;
-
-            if (DoesPlayerHasSpeedBuff) {
-                player.setVelocityX(-300);
-            }
-            else {
-                player.setVelocityX(-190);
-            }
-
-            if (DoesPlayerHasStrengthBuff) {
-                player.anims.play('archer2-walk-left', true);
-            }
-            else {
-                player.anims.play('walk-left', true);
-            }
+            player.setVelocityX((DoesPlayerHasSpeedBuff ? -300 : -190));
+            player.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + '-walk-left', true);
         }
         //Player Right
         else if (cursors.right.isDown) {
             IsMainPlayerFacingLeft = false;
-
-            if (DoesPlayerHasSpeedBuff) {
-                player.setVelocityX(300);
-            }
-            else {
-                player.setVelocityX(190);
-            }
-
-            if (DoesPlayerHasStrengthBuff) {
-                player.anims.play('archer2-walk-right', true);
-            }
-            else {
-                player.anims.play('walk-right', true);
-            }
+            player.setVelocityX((DoesPlayerHasSpeedBuff ? 300 : 190));
+            player.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + '-walk-right', true);
         }
         //Player Not Moving
         else {
@@ -827,12 +804,7 @@ function ArcherController(parent) {
             if (parent.specialAttack.isDown && !IsArrowShot) {
 
                 if (IsMainPlayerFacingLeft) {
-                    if (DoesPlayerHasStrengthBuff) {
-                        player.anims.play('archer2-attack1-left', true);
-                    }
-                    else {
-                        player.anims.play('attack1-left', true);
-                    }
+                    player.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'attack' + (DidArcherAttackOnce ? 2 : 1) + '-left', true);
 
                     //Only attack on the last animation frame
                     if (player.anims.currentFrame.index >= 10) {
@@ -851,15 +823,12 @@ function ArcherController(parent) {
                             arrowsLeft.setVelocity(-400, -100);
                             arrowsLeft.setAcceleration(-400, 100);
                         }
+
+                        DidArcherAttackOnce = player.anims.currentFrame.textureKey.includes('attack1');
                     }
                 }
                 else {
-                    if (DoesPlayerHasStrengthBuff) {
-                        player.anims.play('archer2-attack1-right', true);
-                    }
-                    else {
-                        player.anims.play('attack1-right', true);
-                    }
+                    player.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'attack' + (DidArcherAttackOnce ? 2 : 1) + '-right', true);
 
                     //Only attack on the last animation frame
                     if (player.anims.currentFrame.index >= 10) {
@@ -878,51 +847,23 @@ function ArcherController(parent) {
                             arrowsRight.setVelocity(400, -100);
                             arrowsRight.setAcceleration(400, 100);
                         }
+
+                        DidArcherAttackOnce = player.anims.currentFrame.textureKey.includes('attack1');
                     }
                 }
             }
             else if (IsMainPlayerFacingLeft && player.body.touching.down && !player.body.isMoving) {
-                if (DoesPlayerHasStrengthBuff) {
-                    player.anims.play('archer2-idle2-left', true);
-                }
-                else {
-                    player.anims.play('idle2-left', true);
-                }
+                player.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + '-idle2-left', true);
             }
             else if (!IsMainPlayerFacingLeft && player.body.touching.down && !player.body.isMoving) {
-                if (DoesPlayerHasStrengthBuff) {
-                    player.anims.play('archer2-idle2-right', true);
-                }
-                else {
-                    player.anims.play('idle2-right', true);
-                }
+                player.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + '-idle2-right', true);
             }
         }
 
         //Player Jump
         if ((cursors.up.isDown || parent.jumpAlt.isDown) && player.body.touching.down) {
-            //Although I know I could use a ternary operator, I plan on adding more to these statements
-            if (DoesPlayerHasStrengthBuff) {
-                player.setVelocityY(-670);
-            }
-            else {
-                player.setVelocityY(-550);
-            }
-
-            if (IsMainPlayerFacingLeft) {
-                if (DoesPlayerHasStrengthBuff) {
-                    player.anims.play('archer2-jump-left', true);
-                } else {
-                    player.anims.play('jump-left', true);
-                }
-            }
-            else {
-                if (DoesPlayerHasStrengthBuff) {
-                    player.anims.play('archer2-jump-right', true);
-                } else {
-                    player.anims.play('jump-right', true);
-                }
-            }
+            player.setVelocityY((DoesPlayerHasStrengthBuff ? -670 : -550));
+            player.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + '-jump-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
 
             //Jumping sound
             game.sound.play('jump');
