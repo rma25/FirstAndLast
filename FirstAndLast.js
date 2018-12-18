@@ -787,13 +787,13 @@ function ArcherController(parent) {
         if (cursors.left.isDown) {
             IsMainPlayerFacingLeft = true;
             player.setVelocityX((DoesPlayerHasSpeedBuff ? -300 : -190));
-            player.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + '-walk-left', true);
+            player.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'walk-left', true);
         }
         //Player Right
         else if (cursors.right.isDown) {
             IsMainPlayerFacingLeft = false;
             player.setVelocityX((DoesPlayerHasSpeedBuff ? 300 : 190));
-            player.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + '-walk-right', true);
+            player.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'walk-right', true);
         }
         //Player Not Moving
         else {
@@ -853,17 +853,17 @@ function ArcherController(parent) {
                 }
             }
             else if (IsMainPlayerFacingLeft && player.body.touching.down && !player.body.isMoving) {
-                player.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + '-idle2-left', true);
+                player.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'idle2-left', true);
             }
             else if (!IsMainPlayerFacingLeft && player.body.touching.down && !player.body.isMoving) {
-                player.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + '-idle2-right', true);
+                player.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'idle2-right', true);
             }
         }
 
         //Player Jump
         if ((cursors.up.isDown || parent.jumpAlt.isDown) && player.body.touching.down) {
             player.setVelocityY((DoesPlayerHasStrengthBuff ? -670 : -550));
-            player.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + '-jump-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
+            player.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'jump-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
 
             //Jumping sound
             game.sound.play('jump');
