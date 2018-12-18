@@ -79,7 +79,7 @@ function preload() {
     BuffsLoad(this);
 
     //Audio
-    Audio(this)
+    GameAudio(this)
 }
 
 function BackgroundLoad(parent) {
@@ -105,7 +105,7 @@ function ParticlesLoad(parent) {
     parent.load.image('fire3', './Assets/phaser-assets/particles/fire3.png');
 }
 
-function Audio(parent) {
+function GameAudio(parent) {
     parent.load.audio('collectingSound', './Assets/phaser-assets/audio/SoundEffects/p-ping.mp3');
     parent.load.audio('jump', './Assets/audio/bounce.wav');
     parent.load.audio('gameMusic', './Assets/unity3d-assets/2D-Handcrafted-Art/Music/Tropical moments - loop version.wav');
@@ -113,6 +113,10 @@ function Audio(parent) {
     parent.load.audio('strengthBuffSound', './Assets/phaser-assets/audio/SoundEffects/door_open.wav');
     parent.load.audio('shootingArrow', './Assets/unity3d-assets/BowAndArrow/Sounds/ArrowShoosh2.mp3');
     parent.load.audio('arrowHit', './Assets/unity3d-assets/BowAndArrow/Sounds/ArrowImpactTarget.mp3');
+    parent.load.audio('swordAttack1', './Assets/unity3d-assets/AxeSwingDamageSounds/Axe_swing_s_e01.wav');
+    parent.load.audio('swordAttack2', './Assets/unity3d-assets/AxeSwingDamageSounds/Axe_swing_s_e02.wav');
+    parent.load.audio('axeAttack1', './Assets/unity3d-assets/AxeSwingDamageSounds/Axe_swing_m_e02.wav');
+    parent.load.audio('axeAttack2', './Assets/unity3d-assets/AxeSwingDamageSounds/Axe_swing_m_e03.wav');
 }
 
 function BuffsLoad(parent) {
@@ -1233,7 +1237,7 @@ function ArcherController(parent) {
             //Stop moving
             ArcherPlayer.setVelocityX(0);
 
-            //Special Attack, change Size
+            //Main attack (regular)
             if (parent.mainAttack.isDown && !IsArrowShot) {
 
                 if (IsMainPlayerFacingLeft) {
@@ -1310,6 +1314,8 @@ function ArcherParticlesOnPlayer(parent) {
     ArcherEmitter.setPosition(ArcherPlayer.x, ArcherPlayer.y + (ArcherPlayer.displayHeight / 2));
 }
 
+var IsWarriorAttacking = false;
+
 function WarriorController(parent) {
     Cursors = parent.input.keyboard.createCursorKeys();
 
@@ -1331,34 +1337,25 @@ function WarriorController(parent) {
             //Stop moving
             WarriorPlayer.setVelocityX(0);
 
-            //Special Attack, change Size
-            if (parent.mainAttack.isDown) {
+            //Main attack (regular)
+            if (parent.mainAttack.isDown && WarriorPlayer.anims.currentFrame.index <= 14) {
 
-                if (IsMainPlayerFacingLeft) {
-                    WarriorPlayer.anims.play((DoesPlayerHasStrengthBuff ? 'warrior2-' : 'warrior1-') + 'attack' + (DidWarriorAttackOnce ? 2 : 1) + '-left', true);
+                WarriorPlayer.anims.play((DoesPlayerHasStrengthBuff ? 'warrior2-' : 'warrior1-') + 'attack' + (!WarriorPlayer.body.touching.down ? 2 : 1) + '-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
 
-                    //Only attack on the last animation frame
-                    if (WarriorPlayer.anims.currentFrame.index >= 13) {
-                        game.sound.play('shootingArrow');
-
-                        DidWarriorAttackOnce = WarriorPlayer.anims.currentFrame.textureKey.includes('attack1');                        
+                if (WarriorPlayer.anims.currentFrame.index === 3) {
+                    if (DoesPlayerHasStrengthBuff) {
+                        game.sound.play('axeAttack' + (!WarriorPlayer.body.touching.down ? 2 : 1));
                     }
-                }
-                else {
-                    WarriorPlayer.anims.play((DoesPlayerHasStrengthBuff ? 'warrior2-' : 'warrior1-') + 'attack' + (DidWarriorAttackOnce ? 2 : 1) + '-right', true);
-
-                    //Only attack on the last animation frame
-                    if (WarriorPlayer.anims.currentFrame.index >= 13) {
-                        //TODO: Change to match axe/sword sound
-                        game.sound.play('shootingArrow');
-
-                        DidWarriorAttackOnce = WarriorPlayer.anims.currentFrame.textureKey.includes('attack1');
+                    else {
+                        game.sound.play('swordAttack' + (!WarriorPlayer.body.touching.down ? 2 : 1));
                     }
                 }
             }
+            //Idle Left
             else if (IsMainPlayerFacingLeft && WarriorPlayer.body.touching.down && !WarriorPlayer.body.isMoving) {
                 WarriorPlayer.anims.play((DoesPlayerHasStrengthBuff ? 'warrior2-' : 'warrior1-') + 'idle2-left', true);
             }
+            //Idle Right
             else if (!IsMainPlayerFacingLeft && WarriorPlayer.body.touching.down && !WarriorPlayer.body.isMoving) {
                 WarriorPlayer.anims.play((DoesPlayerHasStrengthBuff ? 'warrior2-' : 'warrior1-') + 'idle2-right', true);
             }
