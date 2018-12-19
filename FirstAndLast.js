@@ -25,6 +25,7 @@ var DoesPlayerHasSpeedBuff = false;
 var DoesPlayerHasStrengthBuff = false;
 var GrassGroundHeight = 27;
 var GrassGroundWidth = 87;
+var IsPlayerIdle = false;
 /*Archer */
 var IsArrowShot = false;
 var ArcherPlayer;
@@ -262,6 +263,15 @@ function create() {
     Collision(this);
     GameSound(this);
     ParticlesEffect(this);
+    CheckIfPlayerIsIdle();
+}
+
+function PlayerIsIdle() {
+    IsPlayerIdle = true;
+}
+
+function CheckIfPlayerIsIdle() {
+    setInterval(PlayerIsIdle, 10000);
 }
 
 function ParticlesEffect(parent) {
@@ -1206,7 +1216,6 @@ function update() {
     }
 
     if (WarriorPlayer != null && WarriorPlayer != undefined) {
-        Collision(this);
         WarriorController(this);
         WarriorParticlesOnPlayer(this);
     }
@@ -1312,8 +1321,6 @@ function ArcherParticlesOnPlayer(parent) {
     ArcherEmitter.setPosition(ArcherPlayer.x, ArcherPlayer.y + (ArcherPlayer.displayHeight / 2));
 }
 
-var IsWarriorAttacking = false;
-
 function WarriorController(parent) {
     Cursors = parent.input.keyboard.createCursorKeys();
 
@@ -1326,24 +1333,27 @@ function WarriorController(parent) {
             IsMainPlayerFacingLeft = true;
             WarriorPlayer.setVelocityX((DoesPlayerHasSpeedBuff ? -300 : -190));
             WarriorPlayer.anims.play(currentWarrior + '-walk-left', true);
+            IsPlayerIdle = false;
         }
         //Player Right
         else if (Cursors.right.isDown) {
             IsMainPlayerFacingLeft = false;
             WarriorPlayer.setVelocityX((DoesPlayerHasSpeedBuff ? 300 : 190));
             WarriorPlayer.anims.play(currentWarrior + '-walk-right', true);
+            IsPlayerIdle = false;
         }
         //Player Not Moving
         else {
             //Stop moving
-            WarriorPlayer.setVelocityX(1);
+            WarriorPlayer.setVelocityX(0);
 
             //Main attack (regular)
             if (parent.mainAttack.isDown) {
                 console.log('Current Frame is ', WarriorPlayer.anims.currentFrame.index);
+                IsPlayerIdle = false;
 
                 //TODO: Find out a way to know when the player is in the air
-                WarriorPlayer.anims.play(currentWarrior + '-attack' + (DidWarriorAttackOnce ? '2' : '1') + '-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
+                WarriorPlayer.anims.play(currentWarrior + '-attack' + (DidWarriorAttackOnce ? '1' : '1') + '-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
 
                 if (WarriorPlayer.anims.currentFrame.index === 3) {
                     if (DoesPlayerHasStrengthBuff) {
@@ -1359,17 +1369,18 @@ function WarriorController(parent) {
                 }
             }
             //Idle Left
-            else if (IsMainPlayerFacingLeft && WarriorPlayer.body.touching.down && !WarriorPlayer.body.isMoving) {
-                WarriorPlayer.anims.play(currentWarrior + '-idle2-left', true);
+            else if (IsMainPlayerFacingLeft && !WarriorPlayer.body.isMoving) {
+                WarriorPlayer.anims.play(currentWarrior + '-idle' + (IsPlayerIdle ? '2' : '1') + '-left', true);
             }
             //Idle Right
-            else if (!IsMainPlayerFacingLeft && WarriorPlayer.body.touching.down && !WarriorPlayer.body.isMoving) {
-                WarriorPlayer.anims.play(currentWarrior + '-idle1-right', true);
+            else if (!IsMainPlayerFacingLeft && !WarriorPlayer.body.isMoving) {
+                WarriorPlayer.anims.play(currentWarrior + '-idle' + (IsPlayerIdle ? '2' : '1') + '-right', true);
             }
         }
 
         //Player Jump
         if ((Cursors.up.isDown || parent.jumpAlt.isDown) && WarriorPlayer.body.touching.down) {
+            IsPlayerIdle = false;
             WarriorPlayer.setVelocityY((DoesPlayerHasStrengthBuff ? -670 : -550));
             WarriorPlayer.anims.play(currentWarrior + '-jump-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
 
