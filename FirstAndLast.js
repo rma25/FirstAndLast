@@ -475,7 +475,6 @@ function ArcherPlayerCreate(parent) {
     //Add starting image of player, width, height
     ArcherPlayer = parent.physics.add.sprite(100, (WindowHeight - GroundHeight - 91), 'mainplayer-idle1-left0');
     ArcherPlayer.setDisplaySize(81, 81);
-    ArcherPlayer.setBounce(0.2);
     ArcherPlayer.setCollideWorldBounds(true);
     ArcherPlayer.body.setGravityY(400);
 
@@ -797,9 +796,9 @@ function WarriorPlayerCreate(parent) {
 
     //Player    
     //Add starting image of player, width, height
-    WarriorPlayer = parent.physics.add.sprite(100, (WindowHeight - GroundHeight - 91), 'warrior1-idle1-left0');
+    WarriorPlayer = parent.physics.add.sprite(100, (WindowHeight - GroundHeight - 91), 'warrior1-jump-right0');
     WarriorPlayer.setDisplaySize(81, 81);
-    WarriorPlayer.setBounce(0.2);
+    // WarriorPlayer.setBounce(0.2);
     WarriorPlayer.setCollideWorldBounds(true);
     WarriorPlayer.body.setGravityY(400);
 
@@ -948,25 +947,25 @@ function WarriorPlayerCreate(parent) {
         key: 'warrior1-idle2-left',
         frames: idle2FramesLeft,
         frameRate: 10,
-        repeat: 1
+        repeat: -1
     });
     parent.anims.create({
         key: 'warrior1-idle2-right',
         frames: idle2FramesRight,
         frameRate: 10,
-        repeat: 1
+        repeat: -1
     });
     parent.anims.create({
         key: 'warrior2-idle2-left',
         frames: idle2FramesLeft2,
         frameRate: 10,
-        repeat: 1
+        repeat: -1
     });
     parent.anims.create({
         key: 'warrior2-idle2-right',
         frames: idle2FramesRight2,
         frameRate: 10,
-        repeat: 1
+        repeat: -1
     });
 
     for (var i = 0; i <= 14; i++) {
@@ -980,25 +979,25 @@ function WarriorPlayerCreate(parent) {
         key: 'warrior1-idle1-left',
         frames: idle1FramesLeft,
         frameRate: 10,
-        repeat: 1
+        repeat: -1
     });
     parent.anims.create({
         key: 'warrior1-idle1-right',
         frames: idle1FramesRight,
         frameRate: 10,
-        repeat: 1
+        repeat: -1
     });
     parent.anims.create({
         key: 'warrior2-idle1-left',
         frames: idle1FramesLeft2,
         frameRate: 10,
-        repeat: 1
+        repeat: -1
     });
     parent.anims.create({
         key: 'warrior2-idle1-right',
         frames: idle1FramesRight2,
         frameRate: 10,
-        repeat: 1
+        repeat: -1
     });
 
     for (var i = 0; i <= 12; i++) {
@@ -1064,8 +1063,6 @@ function WarriorPlayerCreate(parent) {
         frameRate: 10,
         repeat: -1
     });
-
-    WarriorPlayer.anims.play('warrior1-idle2-right');
 }
 
 
@@ -1209,6 +1206,7 @@ function update() {
     }
 
     if (WarriorPlayer != null && WarriorPlayer != undefined) {
+        Collision(this);
         WarriorController(this);
         WarriorParticlesOnPlayer(this);
     }
@@ -1320,51 +1318,60 @@ function WarriorController(parent) {
     Cursors = parent.input.keyboard.createCursorKeys();
 
     if (!IsGameOver && WarriorPlayer != null && WarriorPlayer != undefined) {
+
+        var currentWarrior = 'warrior' + (DoesPlayerHasStrengthBuff ? '2' : '1');
+
         //Player Left
         if (Cursors.left.isDown) {
             IsMainPlayerFacingLeft = true;
             WarriorPlayer.setVelocityX((DoesPlayerHasSpeedBuff ? -300 : -190));
-            WarriorPlayer.anims.play((DoesPlayerHasStrengthBuff ? 'warrior2-' : 'warrior1-') + 'walk-left', true);
+            WarriorPlayer.anims.play(currentWarrior + '-walk-left', true);
         }
         //Player Right
         else if (Cursors.right.isDown) {
             IsMainPlayerFacingLeft = false;
             WarriorPlayer.setVelocityX((DoesPlayerHasSpeedBuff ? 300 : 190));
-            WarriorPlayer.anims.play((DoesPlayerHasStrengthBuff ? 'warrior2-' : 'warrior1-') + 'walk-right', true);
+            WarriorPlayer.anims.play(currentWarrior + '-walk-right', true);
         }
         //Player Not Moving
         else {
             //Stop moving
-            WarriorPlayer.setVelocityX(0);
+            WarriorPlayer.setVelocityX(1);
 
             //Main attack (regular)
-            if (parent.mainAttack.isDown && WarriorPlayer.anims.currentFrame.index <= 14) {
+            if (parent.mainAttack.isDown) {
+                console.log('Current Frame is ', WarriorPlayer.anims.currentFrame.index);
 
-                WarriorPlayer.anims.play((DoesPlayerHasStrengthBuff ? 'warrior2-' : 'warrior1-') + 'attack' + (!WarriorPlayer.body.touching.down ? 2 : 1) + '-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
+                //TODO: Find out a way to know when the player is in the air
+                WarriorPlayer.anims.play(currentWarrior + '-attack' + (DidWarriorAttackOnce ? '2' : '1') + '-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
 
                 if (WarriorPlayer.anims.currentFrame.index === 3) {
                     if (DoesPlayerHasStrengthBuff) {
-                        game.sound.play('axeAttack' + (!WarriorPlayer.body.touching.down ? 2 : 1));
+                        game.sound.play('axeAttack2');
                     }
                     else {
-                        game.sound.play('swordAttack' + (!WarriorPlayer.body.touching.down ? 2 : 1));
+                        game.sound.play('swordAttack2');
                     }
+                }
+
+                if (WarriorPlayer.anims.currentFrame.index >= 14) {
+                    DidWarriorAttackOnce = WarriorPlayer.anims.currentFrame.textureKey.includes('attack1');
                 }
             }
             //Idle Left
             else if (IsMainPlayerFacingLeft && WarriorPlayer.body.touching.down && !WarriorPlayer.body.isMoving) {
-                WarriorPlayer.anims.play((DoesPlayerHasStrengthBuff ? 'warrior2-' : 'warrior1-') + 'idle2-left', true);
+                WarriorPlayer.anims.play(currentWarrior + '-idle2-left', true);
             }
             //Idle Right
             else if (!IsMainPlayerFacingLeft && WarriorPlayer.body.touching.down && !WarriorPlayer.body.isMoving) {
-                WarriorPlayer.anims.play((DoesPlayerHasStrengthBuff ? 'warrior2-' : 'warrior1-') + 'idle2-right', true);
+                WarriorPlayer.anims.play(currentWarrior + '-idle1-right', true);
             }
         }
 
         //Player Jump
         if ((Cursors.up.isDown || parent.jumpAlt.isDown) && WarriorPlayer.body.touching.down) {
             WarriorPlayer.setVelocityY((DoesPlayerHasStrengthBuff ? -670 : -550));
-            WarriorPlayer.anims.play((DoesPlayerHasStrengthBuff ? 'warrior2-' : 'warrior1-') + 'jump-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
+            WarriorPlayer.anims.play(currentWarrior + '-jump-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
 
             //Jumping sound
             game.sound.play('jump');
