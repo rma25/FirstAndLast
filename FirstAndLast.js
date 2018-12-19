@@ -48,7 +48,7 @@ var config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 300 },
-            debug: false
+            debug: true
         }
     },
     scene: {
@@ -806,9 +806,8 @@ function WarriorPlayerCreate(parent) {
 
     //Player    
     //Add starting image of player, width, height
-    WarriorPlayer = parent.physics.add.sprite(100, (WindowHeight - GroundHeight - 91), 'warrior1-jump-right0');
+    WarriorPlayer = parent.physics.add.sprite(100, (WindowHeight - GroundHeight - 91), 'warrior1-idle1-right0');
     WarriorPlayer.setDisplaySize(81, 81);
-    // WarriorPlayer.setBounce(0.2);
     WarriorPlayer.setCollideWorldBounds(true);
     WarriorPlayer.body.setGravityY(400);
 
@@ -824,6 +823,7 @@ function WarriorPlayerCreate(parent) {
         attack1FramesRight2.push({ key: 'warrior2-attack1-right' + i });
     }
 
+    //TODO: Need to fix warrior 1 - attack1 going through collision animation
     parent.anims.create({
         key: 'warrior1-attack1-left',
         frames: attack1FramesLeft,
@@ -1328,6 +1328,11 @@ function WarriorController(parent) {
 
         var currentWarrior = 'warrior' + (DoesPlayerHasStrengthBuff ? '2' : '1');
 
+        if (DoesPlayerHasStrengthBuff) {
+            //Change collision box site
+            WarriorPlayer.body.setSize(300, 350);
+        }
+
         //Player Left
         if (Cursors.left.isDown) {
             IsMainPlayerFacingLeft = true;
@@ -1349,11 +1354,12 @@ function WarriorController(parent) {
 
             //Main attack (regular)
             if (parent.mainAttack.isDown) {
-                console.log('Current Frame is ', WarriorPlayer.anims.currentFrame.index);
                 IsPlayerIdle = false;
 
+                console.log('Current Frame is ', WarriorPlayer.anims.currentFrame.index);
+
                 //TODO: Find out a way to know when the player is in the air
-                WarriorPlayer.anims.play(currentWarrior + '-attack' + (DidWarriorAttackOnce ? '1' : '1') + '-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
+                WarriorPlayer.anims.play(currentWarrior + '-attack' + (DidWarriorAttackOnce && DoesPlayerHasStrengthBuff ? '1' : '2') + '-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
 
                 if (WarriorPlayer.anims.currentFrame.index === 3) {
                     if (DoesPlayerHasStrengthBuff) {
