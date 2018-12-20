@@ -17,17 +17,26 @@ function ArcherController(parent) {
     Cursors = parent.input.keyboard.createCursorKeys();
 
     if (!IsGameOver && ArcherPlayer != null && ArcherPlayer != undefined) {
+        var currentArcher = (DoesPlayerHasStrengthBuff ? 'archer2-' : 'archer1-');
+
+        if (DoesPlayerHasStrengthBuff) {
+            //Change collision box site
+            ArcherPlayer.body.setSize(300, 350);
+        }
+
         //Player Left
         if (Cursors.left.isDown) {
+            IsPlayerIdle = false;
             IsMainPlayerFacingLeft = true;
             ArcherPlayer.setVelocityX((DoesPlayerHasSpeedBuff ? -300 : -190));
-            ArcherPlayer.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'walk-left', true);
+            ArcherPlayer.anims.play(currentArcher + 'walk-left', true);
         }
         //Player Right
         else if (Cursors.right.isDown) {
+            IsPlayerIdle = false;
             IsMainPlayerFacingLeft = false;
             ArcherPlayer.setVelocityX((DoesPlayerHasSpeedBuff ? 300 : 190));
-            ArcherPlayer.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'walk-right', true);
+            ArcherPlayer.anims.play(currentArcher + 'walk-right', true);
         }
         //Player Not Moving
         else {
@@ -36,9 +45,9 @@ function ArcherController(parent) {
 
             //Main attack (regular)
             if (parent.mainAttack.isDown && !IsArrowShot) {
-
+                IsPlayerIdle = false;
                 if (IsMainPlayerFacingLeft) {
-                    ArcherPlayer.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'attack' + (DidArcherAttackOnce ? 2 : 1) + '-left', true);
+                    ArcherPlayer.anims.play(currentArcher + 'attack' + (DidArcherAttackOnce ? 2 : 1) + '-left', true);
 
                     //Only attack on the last animation frame
                     if (ArcherPlayer.anims.currentFrame.index >= 10) {
@@ -62,7 +71,7 @@ function ArcherController(parent) {
                     }
                 }
                 else {
-                    ArcherPlayer.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'attack' + (DidArcherAttackOnce ? 2 : 1) + '-right', true);
+                    ArcherPlayer.anims.play(currentArcher + 'attack' + (DidArcherAttackOnce ? 2 : 1) + '-right', true);
 
                     //Only attack on the last animation frame
                     if (ArcherPlayer.anims.currentFrame.index >= 10) {
@@ -87,17 +96,17 @@ function ArcherController(parent) {
                 }
             }
             else if (IsMainPlayerFacingLeft && ArcherPlayer.body.touching.down && !ArcherPlayer.body.isMoving) {
-                ArcherPlayer.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'idle2-left', true);
+                ArcherPlayer.anims.play(currentArcher + 'idle' + (IsPlayerIdle ? '2' : '1') + '-left', true);
             }
             else if (!IsMainPlayerFacingLeft && ArcherPlayer.body.touching.down && !ArcherPlayer.body.isMoving) {
-                ArcherPlayer.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'idle2-right', true);
+                ArcherPlayer.anims.play(currentArcher + 'idle' + (IsPlayerIdle ? '2' : '1') + '-right', true);
             }
         }
 
         //Player Jump
         if ((Cursors.up.isDown || parent.jumpAlt.isDown) && ArcherPlayer.body.touching.down) {
             ArcherPlayer.setVelocityY((DoesPlayerHasStrengthBuff ? -670 : -550));
-            ArcherPlayer.anims.play((DoesPlayerHasStrengthBuff ? 'archer2-' : '') + 'jump-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
+            ArcherPlayer.anims.play(currentArcher + 'jump-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
 
             //Jumping sound
             game.sound.play('jump');
@@ -146,7 +155,7 @@ function WarriorController(parent) {
             if (parent.mainAttack.isDown) {
                 IsPlayerIdle = false;
 
-                WarriorPlayer.anims.play(currentWarrior + '-attack' + (DidWarriorAttackOnce && DoesPlayerHasStrengthBuff ? 1 : 2) + '-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
+                WarriorPlayer.anims.play(currentWarrior + '-attack' + ((DidWarriorAttackOnce && DoesPlayerHasStrengthBuff) ? 1 : 2) + '-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
 
                 if (WarriorPlayer.anims.currentFrame.index === 3) {
                     if (DoesPlayerHasStrengthBuff) {
@@ -158,7 +167,7 @@ function WarriorController(parent) {
                 }
 
                 if (WarriorPlayer.anims.currentFrame.index >= 14) {
-                    DidWarriorAttackOnce = WarriorPlayer.anims.currentFrame.textureKey.includes('attack1');
+                    DidWarriorAttackOnce = WarriorPlayer.anims.currentFrame.textureKey.includes('attack2');
                 }
             }
             //Idle Left
