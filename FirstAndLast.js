@@ -26,6 +26,14 @@ var strengthBuff;
 var DoesPlayerHasStrengthBuff = false;
 var grassGroundHeight = 27;
 var grassGroundWidth = 87;
+var speedRockWidth = 111;
+var speedRockHeight = 100;
+var strengthRockWidth = 109;
+var strengthRockHeight = 98;
+var firstHeight = (centerHeight + 300);
+var secondHeight = (centerHeight + (groundHeight * 1.5));
+var thirdHeight = (centerHeight / 2);
+var idlePlayerAnimation;
 
 var config = {
     type: Phaser.AUTO,
@@ -199,9 +207,6 @@ function LiveBackground(parent) {
 }
 
 function Platform(parent) {
-    var firstHeight = (centerHeight + 300);
-    var secondHeight = (centerHeight + (groundHeight * 1.5));
-    var thirdHeight = (centerHeight / 2);
 
     bgImage = parent.add.image(0, 0, 'background');
     bgImage.setOrigin(0, 0);
@@ -482,15 +487,11 @@ function Player(parent) {
         repeat: -1
     });
 
-    player.anims.play('idle2-right');
+    idlePlayerAnimation = player.anims.play('idle2-right');
 }
 
 /** Collection **/
 function ItemsToCollect(parent) {
-    var speedRockWidth = 111;
-    var speedRockHeight = 100;
-    var strengthRockWidth = 109;
-    var strengthRockHeight = 98;
 
     stars = parent.physics.add.group({
         key: 'star',
@@ -502,20 +503,20 @@ function ItemsToCollect(parent) {
         child.setBounceY(Phaser.Math.FloatBetween(0.2, 0.4));
     });
 
-    // parent.add.image((windowWidth - speedRockWidth), (windowHeight - speedRockHeight), 'speedBuff');
     speedBuff = parent.physics.add.group({
         key: 'speedBuff',
         setXY: { x: (windowWidth - speedRockWidth), y: (windowHeight - speedRockHeight - 20) }
     });
 
+    centerWidth + (grassGroundWidth * 6), (secondHeight + (grassGroundHeight * 1.5))
     strengthBuff = parent.physics.add.group({
         key: 'strengthBuff',
-        setXY: { x: (windowWidth - strengthRockWidth - speedRockWidth), y: ((centerHeight + (groundHeight * 1.5)) - (strengthRockHeight)) }
+        setXY: { x: centerWidth + (grassGroundWidth * 6), y: (secondHeight + (grassGroundHeight * 1.5)) - strengthRockHeight }
     });
 }
 
 function CollectStar(player, star) {
-    //Makes the star disappear
+    //Makes the star disappear-
     star.disableBody(true, true);
 
     game.sound.play('collectingSound');
@@ -650,11 +651,16 @@ function Controller(parent) {
                     }
                 }
                 else {
-                    var attacking1 = player.anims.play('attack1-right', true);
-                    if (!attacking1.isPlaying) {
-                        //FireArrow();
-                        console.log('Done Loading Arrow right');
-                    }
+                    player.anims.play('attack1-right', true);
+                    // if (idlePlayerAnimation.isPlaying) {
+                    //     //FireArrow();
+                    //     console.log('Playing - Loading Arrow right');
+
+                    // }
+                    // else {
+                    //     console.log('Not Playing - Loading Arrow Right');
+                    //     player.anims.play('attack2-right', true);
+                    // }
                 }
             }
             else if (IsMainPlayerFacingLeft && player.body.touching.down && !player.body.isMoving) {
