@@ -185,4 +185,10 @@ function WarriorPlayerLoad(parent) {
         parent.load.image('warrior2-walk-right' + i, './Assets/unity3d-assets/SpritesWarriors/Warrior3/FantasyWarrior_01_walk_' + i + 'right.png');
     }
 }
+
+function MagePlayerLoad(parent){
+    for (var i = 0; i <= 17; i++) {
+        parent.load.image('warrior1-attack1-right' + i, './Assets/unity3d-assets/SpritesWarriors/Warrior1/FantasyWarrior_01_Attack1_' + i + 'left.png');        
+    }
+}
 /********************************** PRELOAD *******************************************************/
