@@ -38,6 +38,12 @@ var WarriorPlayer;
 var WarriorEmitter;
 var WarriorParticles;
 var DidWarriorAttackOnce = false;
+/*Mage*/
+var DidMageAttack = false;
+var MagePlayer;
+var MageEmitter;
+var MageParticles;
+var DidMageAttackOnce = false;
 
 var config = {
     type: Phaser.AUTO,

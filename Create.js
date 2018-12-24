@@ -1,9 +1,10 @@
 /********************************** CREATE *******************************************************/
 function create() {
     Platform(this);
-    ArcherPlayerCreate(this);
-    PlayerArrow(this);
+    // ArcherPlayerCreate(this);
+    // PlayerArrow(this);
     // WarriorPlayerCreate(this);
+    MagePlayerCreate(this);
     ItemsToCollect(this);
     //ScoreDisplay(this);
     //TODO: Implement this later
@@ -49,6 +50,18 @@ function ParticlesEffect(parent) {
         WarriorEmitter.on = false;
     }
 
+    if (MagePlayer != null && MagePlayer != undefined) {
+        MageParticles = parent.add.particles('fire3');
+        MageEmitter = MageParticles.createEmitter();
+
+        MageEmitter.setPosition(MageParticles.x, MageParticles.y + (MageParticles.displayHeight / 2));
+        MageEmitter.setSpeed(100);
+        MageEmitter.setScale(0.05, 0.05);
+        MageEmitter.setAlpha(1, 0, 3000);
+        MageEmitter.maxParticles = 10;
+        MageEmitter.on = false;
+    }
+
 }
 
 function Collision(parent) {
@@ -58,6 +71,10 @@ function Collision(parent) {
 
     if (WarriorPlayer != null && WarriorPlayer != undefined) {
         WarriorCollision(parent);
+    }
+
+    if (MagePlayer != null && MagePlayer != undefined) {
+        MageCollision(parent);
     }
 }
 

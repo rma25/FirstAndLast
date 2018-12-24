@@ -1,13 +1,15 @@
 /********************************** UPDATE *******************************************************/
 function update() {
     if (ArcherPlayer != null && ArcherPlayer != undefined) {
-        ArcherController(this);
-        ArcherParticlesOnPlayer(this);
+        ArcherController(this);        
     }
 
     if (WarriorPlayer != null && WarriorPlayer != undefined) {
-        WarriorController(this);
-        WarriorParticlesOnPlayer(this);
+        WarriorController(this);        
+    }
+
+    if (MagePlayer != null && MagePlayer != undefined) {
+        MageController(this);        
     }
 
     GameOver(this);
@@ -196,6 +198,84 @@ function WarriorController(parent) {
 
 function WarriorParticlesOnPlayer(parent) {
     WarriorEmitter.setPosition(WarriorPlayer.x, WarriorPlayer.y + (WarriorPlayer.displayHeight / 2));
+}
+
+function MageController(parent) {
+    Cursors = parent.input.keyboard.createCursorKeys();
+
+    if (!IsGameOver && MagePlayer != null && MagePlayer != undefined) {
+
+        var currentMage = 'mage' + (DoesPlayerHasStrengthBuff ? '2' : '1');
+
+        if (DoesPlayerHasStrengthBuff) {
+            //Change collision box site
+            MagePlayer.body.setSize(300, 350);
+        }
+
+        //Player Left
+        if (Cursors.left.isDown) {
+            IsMainPlayerFacingLeft = true;
+            MagePlayer.setVelocityX((DoesPlayerHasSpeedBuff ? -300 : -190));
+            MagePlayer.anims.play(currentMage + '-walkforward-left', true);
+            IsPlayerIdle = false;
+        }
+        //Player Right
+        else if (Cursors.right.isDown) {
+            IsMainPlayerFacingLeft = false;
+            MagePlayer.setVelocityX((DoesPlayerHasSpeedBuff ? 300 : 190));
+            MagePlayer.anims.play(currentMage + '-walkforward-right', true);
+            IsPlayerIdle = false;
+        }
+        //Player Not Moving
+        else {
+            //Stop moving
+            MagePlayer.setVelocityX(0);
+
+            //Main attack (regular)
+            if (parent.mainAttack.isDown) {
+                IsPlayerIdle = false;
+
+                MagePlayer.anims.play(currentMage + '-attack' + ((DidMageAttackOnce) ? 2 : 1) + '-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
+
+                if (MagePlayer.anims.currentFrame.index === 3) {
+                    if (DoesPlayerHasStrengthBuff) {
+                        //game.sound.play('axeAttack2');
+                    }
+                    else {
+                        //game.sound.play('swordAttack2');
+                    }
+                }
+
+                if (MagePlayer.anims.currentFrame.index >= 14) {
+                    DidMageAttackOnce = MagePlayer.anims.currentFrame.textureKey.includes('attack1');
+                }
+            }
+            //Idle Left
+            else if (IsMainPlayerFacingLeft && !MagePlayer.body.isMoving) {
+                MagePlayer.anims.play(currentMage + '-idle1-left', true);
+            }
+            //Idle Right
+            else if (!IsMainPlayerFacingLeft && !MagePlayer.body.isMoving) {
+                MagePlayer.anims.play(currentMage + '-idle1-right', true);
+            }
+        }
+
+        //Player Jump
+        if ((Cursors.up.isDown || parent.jumpAlt.isDown) && MagePlayer.body.touching.down) {
+            IsPlayerIdle = false;
+            MagePlayer.setVelocityY((DoesPlayerHasStrengthBuff ? -670 : -550));
+            // MagePlayer.anims.play(currentMage + '-jump-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
+
+            //Jumping sound
+            game.sound.play('jump');
+        }
+
+        MageParticlesOnPlayer(this);
+    }
+}
+
+function MageParticlesOnPlayer(parent) {
+    MageEmitter.setPosition(MagePlayer.x, MagePlayer.y + (MagePlayer.displayHeight / 2));
 }
 
 /** GAME OVER **/

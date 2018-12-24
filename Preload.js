@@ -12,6 +12,8 @@ function preload() {
 
     WarriorPlayerLoad(this);
 
+    MagePlayerLoad(this);
+
     //Buff
     BuffsLoad(this);
 
@@ -186,9 +188,83 @@ function WarriorPlayerLoad(parent) {
     }
 }
 
-function MagePlayerLoad(parent){
+function MagePlayerLoad(parent) {
     for (var i = 0; i <= 17; i++) {
-        parent.load.image('warrior1-attack1-right' + i, './Assets/unity3d-assets/SpritesWarriors/Warrior1/FantasyWarrior_01_Attack1_' + i + 'left.png');        
+        parent.load.image('mage1-idle1-left' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank02/MageHeroRank02_Idle/MageHeroRank02_Idle_' + i + 'left.png');        
+        parent.load.image('mage1-idle1-right' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank02/MageHeroRank02_Idle/MageHeroRank02_Idle_' + i + 'right.png');
+        parent.load.image('mage2-idle1-left' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank03/MageHeroRank03_Idle/MageHeroRank03_Idle_' + i + 'left.png');
+        parent.load.image('mage2-idle1-right' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank03/MageHeroRank03_Idle/MageHeroRank03_Idle_' + i + 'right.png');
     }
+
+    for (var i = 0; i <= 20; i++) {
+        parent.load.image('mage1-attack1-left' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank02/MageHeroRank02_Attack_01/MageHeroRank02_Attack01_' + i + 'left.png');        
+        parent.load.image('mage1-attack1-right' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank02/MageHeroRank02_Attack_01/MageHeroRank02_Attack01_' + i + 'right.png');
+        parent.load.image('mage2-attack1-left' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank03/MageHeroRank03_Attack_01/MageHeroRank03_Attack01_' + i + 'left.png');
+        parent.load.image('mage2-attack1-right' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank03/MageHeroRank03_Attack_01/MageHeroRank03_Attack01_' + i + 'right.png');
+    }
+
+    for (var i = 0; i <= 20; i++) {
+        parent.load.image('mage1-attack2-left' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank02/MageHeroRank02_Attack_02/MageHeroRank02_Attack02_' + i + 'left.png');        
+        parent.load.image('mage1-attack2-right' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank02/MageHeroRank02_Attack_02/MageHeroRank02_Attack02_' + i + 'right.png');
+        parent.load.image('mage2-attack2-left' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank03/MageHeroRank03_Attack_02/MageHeroRank03_Attack02_' + i + 'left.png');
+        parent.load.image('mage2-attack2-right' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank03/MageHeroRank03_Attack_02/MageHeroRank03_Attack02_' + i + 'right.png');
+    }
+
+    for (var i = 0; i <= 20; i++) {
+        parent.load.image('mage1-death-left' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank02/MageHeroRank02_Death/MageHeroRank02_Death_' + i + 'left.png');        
+        parent.load.image('mage1-death-right' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank02/MageHeroRank02_Death/MageHeroRank02_Death_' + i + 'right.png');
+        parent.load.image('mage2-death-left' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank03/MageHeroRank03_Death/MageHeroRank03_Death_' + i + 'left.png');
+        parent.load.image('mage2-death-right' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank03/MageHeroRank03_Death/MageHeroRank03_Death_' + i + 'right.png');
+    }
+
+    for (var i = 0; i <= 9; i++) {
+        parent.load.image('mage1-hit-left' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank02/MageHeroRank02_Damage/MageHeroRank02_Damage_' + i + 'left.png');        
+        parent.load.image('mage1-hit-right' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank02/MageHeroRank02_Damage/MageHeroRank02_Damage_' + i + 'right.png');
+        parent.load.image('mage2-hit-left' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank03/MageHeroRank03_Damage/MageHeroRank03_Damage_' + i + 'left.png');
+        parent.load.image('mage2-hit-right' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank03/MageHeroRank03_Damage/MageHeroRank03_Damage_' + i + 'right.png');
+    }    
+
+    for (var i = 0; i <= 17; i++) {
+        parent.load.image('mage1-walkforward-left' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank02/MageHeroRank02_Walk_Forward/MageHeroRank02_Walk_Forward_' + i + 'left.png');        
+        parent.load.image('mage1-walkforward-right' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank02/MageHeroRank02_Walk_Forward/MageHeroRank02_Walk_Forward_' + i + 'right.png');
+        parent.load.image('mage2-walkforward-left' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank03/MageHeroRank03_Walk_Forward/MageHeroRank03_Walk_Forward_' + i + 'left.png');
+        parent.load.image('mage2-walkforward-right' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank03/MageHeroRank03_Walk_Forward/MageHeroRank03_Walk_Forward_' + i + 'right.png');
+    }
+
+    for (var i = 0; i <= 17; i++) {
+        parent.load.image('mage1-walkbackward-left' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank02/MageHeroRank02_Walk_Back/MageHeroRank02_Walk_Back_' + i + 'left.png');        
+        parent.load.image('mage1-walkbackward-right' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank02/MageHeroRank02_Walk_Back/MageHeroRank02_Walk_Back_' + i + 'right.png');
+        parent.load.image('mage2-walkbackward-left' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank03/MageHeroRank03_Walk_Back/MageHeroRank03_Walk_Back_' + i + 'left.png');
+        parent.load.image('mage2-walkbackward-right' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank03/MageHeroRank03_Walk_Back/MageHeroRank03_Walk_Back_' + i + 'right.png');
+    }
+
+    for (var i = 0; i <= 15; i++) {
+        parent.load.image('mage1-runbackward-left' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank02/MageHeroRank02_Run_Back/MageHeroRank02_Run_Back_' + i + 'left.png');        
+        parent.load.image('mage1-runbackward-right' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank02/MageHeroRank02_Run_Back/MageHeroRank02_Run_Back_' + i + 'right.png');
+        parent.load.image('mage2-runbackward-left' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank03/MageHeroRank03_Run_Back/MageHeroRank03_Run_Back_' + i + 'left.png');
+        parent.load.image('mage2-runbackward-right' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank03/MageHeroRank03_Run_Back/MageHeroRank03_Run_Back_' + i + 'right.png');
+    }
+
+    for (var i = 0; i <= 15; i++) {
+        parent.load.image('mage1-runforward-left' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank02/MageHeroRank02_Run_Forward/MageHeroRank02_Run_Forward_' + i + 'left.png');        
+        parent.load.image('mage1-runforward-right' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank02/MageHeroRank02_Run_Forward/MageHeroRank02_Run_Forward_' + i + 'right.png');
+        parent.load.image('mage2-runforward-left' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank03/MageHeroRank03_Run_Forward/MageHeroRank03_Run_Forward_' + i + 'left.png');
+        parent.load.image('mage2-runforward-right' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank03/MageHeroRank03_Run_Forward/MageHeroRank03_Run_Forward_' + i + 'right.png');
+    }
+
+    for (var i = 0; i <= 22; i++) {
+        parent.load.image('mage1-cast1-left' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank02/MageHeroRank02_Cast_01/MageHeroRank02_Cast_01_' + i + 'left.png');        
+        parent.load.image('mage1-cast1-right' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank02/MageHeroRank02_Cast_01/MageHeroRank02_Cast_01_' + i + 'right.png');
+        parent.load.image('mage2-cast1-left' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank03/MageHeroRank03_Cast_01/MageHeroRank03_Cast_01_' + i + 'left.png');
+        parent.load.image('mage2-cast1-right' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank03/MageHeroRank03_Cast_01/MageHeroRank03_Cast_01_' + i + 'right.png');
+    }
+
+    for (var i = 0; i <= 17; i++) {
+        parent.load.image('mage1-cast2-left' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank02/MageHeroRank02_Cast_02/MageHeroRank02_Cast_02_' + i + 'left.png');        
+        parent.load.image('mage1-cast2-right' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank02/MageHeroRank02_Cast_02/MageHeroRank02_Cast_02_' + i + 'right.png');
+        parent.load.image('mage2-cast2-left' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank03/MageHeroRank03_Cast_02/MageHeroRank03_Cast_02_' + i + 'left.png');
+        parent.load.image('mage2-cast2-right' + i, './Assets/unity3d-assets/SpritesMageHero/MageHeroRank03/MageHeroRank03_Cast_02/MageHeroRank03_Cast_02_' + i + 'right.png');
+    }
+
 }
 /********************************** PRELOAD *******************************************************/
