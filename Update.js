@@ -209,7 +209,7 @@ function MageController(parent) {
 
         if (DoesPlayerHasStrengthBuff) {
             //Change collision box site
-            MagePlayer.body.setSize(300, 350);
+            // MagePlayer.body.setSize(81, 350);
         }
 
         //Player Left

@@ -1,10 +1,10 @@
 /********************************** CREATE *******************************************************/
 function create() {
     Platform(this);
-    // ArcherPlayerCreate(this);
-    // PlayerArrow(this);
-    // WarriorPlayerCreate(this);
-    MagePlayerCreate(this);
+    ArcherPlayerCreate(this);
+    PlayerArrow(this);
+    //WarriorPlayerCreate(this);
+    // MagePlayerCreate(this);
     ItemsToCollect(this);
     //ScoreDisplay(this);
     //TODO: Implement this later
