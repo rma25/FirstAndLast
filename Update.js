@@ -1,15 +1,15 @@
 /********************************** UPDATE *******************************************************/
 function update() {
     if (ArcherPlayer != null && ArcherPlayer != undefined) {
-        ArcherController(this);        
+        ArcherController(this);
     }
 
     if (WarriorPlayer != null && WarriorPlayer != undefined) {
-        WarriorController(this);        
+        WarriorController(this);
     }
 
     if (MagePlayer != null && MagePlayer != undefined) {
-        MageController(this);        
+        MageController(this);
     }
 
     GameOver(this);
@@ -209,7 +209,7 @@ function MageController(parent) {
 
         if (DoesPlayerHasStrengthBuff) {
             //Change collision box site
-            // MagePlayer.body.setSize(81, 350);
+            MagePlayer.body.height = OriginalPlayerHeight + 10;
         }
 
         //Player Left
