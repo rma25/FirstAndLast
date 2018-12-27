@@ -44,6 +44,8 @@ var MagePlayer;
 var MageEmitter;
 var MageParticles;
 var DidMageAttackOnce = false;
+var MageMainAttack1;
+var IsMageMainAttack1Used = false;
 
 var config = {
     type: Phaser.AUTO,

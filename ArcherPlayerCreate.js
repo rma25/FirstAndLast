@@ -299,7 +299,9 @@ function ArcherPlayerCreate(parent) {
         frames: walkRightFramesRight2,
         frameRate: 10,
         repeat: -1
-    });    
+    });
+
+    PlayerArrow(parent);
 }
 
 function PlayerArrow(parent) {
@@ -339,4 +341,11 @@ function ArcherCollision(parent) {
 
     parent.physics.add.collider(ArrowsRight, Platforms, CollideWithArrow, null, parent);
     parent.physics.add.collider(ArrowsLeft, Platforms, CollideWithArrow, null, parent);
+}
+
+function CollideWithArrow(arrow, platform) {
+    IsArrowShot = false;
+    arrow.setAngle(0);
+    arrow.disableBody(true, true);    
+    game.sound.play('arrowHit');
 }

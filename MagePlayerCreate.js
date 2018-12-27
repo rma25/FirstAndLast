@@ -31,11 +31,15 @@ function MagePlayerCreate(parent) {
     var cast2RightFramesLeft = [];
     var cast2RightFramesRight2 = [];
     var cast2RightFramesLeft2 = [];
+    var runforwardLeft = [];
+    var runforwardRight = [];
+    var runforwardLeft2 = [];
+    var runforwardRight2 = [];
 
     //Player    
     //Add starting image of player, width, height
     MagePlayer = parent.physics.add.sprite(100, (WindowHeight - GroundHeight - 91), 'mage1-idle1-right0');
-    MagePlayer.setDisplaySize(81, 91);
+    MagePlayer.setDisplaySize(71, 81);
     MagePlayer.setCollideWorldBounds(true);
     MagePlayer.body.setGravityY(400);
 
@@ -86,25 +90,25 @@ function MagePlayerCreate(parent) {
     parent.anims.create({
         key: 'mage1-cast1-left',
         frames: castRightFramesLeft,
-        frameRate: 15,
+        frameRate: 10,
         repeat: -1
     });
     parent.anims.create({
         key: 'mage1-cast1-right',
         frames: castRightFramesRight,
-        frameRate: 15,
+        frameRate: 10,
         repeat: -1
     });
     parent.anims.create({
         key: 'mage2-cast1-left',
         frames: castRightFramesLeft2,
-        frameRate: 15,
+        frameRate: 10,
         repeat: -1
     });
     parent.anims.create({
         key: 'mage2-cast1-right',
         frames: castRightFramesRight2,
-        frameRate: 15,
+        frameRate: 10,
         repeat: -1
     });
 
@@ -139,7 +143,6 @@ function MagePlayerCreate(parent) {
         frameRate: 15,
         repeat: -1
     });
-
 
     for (var i = 0; i <= 20; i++) {
         attack2FramesLeft.push({ key: 'mage1-attack2-left' + i });
@@ -300,6 +303,50 @@ function MagePlayerCreate(parent) {
         frameRate: 10,
         repeat: -1
     });
+
+    for (var i = 0; i <= 15; i++) {
+        runforwardLeft.push({ key: 'mage1-runforward-left' + i });
+        runforwardRight.push({ key: 'mage1-runforward-right' + i });
+        runforwardLeft2.push({ key: 'mage2-runforward-left' + i });
+        runforwardRight2.push({ key: 'mage2-runforward-right' + i });
+    }
+
+    parent.anims.create({
+        key: 'mage1-runforward-left',
+        frames: runforwardLeft,
+        frameRate: 10,
+        repeat: -1
+    });
+    parent.anims.create({
+        key: 'mage1-runforward-right',
+        frames: runforwardRight,
+        frameRate: 10,
+        repeat: -1
+    });
+    parent.anims.create({
+        key: 'mage2-runforward-left',
+        frames: runforwardLeft2,
+        frameRate: 10,
+        repeat: -1
+    });
+    parent.anims.create({
+        key: 'mage2-runforward-right',
+        frames: runforwardRight2,
+        frameRate: 10,
+        repeat: -1
+    });
+
+    MageMainAttack1Create(parent);
+}
+
+function MageMainAttack1Create(parent) {
+    if (MagePlayer != null & MagePlayer != undefined) {
+        MageMainAttack1 = parent.physics.add.sprite(MagePlayer.displayWidth, MagePlayer.displayHeight, 'mage-mainattack1');
+        MageMainAttack1.setDisplaySize(MageMainAttack1.displayWidth / 10, MageMainAttack1.displayHeight / 10);
+        MageMainAttack1.setCollideWorldBounds(true);
+        MageMainAttack1.body.allowGravity = false;
+        MageMainAttack1.disableBody(true, true);
+    }
 }
 
 function MageCollision(parent) {
@@ -319,4 +366,16 @@ function MageCollision(parent) {
     //Allow player to interact with speed buff
     parent.physics.add.collider(StrengthBuff, Platforms);
     parent.physics.add.overlap(MagePlayer, StrengthBuff, CollectStrengthBuff, null, parent);
+
+    parent.physics.add.collider(MageMainAttack1, Platforms, CollideWithMageMainAttack1, null, parent);
+}
+
+
+function CollideWithMageMainAttack1(mainAttack1, platform) {
+    IsMageMainAttack1Used = false;
+    console.log('Mage attack 1 collided', mainAttack1);
+    mainAttack1.setAngle(0);
+    mainAttack1.disableBody(true, true);
+    //TODO: Implement Sound
+    // game.sound.play('arrowHit');
 }

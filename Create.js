@@ -1,9 +1,8 @@
 /********************************** CREATE *******************************************************/
 function create() {
     Platform(this);
-    // ArcherPlayerCreate(this);
-    // PlayerArrow(this);
-    //WarriorPlayerCreate(this);
+    // ArcherPlayerCreate(this);    
+    // WarriorPlayerCreate(this);
     MagePlayerCreate(this);
     ItemsToCollect(this);
     //ScoreDisplay(this);
@@ -253,13 +252,6 @@ function CollectStrengthBuff(player, buff) {
     }
     DoesPlayerHasStrengthBuff = true;
 }
-
-function CollideWithArrow(arrow, platform) {
-    IsArrowShot = false;
-    arrow.setAngle(0);
-    arrow.disableBody(true, true);
-    game.sound.play('arrowHit');
-}
 /** Collection **/
 
 /** Display **/
@@ -326,8 +318,12 @@ function HitBomb(player, bomb) {
 /** Enemies **/
 
 function KeybindingConfig(parent) {
-    parent.mainAttack = parent.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
+    parent.mainAttack1 = parent.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
+    parent.mainAttack2 = parent.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
     parent.jumpAlt = parent.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    parent.specialAttack1 = parent.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E);
+    parent.specialAttack2 = parent.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
+    parent.run = parent.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
 }
 
 /********************************** CREATE *******************************************************/
