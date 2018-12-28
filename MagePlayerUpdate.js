@@ -59,11 +59,11 @@ function MageController(parent) {
 
                     if (IsMainPlayerFacingLeft) {
                         MageMainAttack1.enableBody(true, MagePlayer.x - 16, MagePlayer.y, true, true);
-                        MageMainAttack1.setVelocityX(DoesPlayerHasStrengthBuff ? -450 : -350);
+                        MageMainAttack1.setVelocityX(DoesPlayerHasStrengthBuff ? -500 : -350);
                     }
                     else {
                         MageMainAttack1.enableBody(true, MagePlayer.x + 16, MagePlayer.y, true, true);
-                        MageMainAttack1.setVelocityX(DoesPlayerHasStrengthBuff ? 450 : 350);
+                        MageMainAttack1.setVelocityX(DoesPlayerHasStrengthBuff ? 500 : 350);
                     }
                     game.sound.play('mageMainAttack1');
                     IsMageMainAttack1Used = true;
@@ -85,12 +85,12 @@ function MageController(parent) {
                     MageSpecialAttack1 = CreateMageSpecialAttack1(parent);
 
                     if (IsMainPlayerFacingLeft) {
-                        MageSpecialAttack1.enableBody(true, MagePlayer.x - 16, MagePlayer.y, true, true);
+                        MageSpecialAttack1.enableBody(true, MagePlayer.x - 32, MagePlayer.y, true, true);
                         MageSpecialAttack1.setVelocityX(DoesPlayerHasStrengthBuff ? -350 : -250);
                         MageSpecialAttack1.setAccelerationX(DoesPlayerHasStrengthBuff ? -300 : -150);
                     }
                     else {
-                        MageSpecialAttack1.enableBody(true, MagePlayer.x + 16, MagePlayer.y, true, true);
+                        MageSpecialAttack1.enableBody(true, MagePlayer.x + 32, MagePlayer.y, true, true);
                         MageSpecialAttack1.setVelocityX(DoesPlayerHasStrengthBuff ? 350 : 250);
                         MageSpecialAttack1.setAccelerationX(DoesPlayerHasStrengthBuff ? 300 : 150);
                     }
@@ -99,18 +99,26 @@ function MageController(parent) {
                 }
             }
             //Cast Special Attack
-            else if (parent.specialAttack2.isDown) {
+            else if (parent.specialAttack2.isDown && !IsMageSpecialAttack2Used) {
                 IsPlayerIdle = false;
 
                 MagePlayer.anims.play(currentMage + '-cast2-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
 
-                if (MagePlayer.anims.currentFrame.index === 3) {
-                    if (DoesPlayerHasStrengthBuff) {
-                        //game.sound.play('axeAttack2');
+                if (MagePlayer.anims.currentFrame.index >= 16) {
+                    MageSpecialAttack2 = CreateMageSpecialAttack2(parent);
+
+                    if (IsMainPlayerFacingLeft) {
+                        MageSpecialAttack2.enableBody(true, MagePlayer.x, MagePlayer.y, true, true);
                     }
                     else {
-                        //game.sound.play('swordAttack2');
+                        MageSpecialAttack2.enableBody(true, MagePlayer.x, MagePlayer.y, true, true);
                     }
+
+                    //Make sure the buff goes away after sometime
+                    setTimeout(DestroyMageSpecialAttack2, 10000);
+
+                    game.sound.play('mageSpecialAttack2');
+                    IsMageSpecialAttack2Used = true;
                 }
             }
             //Idle Left
@@ -163,6 +171,18 @@ function CreateMageSpecialAttack1(parent) {
     return specialAttack1;
 }
 
+function CreateMageSpecialAttack2(parent) {
+    var specialAttack2 = parent.physics.add.sprite(MagePlayer.displayWidth, MagePlayer.displayHeight, 'mage-specialAttack2');
+
+    specialAttack2.setDisplaySize(specialAttack2.displayWidth / 4, specialAttack2.displayHeight / 4);
+    specialAttack2.setCollideWorldBounds(true);
+    specialAttack2.setTint('0xff9955');
+    specialAttack2.body.allowGravity = false;
+    specialAttack2.disableBody(true, true);
+
+    return specialAttack2;
+}
+
 function DestroyMageAttacks() {
     //In case it hits a wall (side of the window)        
     if (MageMainAttack1 != null && MageMainAttack1 != undefined && MageMainAttack1.body != null && MageMainAttack1.body != undefined) {
@@ -180,13 +200,34 @@ function DestroyMageAttacks() {
     }
 }
 
+function DestroyMageSpecialAttack2() {
+    if (MageSpecialAttack2 != null && MageSpecialAttack2 != undefined && MageSpecialAttack2.body != null && MageSpecialAttack2.body != undefined) {
+        IsMageSpecialAttack2Used = false;
+        MageSpecialAttack2.destroy();
+    }
+}
+
 function UpdateMageAttacks() {
     if (MageSpecialAttack1 != null && MageSpecialAttack1 != undefined) {
         if (IsMainPlayerFacingLeft) {
+            MageSpecialAttack2.flipX = true;
             MageSpecialAttack1.angle -= 3;
         }
         else {
+            MageSpecialAttack2.flipX = false;
             MageSpecialAttack1.angle += 3;
+        }
+    }
+
+    if (MageSpecialAttack2 != null && MageSpecialAttack2 != undefined) {
+        // MageSpecialAttack2.setDisplaySize(MagePlayer.displayWidth + 100, MagePlayer.displayHeight + 100);
+        if (IsMainPlayerFacingLeft) {
+            MageSpecialAttack2.flipX = true;
+            MageSpecialAttack2.setPosition(MagePlayer.x + 16, MagePlayer.y);
+        }
+        else {
+            MageSpecialAttack2.flipX = false;
+            MageSpecialAttack2.setPosition(MagePlayer.x - 16, MagePlayer.y);
         }
     }
 }

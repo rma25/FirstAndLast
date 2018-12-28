@@ -46,8 +46,10 @@ var MageParticles;
 var DidMageAttackOnce = false;
 var MageMainAttack1;
 var MageSpecialAttack1;
+var MageSpecialAttack2;
 var IsMageMainAttack1Used = false;
 var IsMageSpecialAttack1Used = false;
+var IsMageSpecialAttack2Used = false;
 /*Sound*/
 var PlayerStepSound;
 /*Game Config*/

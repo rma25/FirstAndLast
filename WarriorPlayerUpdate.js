@@ -97,5 +97,5 @@ function WarriorController(parent) {
 }
 
 function WarriorParticlesOnPlayer(parent) {
-    WarriorEmitter.setPosition(WarriorPlayer.x, WarriorPlayer.y + (WarriorPlayer.displayHeight / 2));
+    WarriorEmitter.setPosition(WarriorPlayer.x, WarriorPlayer.y + (WarriorPlayer.displayHeight / 2));    
 }

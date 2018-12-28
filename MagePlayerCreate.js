@@ -90,25 +90,25 @@ function MagePlayerCreate(parent) {
     parent.anims.create({
         key: 'mage1-cast1-left',
         frames: castRightFramesLeft,
-        frameRate: 10,
+        frameRate: 15,
         repeat: -1
     });
     parent.anims.create({
         key: 'mage1-cast1-right',
         frames: castRightFramesRight,
-        frameRate: 10,
+        frameRate: 15,
         repeat: -1
     });
     parent.anims.create({
         key: 'mage2-cast1-left',
         frames: castRightFramesLeft2,
-        frameRate: 10,
+        frameRate: 15,
         repeat: -1
     });
     parent.anims.create({
         key: 'mage2-cast1-right',
         frames: castRightFramesRight2,
-        frameRate: 10,
+        frameRate: 15,
         repeat: -1
     });
 
@@ -337,6 +337,7 @@ function MagePlayerCreate(parent) {
     });
 
     MageMainAttack1Create(parent);
+    MageSpecialAttack1Create(parent);
 }
 
 function MageMainAttack1Create(parent) {
@@ -346,6 +347,18 @@ function MageMainAttack1Create(parent) {
         MageMainAttack1.setCollideWorldBounds(true);
         MageMainAttack1.body.allowGravity = false;
         MageMainAttack1.disableBody(true, true);
+    }
+}
+
+function MageSpecialAttack1Create(parent) {
+    if (MagePlayer != null & MagePlayer != undefined) {
+        MageSpecialAttack1 = parent.physics.add.sprite(MagePlayer.displayWidth, MagePlayer.displayHeight, 'mage-specialAttack1');
+
+        MageSpecialAttack1.setDisplaySize(MageSpecialAttack1.displayWidth / 7, MageSpecialAttack1.displayHeight / 7);
+        MageSpecialAttack1.setCollideWorldBounds(true);
+        MageSpecialAttack1.setTint('0xff9955');
+        MageSpecialAttack1.body.allowGravity = false;
+        MageSpecialAttack1.disableBody(true, true);
     }
 }
 
@@ -367,15 +380,24 @@ function MageCollision(parent) {
     parent.physics.add.collider(StrengthBuff, Platforms);
     parent.physics.add.overlap(MagePlayer, StrengthBuff, CollectStrengthBuff, null, parent);
 
+    //Attacks
     parent.physics.add.collider(MageMainAttack1, Platforms, CollideWithMageMainAttack1, null, parent);
+    parent.physics.add.collider(MageSpecialAttack1, Platforms, CollideWithMageSpecialAttack1, null, parent);
 }
 
 
 function CollideWithMageMainAttack1(mainAttack1, platform) {
     IsMageMainAttack1Used = false;
-    console.log('Mage attack 1 collided', mainAttack1);
     mainAttack1.setAngle(0);
     mainAttack1.disableBody(true, true);
+    //TODO: Implement Sound
+    // game.sound.play('arrowHit');
+}
+
+function CollideWithMageSpecialAttack1(specialAttack1, platform) {
+    IsMageSpecialAttack1Used = false;
+    specialAttack1.setAngle(0);
+    specialAttack1.disableBody(true, true);
     //TODO: Implement Sound
     // game.sound.play('arrowHit');
 }

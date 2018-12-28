@@ -168,7 +168,7 @@ function GameSound(parent) {
 
     BgMusic = parent.sound.add('gameMusic');
     BgMusic.config.loop = true;
-    BgMusic.play();    
+    BgMusic.play();
 
     PlayerStepSound = parent.sound.add('playerStep');
 }
@@ -232,7 +232,7 @@ function CollectStar(player, star) {
 function CollectSpeedBuff(player, buff) {
     //Only allow player to collect buff once
     buff.disableBody(true, true);
-    // buff.disableInteractive();
+
     if (!DoesPlayerHasSpeedBuff) {
         //display particle effects
         if (ArcherEmitter != null && ArcherEmitter != undefined) {
@@ -243,9 +243,16 @@ function CollectSpeedBuff(player, buff) {
             WarriorEmitter.on = true;
         }
 
+        if (MageEmitter != null && MageEmitter != undefined) {
+            MageEmitter.on = true;
+        }
+
         game.sound.play('speedBuffSound');
     }
     DoesPlayerHasSpeedBuff = true;
+
+    //Disable buffs after 7 secs
+    setTimeout(DisableBuffs, 7000);
 }
 
 function CollectStrengthBuff(player, buff) {

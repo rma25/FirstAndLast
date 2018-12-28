@@ -58,11 +58,12 @@ function GameAudio(parent) {
     parent.load.audio('swordAttack1', './Assets/unity3d-assets/AxeSwingDamageSounds/Axe_swing_s_e01.wav');
     parent.load.audio('swordAttack2', './Assets/unity3d-assets/AxeSwingDamageSounds/Axe_swing_s_e02.wav');
     parent.load.audio('axeAttack1', './Assets/unity3d-assets/AxeSwingDamageSounds/Axe_swing_m_e02.wav');
-    parent.load.audio('axeAttack2', './Assets/unity3d-assets/AxeSwingDamageSounds/Axe_swing_m_e03.wav');    
+    parent.load.audio('axeAttack2', './Assets/unity3d-assets/AxeSwingDamageSounds/Axe_swing_m_e03.wav');
 
-    parent.load.audio('playerStep', './Assets/unity3d-assets/FantasySfx/Mp3/Footsteps/Footstep_Dirt_00.mp3');    
-    parent.load.audio('mageMainAttack1', './Assets/unity3d-assets/FantasySfx/Mp3/Spell_01.mp3');    
-    parent.load.audio('mageSpecialAttack1', './Assets/unity3d-assets/FantasySfx/Mp3/Spell_02.mp3');    
+    parent.load.audio('playerStep', './Assets/unity3d-assets/FantasySfx/Mp3/Footsteps/Footstep_Dirt_00.mp3');
+    parent.load.audio('mageMainAttack1', './Assets/unity3d-assets/FantasySfx/Mp3/Spell_01.mp3');
+    parent.load.audio('mageSpecialAttack1', './Assets/unity3d-assets/FantasySfx/Mp3/Spell_02.mp3');
+    parent.load.audio('mageSpecialAttack2', './Assets/unity3d-assets/FantasySfx/Mp3/Spell_04.mp3');
 }
 
 function BuffsLoad(parent) {
@@ -273,5 +274,6 @@ function MagePlayerLoad(parent) {
 
     parent.load.image('mage-mainattack1', './Assets/unity3d-assets/FireMagicVFX/fx-textures/flare-alpha.png');
     parent.load.image('mage-specialAttack1', './Assets/unity3d-assets/FireMagicVFX/fx-textures/ring-energy-sample-alpha.png');
+    parent.load.image('mage-specialAttack2', './Assets/unity3d-assets/FireMagicVFX/fx-textures/ring-energy-1.png');
 }
 /********************************** PRELOAD *******************************************************/
