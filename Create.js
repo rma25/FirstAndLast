@@ -165,9 +165,12 @@ function Platform(parent) {
 function GameSound(parent) {
     parent.sound.add('collectingSound');
     parent.sound.add('jumpSound');
+
     BgMusic = parent.sound.add('gameMusic');
     BgMusic.config.loop = true;
-    BgMusic.play();
+    BgMusic.play();    
+
+    PlayerStepSound = parent.sound.add('playerStep');
 }
 
 /** Collection **/

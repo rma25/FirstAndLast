@@ -45,8 +45,12 @@ var MageEmitter;
 var MageParticles;
 var DidMageAttackOnce = false;
 var MageMainAttack1;
+var MageSpecialAttack1;
 var IsMageMainAttack1Used = false;
-
+var IsMageSpecialAttack1Used = false;
+/*Sound*/
+var PlayerStepSound;
+/*Game Config*/
 var config = {
     type: Phaser.AUTO,
     width: WindowWidth,
