@@ -26,8 +26,6 @@ function BackgroundLoad(parent) {
     parent.load.image('background', './Assets/unity3d-assets/TooCubeForest/backgrounds/BG_cave2_1024.png');
     parent.load.image('sound-icon', './Assets/images/sound-icon.png');
     parent.load.image('mute-icon', './Assets/images/mute-icon.png');
-    //TODO: Get rid of this and all other phaser assets
-    parent.load.image('star', './Assets/images/star.png');
 
     parent.load.spritesheet('ground',
         './Assets/unity3d-assets/TooCubeForest/images/Forest_terrain_red_128px.png',
@@ -43,16 +41,14 @@ function BackgroundLoad(parent) {
 }
 
 function ParticlesLoad(parent) {
-    //TODO: Replace phaser-assets with other graphics    
-    parent.load.image('fire3', './Assets/phaser-assets/particles/fire3.png');
+    parent.load.image('fire3', './Assets/unity3d-assets/FireMagicVFX/fx-textures/fire-random-sheet-alpha1.png');
 }
 
 function GameAudio(parent) {
-    parent.load.audio('collectingSound', './Assets/phaser-assets/audio/SoundEffects/p-ping.mp3');
     parent.load.audio('jump', './Assets/audio/bounce.wav');
     parent.load.audio('gameMusic', './Assets/unity3d-assets/2D-Handcrafted-Art/Music/Tropical moments - loop version.wav');
-    parent.load.audio('speedBuffSound', './Assets/phaser-assets/audio/SoundEffects/pickup.wav');
-    parent.load.audio('strengthBuffSound', './Assets/phaser-assets/audio/SoundEffects/door_open.wav');
+    parent.load.audio('speedBuffSound', './Assets/unity3d-assets/ZeroRare/PowerUp/power_up_13.wav');
+    parent.load.audio('strengthBuffSound', './Assets/unity3d-assets/ZeroRare/PowerUp/power_up_11.wav');
     parent.load.audio('shootingArrow', './Assets/unity3d-assets/BowAndArrow/Sounds/ArrowShoosh2.mp3');
     parent.load.audio('arrowHit', './Assets/unity3d-assets/BowAndArrow/Sounds/ArrowImpactTarget.mp3');
     parent.load.audio('swordAttack1', './Assets/unity3d-assets/AxeSwingDamageSounds/Axe_swing_s_e01.wav');
@@ -60,8 +56,9 @@ function GameAudio(parent) {
     parent.load.audio('axeAttack1', './Assets/unity3d-assets/AxeSwingDamageSounds/Axe_swing_m_e02.wav');
     parent.load.audio('axeAttack2', './Assets/unity3d-assets/AxeSwingDamageSounds/Axe_swing_m_e03.wav');
 
-    parent.load.audio('playerStep', './Assets/unity3d-assets/FantasySfx/Mp3/Footsteps/Footstep_Dirt_00.mp3');
+    parent.load.audio('playerStep', './Assets/unity3d-assets/FantasySfx/Mp3/Footsteps/Footstep_Dirt_01.mp3');
     parent.load.audio('mageMainAttack1', './Assets/unity3d-assets/FantasySfx/Mp3/Spell_01.mp3');
+    parent.load.audio('mageMainAttack2', './Assets/unity3d-assets/FantasySfx/Mp3/Footsteps/Footstep_Water_00.mp3');
     parent.load.audio('mageSpecialAttack1', './Assets/unity3d-assets/FantasySfx/Mp3/Spell_02.mp3');
     parent.load.audio('mageSpecialAttack2', './Assets/unity3d-assets/FantasySfx/Mp3/Spell_04.mp3');
 }
@@ -275,5 +272,9 @@ function MagePlayerLoad(parent) {
     parent.load.image('mage-mainattack1', './Assets/unity3d-assets/FireMagicVFX/fx-textures/flare-alpha.png');
     parent.load.image('mage-specialAttack1', './Assets/unity3d-assets/FireMagicVFX/fx-textures/ring-energy-sample-alpha.png');
     parent.load.image('mage-specialAttack2', './Assets/unity3d-assets/FireMagicVFX/fx-textures/ring-energy-1.png');
+
+    for (var i = 0; i <= 8; i++) {
+        parent.load.image('mage2-mainAttack' + i, './Assets/unity3d-assets/FireMagicVFX/fx-textures/Bubble-' + i + '.png');
+    }
 }
 /********************************** PRELOAD *******************************************************/

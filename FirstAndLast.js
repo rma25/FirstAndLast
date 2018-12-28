@@ -45,9 +45,11 @@ var MageEmitter;
 var MageParticles;
 var DidMageAttackOnce = false;
 var MageMainAttack1;
+var MageMainAttack2;
 var MageSpecialAttack1;
 var MageSpecialAttack2;
 var IsMageMainAttack1Used = false;
+var IsMageMainAttack2Used = false;
 var IsMageSpecialAttack1Used = false;
 var IsMageSpecialAttack2Used = false;
 /*Sound*/
@@ -62,7 +64,7 @@ var config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 300 },
-            debug: true
+            debug: false
         }
     },
     scene: {

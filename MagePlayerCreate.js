@@ -35,6 +35,7 @@ function MagePlayerCreate(parent) {
     var runforwardRight = [];
     var runforwardLeft2 = [];
     var runforwardRight2 = [];
+    var mageMainAttack2 = [];
 
     //Player    
     //Add starting image of player, width, height
@@ -332,6 +333,17 @@ function MagePlayerCreate(parent) {
     parent.anims.create({
         key: 'mage2-runforward-right',
         frames: runforwardRight2,
+        frameRate: 10,
+        repeat: -1
+    });
+
+    for (var i = 0; i <= 8; i++) {
+        mageMainAttack2.push({ key: 'mage2-mainAttack' + i });        
+    }
+
+    parent.anims.create({
+        key: 'mage-mainAttack2',
+        frames: mageMainAttack2,
         frameRate: 10,
         repeat: -1
     });

@@ -32,7 +32,7 @@ function ParticlesEffect(parent) {
         ArcherEmitter.setPosition(ArcherPlayer.x, ArcherPlayer.y + (ArcherPlayer.displayHeight / 2));
         ArcherEmitter.setSpeed(100);
         ArcherEmitter.setScale(0.05, 0.05);
-        ArcherEmitter.setAlpha(1, 0, 3000);
+        ArcherEmitter.setAlpha(1, 0, 3000);        
         ArcherEmitter.maxParticles = 10;
         ArcherEmitter.on = false;
     }
@@ -44,7 +44,7 @@ function ParticlesEffect(parent) {
         WarriorEmitter.setPosition(WarriorPlayer.x, WarriorPlayer.y + (WarriorPlayer.displayHeight / 2));
         WarriorEmitter.setSpeed(100);
         WarriorEmitter.setScale(0.05, 0.05);
-        WarriorEmitter.setAlpha(1, 0, 3000);
+        WarriorEmitter.setAlpha(1, 0, 3000);        
         WarriorEmitter.maxParticles = 10;
         WarriorEmitter.on = false;
     }
@@ -56,10 +56,10 @@ function ParticlesEffect(parent) {
         MageEmitter.setPosition(MageParticles.x, MageParticles.y + (MageParticles.displayHeight / 2));
         MageEmitter.setSpeed(100);
         MageEmitter.setScale(0.05, 0.05);
-        MageEmitter.setAlpha(1, 0, 3000);
+        MageEmitter.setAlpha(1, 0, 3000);        
         MageEmitter.maxParticles = 10;
         MageEmitter.on = false;
-    }
+    }   
 
 }
 
@@ -162,8 +162,7 @@ function Platform(parent) {
     /***************/
 }
 
-function GameSound(parent) {
-    parent.sound.add('collectingSound');
+function GameSound(parent) {    
     parent.sound.add('jumpSound');
 
     BgMusic = parent.sound.add('gameMusic');
@@ -205,7 +204,7 @@ function CollectStar(player, star) {
     //Makes the star disappear
     star.disableBody(true, true);
 
-    game.sound.play('collectingSound');
+    // game.sound.play('collectingSound');
 
     //Update Score
     ScoreText.setText('Score: ' + (++Score));
@@ -225,7 +224,7 @@ function CollectStar(player, star) {
         bomb.setBounce(1);
         bomb.setCollideWorldBounds(true);
         bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-        bomb.allowGravity = false;
+        bomb.allowGravity = true;
     }
 }
 
@@ -251,8 +250,8 @@ function CollectSpeedBuff(player, buff) {
     }
     DoesPlayerHasSpeedBuff = true;
 
-    //Disable buffs after 7 secs
-    setTimeout(DisableBuffs, 7000);
+    //Disable buffs after some time
+    setTimeout(DisableBuffs, 10000);
 }
 
 function CollectStrengthBuff(player, buff) {
