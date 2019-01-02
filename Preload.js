@@ -2,23 +2,92 @@
 
 //Phaser will automatically look for this function when it starts and load anything defined within it
 function preload() {
-    BackgroundLoad(this);
+    LoadingScreen(this);
+    MenuLoad(this);
+    GameLoad(this);
+}
+
+function LoadingScreen(parent) {
+    var progressBar = parent.add.graphics();
+    var progressBox = parent.add.graphics();
+    var width = parent.cameras.main.width;
+    var height = parent.cameras.main.height;
+    var loadingText = parent.make.text({
+        x: width / 2,
+        y: height / 2 - 50,
+        text: 'Loading...',
+        style: {
+            font: '20px monospace',
+            fill: '#ffffff'
+        }
+    });
+    var percentText = parent.make.text({
+        x: width / 2,
+        y: height / 2 - 5,
+        text: '0%',
+        style: {
+            font: '18px monospace',
+            fill: '#ffffff'
+        }
+    });
+    var assetText = parent.make.text({
+        x: width / 2,
+        y: height / 2 + 50,
+        text: '',
+        style: {
+            font: '18px monospace',
+            fill: '#ffffff'
+        }
+    });
+
+    assetText.setOrigin(0.5, 0.5);
+    percentText.setOrigin(0.5, 0.5);
+    progressBox.fillStyle(0x222222, 0.8);
+    progressBox.fillRect(CenterWidth - 160, CenterHeight - 30, 320, 50);
+    loadingText.setOrigin(0.5, 0.5);
+
+    parent.load.on('progress', function (value) {
+        progressBar.clear();
+        progressBar.fillStyle(0xffffff, 1);
+        progressBar.fillRect(CenterWidth - 150, CenterHeight - 20, 300 * value, 30);
+        percentText.setText(parseInt(value * 100) + '%');
+    });
+
+    parent.load.on('fileprogress', function (file) {
+        assetText.setText('Loading asset: ' + file.key);
+    });
+
+    parent.load.on('complete', function () {
+        progressBar.destroy();
+        progressBox.destroy();
+        loadingText.destroy();
+        percentText.destroy();
+        assetText.destroy();
+    });
+}
+
+function MenuLoad(parent) {
+    parent.load.image('menu-background', './Assets/images/JoshsDaughter.jpg');
+}
+
+function GameLoad(parent) {
+    BackgroundLoad(parent);
 
     //Particles
-    ParticlesLoad(this);
+    ParticlesLoad(parent);
 
     //Load sprites for Main Player
-    ArcherPlayerLoad(this);
+    ArcherPlayerLoad(parent);
 
-    WarriorPlayerLoad(this);
+    WarriorPlayerLoad(parent);
 
-    MagePlayerLoad(this);
+    MagePlayerLoad(parent);
 
     //Buff
-    BuffsLoad(this);
+    BuffsLoad(parent);
 
     //Audio
-    GameAudio(this)
+    GameAudio(parent)
 }
 
 function BackgroundLoad(parent) {
