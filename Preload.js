@@ -74,11 +74,19 @@ function GameLoad(parent) {
     ParticlesLoad(parent);
 
     //Load sprites for Main Player
-    ArcherPlayerLoad(parent);
-
-    WarriorPlayerLoad(parent);
-
-    MagePlayerLoad(parent);
+    if (IsArcher) {
+        ArcherPlayerLoad(parent);
+    }
+    else if (IsWarrior) {
+        WarriorPlayerLoad(parent);
+    }
+    else if (IsMage) {
+        MagePlayerLoad(parent);
+    }
+    else {
+        //Default
+        ArcherPlayerLoad(parent);
+    }
 
     //Buff
     BuffsLoad(parent);
