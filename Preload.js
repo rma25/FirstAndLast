@@ -2,7 +2,6 @@
 
 //Phaser will automatically look for this function when it starts and load anything defined within it
 function preload() {
-    console.log('Starting Game...');
     LoadingScreen(this);
     MenuLoad(this);
     GameLoad(this);
