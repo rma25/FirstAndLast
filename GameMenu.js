@@ -154,7 +154,7 @@ function CreateCloseBtn(parent) {
     CloseBtn.on('pointerdown', () => { GoBackToMainMenu(parent); });
 }
 
-function ChangeMenuBgImgSize(isControllerInfo) {    
+function ChangeMenuBgImgSize(isControllerInfo) {
     if (MenuBtnBackgroundImg != null && MenuBtnBackgroundImg != undefined) {
         MenuBtnBackgroundImg.setDisplaySize(MenuBtnBgImgOriginalWidth * (isControllerInfo ? 1.5 : 1), MenuBtnBgImgOriginalHeight + (isControllerInfo ? 50 : 0));
     }

@@ -1,6 +1,5 @@
 /********************************** CREATE *******************************************************/
 function create() {
-    console.log('Creating Game');
     Platform(this);
 
     if (IsArcher) {
@@ -209,7 +208,7 @@ function ItemsToCollect(parent) {
 
     StrengthBuff = parent.physics.add.group({
         key: 'strengthBuff',
-        setXY: { x: (WindowWidth - strengthRockWidth - speedRockWidth), y: ((CenterHeight + (GroundHeight * 1.5)) - (strengthRockHeight)) }
+        setXY: { x: CenterWidth, y: 0 }
     });
 }
 
