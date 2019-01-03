@@ -98,12 +98,12 @@ function ArcherController(parent) {
                         game.sound.play('shootingArrow');
 
                         if (DoesPlayerHasStrengthBuff) {
-                            ArrowsLeft.setVelocity(-600, -100);
-                            ArrowsLeft.setAcceleration(-600, 100);
+                            ArrowsLeft.setVelocity(-800, -100);
+                            ArrowsLeft.setAcceleration(-800, 100);
                         }
                         else {
-                            ArrowsLeft.setVelocity(-400, -100);
-                            ArrowsLeft.setAcceleration(-400, 100);
+                            ArrowsLeft.setVelocity(-600, -100);
+                            ArrowsLeft.setAcceleration(-600, 100);
                         }
 
                         DidArcherAttackOnce = ArcherPlayer.anims.currentFrame.textureKey.includes('attack1');
@@ -123,12 +123,12 @@ function ArcherController(parent) {
                         game.sound.play('shootingArrow');
 
                         if (DoesPlayerHasStrengthBuff) {
-                            ArrowsRight.setVelocity(600, -100);
-                            ArrowsRight.setAcceleration(600, 100);
+                            ArrowsRight.setVelocity(800, -100);
+                            ArrowsRight.setAcceleration(800, 100);
                         }
                         else {
-                            ArrowsRight.setVelocity(400, -100);
-                            ArrowsRight.setAcceleration(400, 100);
+                            ArrowsRight.setVelocity(600, -100);
+                            ArrowsRight.setAcceleration(600, 100);
                         }
 
                         DidArcherAttackOnce = ArcherPlayer.anims.currentFrame.textureKey.includes('attack1');
