@@ -1,9 +1,22 @@
 /********************************** CREATE *******************************************************/
 function create() {
+    console.log('Creating Game');
     Platform(this);
-    // ArcherPlayerCreate(this);    
-    // WarriorPlayerCreate(this);
-    MagePlayerCreate(this);
+
+    if (IsArcher) {
+        ArcherPlayerCreate(this);
+    }
+    else if (IsWarrior) {
+        WarriorPlayerCreate(this);
+    }
+    else if (IsMage) {
+        MagePlayerCreate(this);
+    }
+    else {
+        //Default to Archer
+        ArcherPlayerCreate(this);
+    }
+
     ItemsToCollect(this);
     //ScoreDisplay(this);
     //TODO: Implement this later
@@ -32,7 +45,7 @@ function ParticlesEffect(parent) {
         ArcherEmitter.setPosition(ArcherPlayer.x, ArcherPlayer.y + (ArcherPlayer.displayHeight / 2));
         ArcherEmitter.setSpeed(100);
         ArcherEmitter.setScale(0.05, 0.05);
-        ArcherEmitter.setAlpha(1, 0, 3000);        
+        ArcherEmitter.setAlpha(1, 0, 3000);
         ArcherEmitter.maxParticles = 10;
         ArcherEmitter.on = false;
     }
@@ -44,7 +57,7 @@ function ParticlesEffect(parent) {
         WarriorEmitter.setPosition(WarriorPlayer.x, WarriorPlayer.y + (WarriorPlayer.displayHeight / 2));
         WarriorEmitter.setSpeed(100);
         WarriorEmitter.setScale(0.05, 0.05);
-        WarriorEmitter.setAlpha(1, 0, 3000);        
+        WarriorEmitter.setAlpha(1, 0, 3000);
         WarriorEmitter.maxParticles = 10;
         WarriorEmitter.on = false;
     }
@@ -56,10 +69,10 @@ function ParticlesEffect(parent) {
         MageEmitter.setPosition(MageParticles.x, MageParticles.y + (MageParticles.displayHeight / 2));
         MageEmitter.setSpeed(100);
         MageEmitter.setScale(0.05, 0.05);
-        MageEmitter.setAlpha(1, 0, 3000);        
+        MageEmitter.setAlpha(1, 0, 3000);
         MageEmitter.maxParticles = 10;
         MageEmitter.on = false;
-    }   
+    }
 
 }
 
@@ -162,7 +175,7 @@ function Platform(parent) {
     /***************/
 }
 
-function GameSound(parent) {    
+function GameSound(parent) {
     parent.sound.add('jumpSound');
 
     BgMusic = parent.sound.add('gameMusic');

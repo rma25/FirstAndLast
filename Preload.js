@@ -2,6 +2,7 @@
 
 //Phaser will automatically look for this function when it starts and load anything defined within it
 function preload() {
+    console.log('Starting Game...');
     LoadingScreen(this);
     MenuLoad(this);
     GameLoad(this);
@@ -64,10 +65,6 @@ function LoadingScreen(parent) {
         percentText.destroy();
         assetText.destroy();
     });
-}
-
-function MenuLoad(parent) {
-    parent.load.image('menu-background', './Assets/images/JoshsDaughter.jpg');
 }
 
 function GameLoad(parent) {
