@@ -207,6 +207,15 @@ function ArcherPlayerLoad(parent) {
     for (var i = 0; i <= 2; i++) {
         parent.load.image('archer-specialAttack1-' + i, './Assets/unity3d-assets/2DDeathTraps/archerSpecialAttack1-' + i + '.png');
     }
+
+    for (var i = 6; i <= 7; i++) {
+        parent.load.image('archer-specialAttack2-' + i + 'ball', './Assets/unity3d-assets/2DDeathTraps/archerSpecialAttack2-' + i + '.png');
+    }
+
+    for (var i = 0; i <= 5; i++) {
+        parent.load.image('archer-specialAttack2-' + i + 'left', './Assets/unity3d-assets/2DDeathTraps/archerSpecialAttack2-' + i + 'left.png');
+        parent.load.image('archer-specialAttack2-' + i + 'right', './Assets/unity3d-assets/2DDeathTraps/archerSpecialAttack2-' + i + 'right.png');
+    }
 }
 
 function WarriorPlayerLoad(parent) {

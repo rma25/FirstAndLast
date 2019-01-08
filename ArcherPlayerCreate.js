@@ -36,6 +36,9 @@ function ArcherPlayerCreate(parent) {
     var specialAttackFrames2Left = [];
     var specialAttackFrames2Right = [];
     var archerSpecialAttackFrames = [];
+    var archerSpecialAttack2Frames2 = [];
+    var archerSpecialAttack2Frames1Right = [];
+    var archerSpecialAttack2Frames1Left = [];
 
     //Player    
     //Add starting image of player, width, height
@@ -348,6 +351,47 @@ function ArcherPlayerCreate(parent) {
         key: 'archer-specialAttack-1',
         frames: archerSpecialAttackFrames,
         frameRate: 1,
+        repeat: -1
+    });
+
+    for (var i = 0; i <= 5; i++) {
+        archerSpecialAttack2Frames1Right.push({ key: 'archer-specialAttack2-' + i + 'right' });
+    }
+
+    archerSpecialAttack2Frames1Right.push({ key: 'archer-specialAttack2-5right' });
+    archerSpecialAttack2Frames1Right.push({ key: 'archer-specialAttack2-5right' });
+    archerSpecialAttack2Frames1Right.push({ key: 'archer-specialAttack2-5right' });
+
+    parent.anims.create({
+        key: 'archer-specialAttack-2-0-right',
+        frames: archerSpecialAttack2Frames1Right,
+        frameRate: 5,
+        repeat: -1
+    });
+
+    for (var i = 0; i <= 5; i++) {
+        archerSpecialAttack2Frames1Left.push({ key: 'archer-specialAttack2-' + i + 'left' });
+    }
+
+    archerSpecialAttack2Frames1Left.push({ key: 'archer-specialAttack2-5left' });
+    archerSpecialAttack2Frames1Left.push({ key: 'archer-specialAttack2-5left' });
+    archerSpecialAttack2Frames1Left.push({ key: 'archer-specialAttack2-5left' });
+
+    parent.anims.create({
+        key: 'archer-specialAttack-2-0-left',
+        frames: archerSpecialAttack2Frames1Left,
+        frameRate: 5,
+        repeat: -1
+    });
+
+    for (var i = 6; i <= 7; i++) {
+        archerSpecialAttack2Frames2.push({ key: 'archer-specialAttack2-' + i + 'ball' });
+    }
+
+    parent.anims.create({
+        key: 'archer-specialAttack-2-1',
+        frames: archerSpecialAttack2Frames2,
+        frameRate: 4,
         repeat: -1
     });
 

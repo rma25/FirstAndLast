@@ -28,7 +28,7 @@ function ArcherController(parent) {
             //Stop moving
             ArcherPlayer.setVelocityX(0);
 
-            //Main attack (regular)
+            //Main attack (regular) 
             if (parent.mainAttack1.isDown && !IsArrowShot) {
                 IsPlayerIdle = false;
                 if (IsMainPlayerFacingLeft) {
@@ -82,6 +82,7 @@ function ArcherController(parent) {
                     }
                 }
             }
+            //Fast Arrow
             else if (parent.mainAttack2.isDown && !IsArrowShot) {
                 IsPlayerIdle = false;
                 if (IsMainPlayerFacingLeft) {
@@ -135,6 +136,7 @@ function ArcherController(parent) {
                     }
                 }
             }
+            //Trap
             else if (parent.specialAttack1.isDown && !IsArcherSpecialAttack1Used) {
                 IsPlayerIdle = false;
                 ArcherPlayer.anims.play(currentArcher + 'specialAttack1-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
@@ -142,7 +144,7 @@ function ArcherController(parent) {
                 //Only attack on the last animation frame
                 if (ArcherPlayer.anims.currentFrame.isLast) {
                     ArcherSpecialAttack1 = CreateArcherSpecialAttack1(parent);
-                    ArcherSpecialAttack1.play('archer-specialAttack-1')
+                    ArcherSpecialAttack1.play('archer-specialAttack-1');
 
                     if (IsMainPlayerFacingLeft) {
                         ArcherSpecialAttack1.enableBody(true, ArcherPlayer.x - (ArcherSpecialAttack1.displayWidth / 2), ArcherPlayer.y + (ArcherPlayer.displayHeight / 2) - 3, true, true);
@@ -156,8 +158,26 @@ function ArcherController(parent) {
                     IsArcherSpecialAttack1Used = true;
                 }
             }
-            else if (parent.specialAttack2.isDown) {
-                //TODO: Create Special Attack for Archer (Buff)
+            //Cannon Ball
+            else if (parent.specialAttack2.isDown && !IsArcherSpecialAttack2Used) {
+                IsPlayerIdle = false;
+                ArcherPlayer.anims.play(currentArcher + 'specialAttack1-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
+
+                //Only attack on the last animation frame
+                if (ArcherPlayer.anims.currentFrame.isLast) {
+                    ArcherSpecialAttack2_Cannon = CreateArcherSpecialAttack2_Cannon(parent);
+                    ArcherSpecialAttack2_Cannon.play('archer-specialAttack-2-0-' + (IsMainPlayerFacingLeft ? 'left' : 'right'));
+                    IsCannonFacingLeft = IsMainPlayerFacingLeft;
+
+                    if (IsMainPlayerFacingLeft) {
+                        ArcherSpecialAttack2_Cannon.enableBody(true, ArcherPlayer.x - (ArcherSpecialAttack2_Cannon.displayWidth / 2), ArcherPlayer.y + 15, true, true);
+                    }
+                    else {
+                        ArcherSpecialAttack2_Cannon.enableBody(true, ArcherPlayer.x + (ArcherSpecialAttack2_Cannon.displayWidth / 2), ArcherPlayer.y + 15, true, true);
+                    }
+
+                    IsArcherSpecialAttack2Used = true;
+                }
             }
             else if (IsMainPlayerFacingLeft && ArcherPlayer.body.touching.down && !ArcherPlayer.body.isMoving) {
                 ArcherPlayer.anims.play(currentArcher + 'idle' + (IsPlayerIdle ? '2' : '1') + '-left', true);
@@ -176,19 +196,34 @@ function ArcherController(parent) {
             game.sound.play('jump');
         }
 
-        ArcherParticlesOnPlayer(this);
+        //Shoot cannon ball
+        if (ArcherSpecialAttack2_Cannon != null && ArcherSpecialAttack2_Cannon != undefined && ArcherSpecialAttack2_Cannon.anims != null && ArcherSpecialAttack2_Cannon.anims != undefined) {
+            if (ArcherSpecialAttack2_Cannon.anims.currentFrame.isLast) {
+                ArcherSpecialAttack2_Ball = CreateArcherSpecialAttack2_Ball(parent);
+                ArcherSpecialAttack2_Ball.play('archer-specialAttack-2-1');
 
-        //In case it hits a wall (side of the window)
-        if (IsMainPlayerFacingLeft) {
-            if (ArrowsLeft.body.onWall() && !ArrowsLeft.body.onFloor()) {
-                IsArrowShot = false;
+                if (IsCannonFacingLeft) {
+                    ArcherSpecialAttack2_Ball.enableBody(true, ArcherSpecialAttack2_Cannon.x - (ArcherSpecialAttack2_Ball.displayWidth / 2), ArcherSpecialAttack2_Cannon.y + 20, true, true);
+                    ArcherSpecialAttack2_Ball.setVelocityX(DoesPlayerHasStrengthBuff ? -350 : -250);
+                    ArcherSpecialAttack2_Ball.setAccelerationX(DoesPlayerHasStrengthBuff ? -300 : -150);
+                }
+                else {
+                    ArcherSpecialAttack2_Ball.enableBody(true, ArcherSpecialAttack2_Cannon.x + (ArcherSpecialAttack2_Ball.displayWidth / 2), ArcherSpecialAttack2_Cannon.y + 20, true, true);
+                    ArcherSpecialAttack2_Ball.setVelocityX(DoesPlayerHasStrengthBuff ? 350 : 250);
+                    ArcherSpecialAttack2_Ball.setAccelerationX(DoesPlayerHasStrengthBuff ? 300 : 150);
+                }
+
+                //Make sure cannon dissapears                
+                ArcherSpecialAttack2_Cannon.destroy();
+
+                game.sound.play('shootingArrow');
+                IsArcherSpecialAttack2Used = true;
             }
         }
-        else {
-            if (ArrowsRight.body.onWall() && !ArrowsRight.body.onFloor()) {
-                IsArrowShot = false;
-            }
-        }
+
+        ArcherParticlesOnPlayer(this);
+        UpdateArcherAttacks();
+        DestroyArcherAttacks();
     }
 }
 
@@ -207,9 +242,65 @@ function CreateArcherSpecialAttack1(parent) {
     return specialAttack1;
 }
 
+function CreateArcherSpecialAttack2_Cannon(parent) {
+    var specialAttack2Cannon = parent.physics.add.sprite(ArcherPlayer.displayWidth, ArcherPlayer.displayHeight, 'archer-specialAttack2-0');
+
+    specialAttack2Cannon.setDisplaySize(specialAttack2Cannon.displayWidth / 5, specialAttack2Cannon.displayHeight / 5);
+    specialAttack2Cannon.setCollideWorldBounds(true);
+    specialAttack2Cannon.body.allowGravity = false;
+    specialAttack2Cannon.disableBody(true, true);
+
+    return specialAttack2Cannon;
+}
+
+function CreateArcherSpecialAttack2_Ball(parent) {
+    var specialAttack2Ball = parent.physics.add.sprite(ArcherPlayer.displayWidth, ArcherPlayer.displayHeight, 'archer-specialAttack2-7');
+
+    specialAttack2Ball.setDisplaySize(specialAttack2Ball.displayWidth / 5, specialAttack2Ball.displayHeight / 5);
+    specialAttack2Ball.setCollideWorldBounds(true);
+    specialAttack2Ball.body.allowGravity = false;
+    specialAttack2Ball.disableBody(true, true);
+
+    return specialAttack2Ball;
+}
+
+function UpdateArcherAttacks() {
+    //Make sure the cannon is facing the right
+    if (ArcherSpecialAttack2_Ball != null && ArcherSpecialAttack2_Ball != undefined) {
+        if (IsMainPlayerFacingLeft) {
+            ArcherSpecialAttack2_Ball.flipX = true;
+        }
+        else {
+            ArcherSpecialAttack2_Ball.flipX = false;
+        }
+    }
+
+    //In case it hits a wall (side of the window)
+    if (IsMainPlayerFacingLeft) {
+        if (ArrowsLeft.body.onWall() && !ArrowsLeft.body.onFloor()) {
+            IsArrowShot = false;
+        }
+    }
+    else {
+        if (ArrowsRight.body.onWall() && !ArrowsRight.body.onFloor()) {
+            IsArrowShot = false;
+        }
+    }
+}
+
 function DestroyArcherSpecialAttack1() {
     if (ArcherSpecialAttack1 != null && ArcherSpecialAttack1 != undefined && ArcherSpecialAttack1.body != null && ArcherSpecialAttack1.body != undefined) {
         IsArcherSpecialAttack1Used = false;
         ArcherSpecialAttack1.destroy();
+    }
+}
+
+function DestroyArcherAttacks() {
+    //In case it hits a wall (side of the window)        
+    if (ArcherSpecialAttack2_Ball != null && ArcherSpecialAttack2_Ball != undefined && ArcherSpecialAttack2_Ball.body != null && ArcherSpecialAttack2_Ball.body != undefined) {
+        if (ArcherSpecialAttack2_Ball.body.onWall() && !ArcherSpecialAttack2_Ball.body.onFloor() && ArcherSpecialAttack2_Ball.body.enable) {
+            IsArcherSpecialAttack2Used = false;
+            ArcherSpecialAttack2_Ball.destroy();
+        }
     }
 }

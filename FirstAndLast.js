@@ -33,9 +33,11 @@ var ArcherEmitter;
 var ArcherParticles;
 var DidArcherAttackOnce = false;
 var ArcherSpecialAttack1;
-var ArcherSpecialAttack2;
+var ArcherSpecialAttack2_Cannon;
+var ArcherSpecialAttack2_Ball;
 var IsArcherSpecialAttack1Used = false;
 var IsArcherSpecialAttack2Used = false;
+var IsCannonFacingLeft = false;
 /*Warrior*/
 var DidWarriorAttack = false;
 var WarriorPlayer;
