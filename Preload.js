@@ -203,6 +203,10 @@ function ArcherPlayerLoad(parent) {
 
     parent.load.image('arrow-left', './Assets/unity3d-assets/SpritesArchers/Archer2/FantasyArcher_02_Attack2_arrow-left.png');
     parent.load.image('arrow-right', './Assets/unity3d-assets/SpritesArchers/Archer2/FantasyArcher_02_Attack2_arrow-right.png');
+
+    for (var i = 0; i <= 2; i++) {
+        parent.load.image('archer-specialAttack1-' + i, './Assets/unity3d-assets/2DDeathTraps/archerSpecialAttack1-' + i + '.png');
+    }
 }
 
 function WarriorPlayerLoad(parent) {

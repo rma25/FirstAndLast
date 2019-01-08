@@ -32,7 +32,7 @@ function ArcherController(parent) {
             if (parent.mainAttack1.isDown && !IsArrowShot) {
                 IsPlayerIdle = false;
                 if (IsMainPlayerFacingLeft) {
-                    ArcherPlayer.anims.play(currentArcher + 'attack' + (DidArcherAttackOnce ? 2 : 1) + '-left', true);
+                    ArcherPlayer.anims.play(currentArcher + 'attack1-left', true);
 
                     //Only attack on the last animation frame
                     if (ArcherPlayer.anims.currentFrame.index >= 10) {
@@ -57,7 +57,7 @@ function ArcherController(parent) {
                     }
                 }
                 else {
-                    ArcherPlayer.anims.play(currentArcher + 'attack' + (DidArcherAttackOnce ? 2 : 1) + '-right', true);
+                    ArcherPlayer.anims.play(currentArcher + 'attack2-right', true);
 
                     //Only attack on the last animation frame
                     if (ArcherPlayer.anims.currentFrame.index >= 10) {
@@ -135,8 +135,26 @@ function ArcherController(parent) {
                     }
                 }
             }
-            else if (parent.specialAttack1.isDown) {
-                //TODO: Create Special Attack for Archer (Trap)
+            else if (parent.specialAttack1.isDown && !IsArcherSpecialAttack1Used) {
+                IsPlayerIdle = false;
+                ArcherPlayer.anims.play(currentArcher + 'specialAttack1-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
+
+                //Only attack on the last animation frame
+                if (ArcherPlayer.anims.currentFrame.isLast) {
+                    ArcherSpecialAttack1 = CreateArcherSpecialAttack1(parent);
+                    ArcherSpecialAttack1.play('archer-specialAttack-1')
+
+                    if (IsMainPlayerFacingLeft) {
+                        ArcherSpecialAttack1.enableBody(true, ArcherPlayer.x - (ArcherSpecialAttack1.displayWidth / 2), ArcherPlayer.y + (ArcherPlayer.displayHeight / 2) - 3, true, true);
+                    }
+                    else {
+                        ArcherSpecialAttack1.enableBody(true, ArcherPlayer.x + (ArcherSpecialAttack1.displayWidth / 2), ArcherPlayer.y + (ArcherPlayer.displayHeight / 2) - 3, true, true);
+                    }
+
+                    setTimeout(DestroyArcherSpecialAttack1, 10000);
+                    game.sound.play('shootingArrow');
+                    IsArcherSpecialAttack1Used = true;
+                }
             }
             else if (parent.specialAttack2.isDown) {
                 //TODO: Create Special Attack for Archer (Buff)
@@ -176,4 +194,22 @@ function ArcherController(parent) {
 
 function ArcherParticlesOnPlayer(parent) {
     ArcherEmitter.setPosition(ArcherPlayer.x, ArcherPlayer.y + (ArcherPlayer.displayHeight / 2));
+}
+
+function CreateArcherSpecialAttack1(parent) {
+    var specialAttack1 = parent.physics.add.sprite(ArcherPlayer.displayWidth, ArcherPlayer.displayHeight, 'archer-specialAttack1-0');
+
+    specialAttack1.setDisplaySize(specialAttack1.displayWidth / 5, specialAttack1.displayHeight / 5);
+    specialAttack1.setCollideWorldBounds(true);
+    specialAttack1.body.allowGravity = false;
+    specialAttack1.disableBody(true, true);
+
+    return specialAttack1;
+}
+
+function DestroyArcherSpecialAttack1() {
+    if (ArcherSpecialAttack1 != null && ArcherSpecialAttack1 != undefined && ArcherSpecialAttack1.body != null && ArcherSpecialAttack1.body != undefined) {
+        IsArcherSpecialAttack1Used = false;
+        ArcherSpecialAttack1.destroy();
+    }
 }

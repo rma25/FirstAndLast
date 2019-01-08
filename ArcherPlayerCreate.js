@@ -31,6 +31,11 @@ function ArcherPlayerCreate(parent) {
     var jumpFramesRight2 = [];
     var walkRightFramesLeft2 = [];
     var walkRightFramesRight2 = [];
+    var specialAttackFrames1Left = [];
+    var specialAttackFrames1Right = [];
+    var specialAttackFrames2Left = [];
+    var specialAttackFrames2Right = [];
+    var archerSpecialAttackFrames = [];
 
     //Player    
     //Add starting image of player, width, height
@@ -301,6 +306,51 @@ function ArcherPlayerCreate(parent) {
         repeat: -1
     });
 
+    for (var i = 7; i <= 9; i++) {
+        specialAttackFrames1Left.push({ key: 'archer1-death-left' + i });
+        specialAttackFrames1Right.push({ key: 'archer1-death-right' + i });
+        specialAttackFrames2Left.push({ key: 'archer2-death-left' + i });
+        specialAttackFrames2Right.push({ key: 'archer2-death-right' + i });
+    }
+
+    parent.anims.create({
+        key: 'archer1-specialAttack1-left',
+        frames: specialAttackFrames1Left,
+        frameRate: 3,
+        repeat: -1
+    });
+    parent.anims.create({
+        key: 'archer1-specialAttack1-right',
+        frames: specialAttackFrames1Right,
+        frameRate: 3,
+        repeat: -1
+    });
+    parent.anims.create({
+        key: 'archer2-specialAttack1-left',
+        frames: specialAttackFrames2Left,
+        frameRate: 3,
+        repeat: -1
+    });
+    parent.anims.create({
+        key: 'archer2-specialAttack1-right',
+        frames: specialAttackFrames2Right,
+        frameRate: 3,
+        repeat: -1
+    });
+
+    for (var j = 0; j <= 3; j++) {
+        for (var i = 0; i <= 2; i++) {
+            archerSpecialAttackFrames.push({ key: 'archer-specialAttack1-' + i });
+        }
+    }
+
+    parent.anims.create({
+        key: 'archer-specialAttack-1',
+        frames: archerSpecialAttackFrames,
+        frameRate: 1,
+        repeat: -1
+    });
+
     PlayerArrow(parent);
 }
 
@@ -319,6 +369,14 @@ function PlayerArrow(parent) {
         ArrowsLeft.body.setGravityY(0);
         ArrowsLeft.disableBody(true, true);
     }
+}
+
+function PlayerSpecialAttack1(parent) {
+    ArcherSpecialAttack1 = parent.physics.add.sprite(ArcherPlayer.displayWidth, ArcherPlayer.displayHeight, 'archer-specialAttack1-0');
+    ArcherSpecialAttack1.setDisplaySize(ArcherSpecialAttack1.displayWidth / 5, ArcherSpecialAttack1.displayHeight / 5);
+    ArcherSpecialAttack1.setCollideWorldBounds(true);
+    ArcherSpecialAttack1.body.setGravityY(0);
+    ArcherSpecialAttack1.disableBody(true, true);
 }
 
 function ArcherCollision(parent) {
@@ -341,11 +399,21 @@ function ArcherCollision(parent) {
 
     parent.physics.add.collider(ArrowsRight, Platforms, CollideWithArrow, null, parent);
     parent.physics.add.collider(ArrowsLeft, Platforms, CollideWithArrow, null, parent);
+
+    // parent.physics.add.collider(ArcherSpecialAttack1, Platforms);
 }
 
 function CollideWithArrow(arrow, platform) {
     IsArrowShot = false;
     arrow.setAngle(0);
-    arrow.disableBody(true, true);    
+    arrow.disableBody(true, true);
+    game.sound.play('arrowHit');
+}
+
+
+function CollideTrapWithPlayer(trap, platform) {
+    IsArrowShot = false;
+    trap.setAngle(0);
+    trap.disableBody(true, true);
     game.sound.play('arrowHit');
 }
