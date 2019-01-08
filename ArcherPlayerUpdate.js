@@ -136,10 +136,10 @@ function ArcherController(parent) {
                 }
             }
             else if (parent.specialAttack1.isDown) {
-                //TODO: Create Special Attack for Warrior
+                //TODO: Create Special Attack for Archer (Trap)
             }
             else if (parent.specialAttack2.isDown) {
-                //TODO: Create Special Attack for Warrior
+                //TODO: Create Special Attack for Archer (Buff)
             }
             else if (IsMainPlayerFacingLeft && ArcherPlayer.body.touching.down && !ArcherPlayer.body.isMoving) {
                 ArcherPlayer.anims.play(currentArcher + 'idle' + (IsPlayerIdle ? '2' : '1') + '-left', true);
