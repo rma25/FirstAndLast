@@ -262,6 +262,9 @@ function WarriorPlayerLoad(parent) {
         parent.load.image('warrior2-walk-left' + i, './Assets/unity3d-assets/SpritesWarriors/Warrior3/FantasyWarrior_01_walk_' + i + 'left.png');
         parent.load.image('warrior2-walk-right' + i, './Assets/unity3d-assets/SpritesWarriors/Warrior3/FantasyWarrior_01_walk_' + i + 'right.png');
     }
+
+    parent.load.image('warrior-specialAttack1', './Assets/unity3d-assets/2DDeathTraps/warriorSpecialAttack1.png');
+    parent.load.image('warrior-specialAttack2', './Assets/unity3d-assets/2DDeathTraps/warriorSpecialAttack2.png');
 }
 
 function MagePlayerLoad(parent) {

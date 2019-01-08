@@ -242,6 +242,7 @@ function DestroyMageMainAttack2() {
     }
 }
 
+//This is a buff so it has to be destroyed after a certain time
 function DestroyMageSpecialAttack2() {
     if (MageSpecialAttack2 != null && MageSpecialAttack2 != undefined && MageSpecialAttack2.body != null && MageSpecialAttack2.body != undefined) {
         IsMageSpecialAttack2Used = false;
@@ -262,7 +263,6 @@ function UpdateMageAttacks() {
     }
 
     if (MageSpecialAttack2 != null && MageSpecialAttack2 != undefined) {
-        // MageSpecialAttack2.setDisplaySize(MagePlayer.displayWidth + 100, MagePlayer.displayHeight + 100);
         if (IsMainPlayerFacingLeft) {
             MageSpecialAttack2.flipX = true;
             MageSpecialAttack2.setPosition(MagePlayer.x + 16, MagePlayer.y);
@@ -272,8 +272,6 @@ function UpdateMageAttacks() {
             MageSpecialAttack2.setPosition(MagePlayer.x - 16, MagePlayer.y);
         }
     }
-
-
 }
 
 function MageParticlesOnPlayer(parent) {

@@ -38,6 +38,10 @@ var WarriorPlayer;
 var WarriorEmitter;
 var WarriorParticles;
 var DidWarriorAttackOnce = false;
+var IsWarriorSpecialAttack1Used = false;
+var IsWarriorSpecialAttack2Used = false;
+var WarriorSpecialAttack1;
+var WarriorSpecialAttack2;
 /*Mage*/
 var DidMageAttack = false;
 var MagePlayer;

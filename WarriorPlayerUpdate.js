@@ -33,7 +33,7 @@ function WarriorController(parent) {
             if (parent.mainAttack1.isDown) {
                 IsPlayerIdle = false;
 
-                WarriorPlayer.anims.play(currentWarrior + '-attack' + ((DidWarriorAttackOnce && DoesPlayerHasStrengthBuff) ? 1 : 2) + '-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
+                WarriorPlayer.anims.play(currentWarrior + '-attack' + (DoesPlayerHasStrengthBuff ? 1 : 2) + '-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
 
                 if (WarriorPlayer.anims.currentFrame.index === 3) {
                     if (DoesPlayerHasStrengthBuff) {
@@ -42,16 +42,12 @@ function WarriorController(parent) {
                     else {
                         game.sound.play('swordAttack2');
                     }
-                }
-
-                if (WarriorPlayer.anims.currentFrame.index >= 14) {
-                    DidWarriorAttackOnce = WarriorPlayer.anims.currentFrame.textureKey.includes('attack2');
                 }
             }
             else if (parent.mainAttack2.isDown) {
                 IsPlayerIdle = false;
 
-                WarriorPlayer.anims.play(currentWarrior + '-attack' + ((DidWarriorAttackOnce && DoesPlayerHasStrengthBuff) ? 1 : 2) + '-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
+                WarriorPlayer.anims.play(currentWarrior + '-attack2-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
 
                 if (WarriorPlayer.anims.currentFrame.index === 3) {
                     if (DoesPlayerHasStrengthBuff) {
@@ -61,16 +57,62 @@ function WarriorController(parent) {
                         game.sound.play('swordAttack2');
                     }
                 }
+            }
+            else if (parent.specialAttack1.isDown && !IsWarriorSpecialAttack1Used) {
+                IsPlayerIdle = false;
+                WarriorPlayer.anims.play(currentWarrior + '-attack' + ((DidWarriorAttackOnce && DoesPlayerHasStrengthBuff) ? 1 : 2) + '-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
 
                 if (WarriorPlayer.anims.currentFrame.index >= 14) {
-                    DidWarriorAttackOnce = WarriorPlayer.anims.currentFrame.textureKey.includes('attack2');
+                    WarriorSpecialAttack1 = CreateWarriorSpecialAttack1(parent);
+
+                    if (IsMainPlayerFacingLeft) {
+                        WarriorSpecialAttack1.enableBody(true, WarriorPlayer.x - 32, WarriorPlayer.y, true, true);
+                        WarriorSpecialAttack1.setVelocityX(DoesPlayerHasStrengthBuff ? -350 : -250);
+                        WarriorSpecialAttack1.setAccelerationX(DoesPlayerHasStrengthBuff ? -300 : -150);
+                    }
+                    else {
+                        WarriorSpecialAttack1.enableBody(true, WarriorPlayer.x + 32, WarriorPlayer.y, true, true);
+                        WarriorSpecialAttack1.setVelocityX(DoesPlayerHasStrengthBuff ? 350 : 250);
+                        WarriorSpecialAttack1.setAccelerationX(DoesPlayerHasStrengthBuff ? 300 : 150);
+                    }
+
+                    if (DoesPlayerHasStrengthBuff) {
+                        game.sound.play('axeAttack2');
+                    }
+                    else {
+                        game.sound.play('swordAttack2');
+                    }
+
+                    IsWarriorSpecialAttack1Used = true;
                 }
             }
-            else if (parent.specialAttack1.isDown) {
-                //TODO: Create Special Attack for Warrior
-            }
-            else if (parent.specialAttack2.isDown) {
-                //TODO: Create Special Attack for Warrior
+            else if (parent.specialAttack2.isDown && !IsWarriorSpecialAttack2Used) {
+                IsPlayerIdle = false;
+                WarriorPlayer.anims.play(currentWarrior + '-attack' + ((DidWarriorAttackOnce && DoesPlayerHasStrengthBuff) ? 1 : 2) + '-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
+
+                if (WarriorPlayer.anims.currentFrame.index >= 14) {
+                    WarriorSpecialAttack2 = CreateWarriorSpecialAttack2(parent);
+
+                    if (IsMainPlayerFacingLeft) {
+                        WarriorSpecialAttack2.enableBody(true, WarriorPlayer.x - 32, WarriorPlayer.y, true, true);
+                        WarriorSpecialAttack2.setVelocityX(DoesPlayerHasStrengthBuff ? -350 : -250);
+                        WarriorSpecialAttack2.setAccelerationX(DoesPlayerHasStrengthBuff ? -300 : -150);
+                    }
+                    else {
+                        WarriorSpecialAttack2.enableBody(true, WarriorPlayer.x + 32, WarriorPlayer.y, true, true);
+                        WarriorSpecialAttack2.setVelocityX(DoesPlayerHasStrengthBuff ? 350 : 250);
+                        WarriorSpecialAttack2.setAccelerationX(DoesPlayerHasStrengthBuff ? 300 : 150);
+                    }
+
+                    if (DoesPlayerHasStrengthBuff) {
+                        game.sound.play('axeAttack2');
+                    }
+                    else {
+                        game.sound.play('swordAttack2');
+                    }
+
+                    IsWarriorSpecialAttack2Used = true;
+                }
             }
             //Idle Left
             else if (IsMainPlayerFacingLeft && !WarriorPlayer.body.isMoving) {
@@ -92,10 +134,76 @@ function WarriorController(parent) {
             game.sound.play('jump');
         }
 
-        WarriorParticlesOnPlayer(this);
+        UpdateWarriorAttacks();
+        DestroyWarriorAttacks();
+        WarriorParticlesOnPlayer();
     }
 }
 
-function WarriorParticlesOnPlayer(parent) {
-    WarriorEmitter.setPosition(WarriorPlayer.x, WarriorPlayer.y + (WarriorPlayer.displayHeight / 2));    
+function WarriorParticlesOnPlayer() {
+    WarriorEmitter.setPosition(WarriorPlayer.x, WarriorPlayer.y + (WarriorPlayer.displayHeight / 2));
+}
+
+function CreateWarriorSpecialAttack1(parent) {
+    var specialAttack1 = parent.physics.add.sprite(WarriorPlayer.displayWidth, WarriorPlayer.displayHeight, 'warrior-specialAttack1');
+
+    specialAttack1.setDisplaySize(specialAttack1.displayWidth / 7, specialAttack1.displayHeight / 7);
+    specialAttack1.setCollideWorldBounds(true);
+    // specialAttack1.setTint('0xff9955');
+    specialAttack1.body.allowGravity = false;
+    specialAttack1.disableBody(true, true);
+
+    return specialAttack1;
+}
+
+function CreateWarriorSpecialAttack2(parent) {
+    var specialAttack2 = parent.physics.add.sprite(WarriorPlayer.displayWidth, WarriorPlayer.displayHeight, 'warrior-specialAttack2');
+
+    specialAttack2.setDisplaySize(specialAttack2.displayWidth / 7, specialAttack2.displayHeight / 7);
+    specialAttack2.setCollideWorldBounds(true);
+    // specialAttack2.setTint('0xff9955');
+    specialAttack2.body.allowGravity = false;
+    specialAttack2.disableBody(true, true);
+
+    return specialAttack2;
+}
+
+function UpdateWarriorAttacks() {
+    if (WarriorSpecialAttack1 != null && WarriorSpecialAttack1 != undefined) {
+        if (IsMainPlayerFacingLeft) {
+            WarriorSpecialAttack1.flipX = false;
+        }
+        else {
+            WarriorSpecialAttack1.flipX = true;
+        }
+    }
+
+    if (WarriorSpecialAttack2 != null && WarriorSpecialAttack2 != undefined) {
+        if (IsMainPlayerFacingLeft) {
+            WarriorSpecialAttack2.flipX = true;
+            WarriorSpecialAttack2.angle -= DoesPlayerHasStrengthBuff ? 12 : 6;
+        }
+        else {
+            WarriorSpecialAttack2.flipX = false;
+            WarriorSpecialAttack2.angle += DoesPlayerHasStrengthBuff ? 12 : 6;
+        }
+    }
+}
+
+
+function DestroyWarriorAttacks() {
+    //In case it hits a wall (side of the window)        
+    if (WarriorSpecialAttack1 != null && WarriorSpecialAttack1 != undefined && WarriorSpecialAttack1.body != null && WarriorSpecialAttack1.body != undefined) {
+        if (WarriorSpecialAttack1.body.onWall() && !WarriorSpecialAttack1.body.onFloor() && WarriorSpecialAttack1.body.enable) {
+            IsWarriorSpecialAttack1Used = false;
+            WarriorSpecialAttack1.destroy();
+        }
+    }
+
+    if (WarriorSpecialAttack2 != null && WarriorSpecialAttack2 != undefined && WarriorSpecialAttack2.body != null && WarriorSpecialAttack2.body != undefined) {
+        if (WarriorSpecialAttack2.body.onWall() && !WarriorSpecialAttack2.body.onFloor() && WarriorSpecialAttack2.body.enable) {
+            IsWarriorSpecialAttack2Used = false;
+            WarriorSpecialAttack2.destroy();
+        }
+    }
 }
