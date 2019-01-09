@@ -9,19 +9,34 @@ function ArcherController(parent) {
             ArcherPlayer.body.setSize(300, 350);
         }
 
+        //Change animation frame Rate to 15 otherwise back to original if player is not running
+        ArcherPlayer.anims.frameRate = parent.run.isDown ? 24 : 10;
+
         //Player Left
         if (Cursors.left.isDown) {
             IsPlayerIdle = false;
             IsMainPlayerFacingLeft = true;
-            ArcherPlayer.setVelocityX((DoesPlayerHasSpeedBuff ? -300 : -190) * (parent.run.isDown ? 1.55 : 1));
+            ArcherPlayer.setVelocityX((DoesPlayerHasSpeedBuff ? -350 : -240) * (parent.run.isDown ? 1.55 : 1));
             ArcherPlayer.anims.play(currentArcher + 'walk-left', true);
+
+            if (ArcherPlayer.anims.currentFrame.index % (parent.run.isDown ? 3 : 6) == 0) {
+                if (!PlayerStepSound.isPlaying) {
+                    PlayerStepSound.play();
+                }
+            }
         }
         //Player Right
         else if (Cursors.right.isDown) {
             IsPlayerIdle = false;
             IsMainPlayerFacingLeft = false;
-            ArcherPlayer.setVelocityX((DoesPlayerHasSpeedBuff ? 300 : 190) * (parent.run.isDown ? 1.55 : 1));
+            ArcherPlayer.setVelocityX((DoesPlayerHasSpeedBuff ? 350 : 240) * (parent.run.isDown ? 1.55 : 1));
             ArcherPlayer.anims.play(currentArcher + 'walk-right', true);
+
+            if (ArcherPlayer.anims.currentFrame.index % (parent.run.isDown ? 3 : 6) == 0) {
+                if (!PlayerStepSound.isPlaying) {
+                    PlayerStepSound.play();
+                }
+            }
         }
         //Player Not Moving
         else {
@@ -32,7 +47,7 @@ function ArcherController(parent) {
             if (parent.mainAttack1.isDown && !IsArrowShot) {
                 IsPlayerIdle = false;
                 if (IsMainPlayerFacingLeft) {
-                    ArcherPlayer.anims.play(currentArcher + 'attack1-left', true);
+                    ArcherPlayer.anims.play(currentArcher + 'attack2-left', true);
 
                     //Only attack on the last animation frame
                     if (ArcherPlayer.anims.currentFrame.index >= 10) {
@@ -86,7 +101,7 @@ function ArcherController(parent) {
             else if (parent.mainAttack2.isDown && !IsArrowShot) {
                 IsPlayerIdle = false;
                 if (IsMainPlayerFacingLeft) {
-                    ArcherPlayer.anims.play(currentArcher + 'attack' + (DidArcherAttackOnce ? 2 : 1) + '-left', true);
+                    ArcherPlayer.anims.play(currentArcher + 'attack1-left', true);
 
                     //Only attack on the last animation frame
                     if (ArcherPlayer.anims.currentFrame.index >= 10) {
@@ -111,7 +126,7 @@ function ArcherController(parent) {
                     }
                 }
                 else {
-                    ArcherPlayer.anims.play(currentArcher + 'attack' + (DidArcherAttackOnce ? 2 : 1) + '-right', true);
+                    ArcherPlayer.anims.play(currentArcher + 'attack1-right', true);
 
                     //Only attack on the last animation frame
                     if (ArcherPlayer.anims.currentFrame.index >= 10) {
@@ -154,7 +169,7 @@ function ArcherController(parent) {
                     }
 
                     setTimeout(DestroyArcherSpecialAttack1, 10000);
-                    game.sound.play('shootingArrow');
+                    game.sound.play('trapSetting');
                     IsArcherSpecialAttack1Used = true;
                 }
             }
@@ -177,6 +192,7 @@ function ArcherController(parent) {
                     }
 
                     IsArcherSpecialAttack2Used = true;
+                    game.sound.play('cannonReloading');
                 }
             }
             else if (IsMainPlayerFacingLeft && ArcherPlayer.body.touching.down && !ArcherPlayer.body.isMoving) {
@@ -197,33 +213,37 @@ function ArcherController(parent) {
         }
 
         //Shoot cannon ball
-        if (ArcherSpecialAttack2_Cannon != null && ArcherSpecialAttack2_Cannon != undefined && ArcherSpecialAttack2_Cannon.anims != null && ArcherSpecialAttack2_Cannon.anims != undefined) {
-            if (ArcherSpecialAttack2_Cannon.anims.currentFrame.isLast) {
-                ArcherSpecialAttack2_Ball = CreateArcherSpecialAttack2_Ball(parent);
-                ArcherSpecialAttack2_Ball.play('archer-specialAttack-2-1');
-
-                if (IsCannonFacingLeft) {
-                    ArcherSpecialAttack2_Ball.enableBody(true, ArcherSpecialAttack2_Cannon.x - (ArcherSpecialAttack2_Ball.displayWidth / 2), ArcherSpecialAttack2_Cannon.y + 20, true, true);
-                    ArcherSpecialAttack2_Ball.setVelocityX(DoesPlayerHasStrengthBuff ? -350 : -250);
-                    ArcherSpecialAttack2_Ball.setAccelerationX(DoesPlayerHasStrengthBuff ? -300 : -150);
-                }
-                else {
-                    ArcherSpecialAttack2_Ball.enableBody(true, ArcherSpecialAttack2_Cannon.x + (ArcherSpecialAttack2_Ball.displayWidth / 2), ArcherSpecialAttack2_Cannon.y + 20, true, true);
-                    ArcherSpecialAttack2_Ball.setVelocityX(DoesPlayerHasStrengthBuff ? 350 : 250);
-                    ArcherSpecialAttack2_Ball.setAccelerationX(DoesPlayerHasStrengthBuff ? 300 : 150);
-                }
-
-                //Make sure cannon dissapears                
-                ArcherSpecialAttack2_Cannon.destroy();
-
-                game.sound.play('shootingArrow');
-                IsArcherSpecialAttack2Used = true;
-            }
-        }
+        ShootCannonBall(parent);
 
         ArcherParticlesOnPlayer(this);
         UpdateArcherAttacks();
         DestroyArcherAttacks();
+    }
+}
+
+function ShootCannonBall(parent) {
+    if (ArcherSpecialAttack2_Cannon != null && ArcherSpecialAttack2_Cannon != undefined && ArcherSpecialAttack2_Cannon.anims != null && ArcherSpecialAttack2_Cannon.anims != undefined) {
+        if (ArcherSpecialAttack2_Cannon.anims.currentFrame.isLast) {
+            ArcherSpecialAttack2_Ball = CreateArcherSpecialAttack2_Ball(parent);
+            ArcherSpecialAttack2_Ball.play('archer-specialAttack-2-1');
+
+            if (IsCannonFacingLeft) {
+                ArcherSpecialAttack2_Ball.enableBody(true, ArcherSpecialAttack2_Cannon.x - (ArcherSpecialAttack2_Ball.displayWidth / 2), ArcherSpecialAttack2_Cannon.y, true, true);
+                ArcherSpecialAttack2_Ball.setVelocityX(DoesPlayerHasStrengthBuff ? -700 : -600);
+                ArcherSpecialAttack2_Ball.setAccelerationX(DoesPlayerHasStrengthBuff ? -300 : -150);
+            }
+            else {
+                ArcherSpecialAttack2_Ball.enableBody(true, ArcherSpecialAttack2_Cannon.x + (ArcherSpecialAttack2_Ball.displayWidth / 2), ArcherSpecialAttack2_Cannon.y, true, true);
+                ArcherSpecialAttack2_Ball.setVelocityX(DoesPlayerHasStrengthBuff ? 700 : 600);
+                ArcherSpecialAttack2_Ball.setAccelerationX(DoesPlayerHasStrengthBuff ? 300 : 150);
+            }
+
+            //Make sure cannon dissapears                
+            ArcherSpecialAttack2_Cannon.destroy();
+
+            game.sound.play('cannonShooting');
+            IsArcherSpecialAttack2Used = true;
+        }
     }
 }
 
@@ -256,7 +276,7 @@ function CreateArcherSpecialAttack2_Cannon(parent) {
 function CreateArcherSpecialAttack2_Ball(parent) {
     var specialAttack2Ball = parent.physics.add.sprite(ArcherPlayer.displayWidth, ArcherPlayer.displayHeight, 'archer-specialAttack2-7');
 
-    specialAttack2Ball.setDisplaySize(specialAttack2Ball.displayWidth / 5, specialAttack2Ball.displayHeight / 5);
+    specialAttack2Ball.setDisplaySize(specialAttack2Ball.displayWidth / 7, specialAttack2Ball.displayHeight / 7);
     specialAttack2Ball.setCollideWorldBounds(true);
     specialAttack2Ball.body.allowGravity = false;
     specialAttack2Ball.disableBody(true, true);

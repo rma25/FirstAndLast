@@ -134,6 +134,10 @@ function GameAudio(parent) {
     parent.load.audio('mageMainAttack2', './Assets/unity3d-assets/FantasySfx/Mp3/Footsteps/Footstep_Water_00.mp3');
     parent.load.audio('mageSpecialAttack1', './Assets/unity3d-assets/FantasySfx/Mp3/Spell_02.mp3');
     parent.load.audio('mageSpecialAttack2', './Assets/unity3d-assets/FantasySfx/Mp3/Spell_04.mp3');
+
+    parent.load.audio('cannonReloading', './Assets/unity3d-assets/Weapons-of-Choice-Komposite-Sound/GUN/Handling_Gun_01_Arming_SFX.wav');
+    parent.load.audio('cannonShooting', './Assets/unity3d-assets/Weapons-of-Choice-Komposite-Sound/GUN/Pistol_01_Generic_Tail_SFX.wav');
+    parent.load.audio('trapSetting', './Assets/unity3d-assets/FantasySfx/Mp3/Menu_Select_00.mp3');
 }
 
 function BuffsLoad(parent) {

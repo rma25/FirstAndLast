@@ -11,6 +11,8 @@ function updateMenu() {
     MenuUpdate(this);
 }
 
+var MenuBgMusic;
+
 /***************************************************** PRELOAD ******************************************************************/
 function MenuLoad(parent) {
     parent.load.image('menu-background', './Assets/images/JoshsDaughter.jpg');
@@ -35,12 +37,19 @@ function MenuLoad(parent) {
     parent.load.image('Arrows-btn', './Assets/unity3d-assets/FantasyWoodenGUI/Arrows_key.png');
     parent.load.image('shift-btn', './Assets/unity3d-assets/FantasyWoodenGUI/shift_key.png');
     parent.load.image('space-btn', './Assets/unity3d-assets/FantasyWoodenGUI/space_key.png');
+
+    parent.load.audio('btnClickSound', './Assets/unity3d-assets/FantasySfx/Mp3/Menu_Select_00.mp3');
+    parent.load.audio('menuBgMusic', './Assets/unity3d-assets/FantasySfx/Mp3/Ambience_Cave_00.mp3');
 }
 /***************************************************** PRELOAD ******************************************************************/
 
 
 /***************************************************** CREATE ******************************************************************/
 function MenuCreate(parent) {
+    MenuBgMusic = parent.sound.add('menuBgMusic');
+    MenuBgMusic.loop = true;
+    MenuBgMusic.play();
+
     var menuBGImage = parent.add.image(0, 0, 'menu-background');
     menuBGImage.setOrigin(0, 0);
     menuBGImage.setDisplaySize(WindowWidth, WindowHeight);
@@ -63,6 +72,7 @@ function MenuCreate(parent) {
 
 function SelectPlayer(parent) {
     DisplayMenuBtns(false);
+    game.sound.play('btnClickSound');
 
     if (IsClassSelectionCreated) {
         DisplayPlayerSelection(true);
@@ -108,6 +118,7 @@ function SelectPlayer(parent) {
 function ControllersInfo(parent) {
     DisplayMenuBtns(false);
     ChangeMenuBgImgSize(true);
+    game.sound.play('btnClickSound');
 
     if (IsControllersInfoCreated) {
         DisplayControllersInfo(true);
@@ -209,10 +220,13 @@ function StartGame(parent, isWarrior, isArcher, isMage) {
     IsArcher = isArcher;
     IsMage = isMage;
 
+    MenuBgMusic.stop();
+    game.sound.play('btnClickSound');
     parent.scene.start('MainGame');
 }
 
 function GoBackToMainMenu(parent) {
+    game.sound.play('btnClickSound');
     DisplayPlayerSelection(false);
     DisplayControllersInfo(false);
     DisplayMenuBtns(true);
@@ -223,7 +237,7 @@ function GoBackToMainMenu(parent) {
 
 /***************************************************** UPDATE ******************************************************************/
 function MenuUpdate(parent) {
-    //Nothing for now
+
 }
 /***************************************************** UPDATE ******************************************************************/
 

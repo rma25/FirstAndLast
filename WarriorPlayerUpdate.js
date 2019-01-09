@@ -16,6 +16,12 @@ function WarriorController(parent) {
             WarriorPlayer.setVelocityX((DoesPlayerHasSpeedBuff ? -300 : -190) * (parent.run.isDown ? 1.65 : 1));
             WarriorPlayer.anims.play(currentWarrior + '-walk-left', true);
             IsPlayerIdle = false;
+
+            if (WarriorPlayer.anims.currentFrame.index % (parent.run.isDown ? 3 : 6) == 0) {
+                if (!PlayerStepSound.isPlaying) {
+                    PlayerStepSound.play();
+                }
+            }
         }
         //Player Right
         else if (Cursors.right.isDown) {
@@ -23,6 +29,12 @@ function WarriorController(parent) {
             WarriorPlayer.setVelocityX((DoesPlayerHasSpeedBuff ? 300 : 190) * (parent.run.isDown ? 1.65 : 1));
             WarriorPlayer.anims.play(currentWarrior + '-walk-right', true);
             IsPlayerIdle = false;
+
+            if (WarriorPlayer.anims.currentFrame.index % (parent.run.isDown ? 3 : 6) == 0) {
+                if (!PlayerStepSound.isPlaying) {
+                    PlayerStepSound.play();
+                }
+            }
         }
         //Player Not Moving
         else {

@@ -21,10 +21,10 @@ function MageController(parent) {
         if (Cursors.left.isDown) {
             IsMainPlayerFacingLeft = true;
             MagePlayer.setVelocityX((DoesPlayerHasSpeedBuff ? -300 : -190) * (parent.run.isDown ? 1.5 : 1));
-            MagePlayer.anims.play(currentMage + '-' + (parent.run.isDown && !DoesPlayerHasStrengthBuff ? 'run' : 'walk') + 'forward-left', true);
+            MagePlayer.anims.play(currentMage + '-' + (parent.run.isDown && !DoesPlayerHasStrengthBuff ? 'walk' : 'walk') + 'forward-left', true);
             IsPlayerIdle = false;
 
-            if (MagePlayer.anims.currentFrame.index % 6 == 0) {
+            if (MagePlayer.anims.currentFrame.index % (parent.run.isDown ? 3 : 6) == 0) {
                 if (!PlayerStepSound.isPlaying) {
                     PlayerStepSound.play();
                 }
@@ -34,10 +34,10 @@ function MageController(parent) {
         else if (Cursors.right.isDown) {
             IsMainPlayerFacingLeft = false;
             MagePlayer.setVelocityX((DoesPlayerHasSpeedBuff ? 300 : 190) * (parent.run.isDown ? 1.5 : 1));
-            MagePlayer.anims.play(currentMage + '-' + (parent.run.isDown && !DoesPlayerHasStrengthBuff ? 'run' : 'walk') + 'forward-right', true);
+            MagePlayer.anims.play(currentMage + '-' + (parent.run.isDown && !DoesPlayerHasStrengthBuff ? 'walk' : 'walk') + 'forward-right', true);
             IsPlayerIdle = false;
 
-            if (MagePlayer.anims.currentFrame.index % 6 == 0) {
+            if (MagePlayer.anims.currentFrame.index % (parent.run.isDown ? 3 : 6) == 0) {
                 if (!PlayerStepSound.isPlaying) {
                     PlayerStepSound.play();
                 }

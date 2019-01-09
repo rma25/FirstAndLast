@@ -280,13 +280,13 @@ function WarriorPlayerCreate(parent) {
     parent.anims.create({
         key: 'warrior1-walk-left',
         frames: walkRightFramesLeft,
-        frameRate: 12,
+        frameRate: 15,
         repeat: -1
     });
     parent.anims.create({
         key: 'warrior1-walk-right',
         frames: walkRightFramesRight,
-        frameRate: 12,
+        frameRate: 15,
         repeat: -1
     });
     parent.anims.create({
