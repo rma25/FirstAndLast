@@ -12,7 +12,9 @@ function update() {
             WarriorController(this);
         }
 
-        if (MagePlayer != null && MagePlayer != undefined) {
+        var magePlayer = game.playerMap[CurrentClientId];
+
+        if (magePlayer != null && magePlayer != undefined) {
             MageController(this);
         }
 

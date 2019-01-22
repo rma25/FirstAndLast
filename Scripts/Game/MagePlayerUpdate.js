@@ -1,30 +1,40 @@
 function MageController(parent) {
     Cursors = parent.input.keyboard.createCursorKeys();
 
-    if (!IsGameOver && MagePlayer != null && MagePlayer != undefined) {
-        var currentMage = 'mage' + (DoesPlayerHasStrengthBuff ? '2' : '1');
+    var magePlayer = game.playerMap[CurrentClientId];
+    var playerInfo = {};
+    playerInfo.PlayerId = CurrentClientId;
 
-        if (DoesPlayerHasStrengthBuff) {
-            MagePlayer.body.setSize(200, 295);
+    if (!IsGameOver && magePlayer != null && magePlayer != undefined) {
+        var currentMage = 'mage' + (game.DoesPlayerHasStrengthBuff ? '2' : '1');
+
+        if (game.DoesPlayerHasStrengthBuff) {
+            magePlayer.body.setSize(200, 295);
         }
         else {
-            if (parent.run.isDown && MagePlayer.body.isMoving) {
-                MagePlayer.body.setSize(200, 265);
+            if (parent.run.isDown && magePlayer.body.isMoving) {
+                magePlayer.body.setSize(200, 265);
             }
             else {
                 //Default collision box size
-                MagePlayer.body.setSize(170, 265);
+                magePlayer.body.setSize(170, 265);
             }
         }
 
         //Player Left
         if (Cursors.left.isDown) {
-            IsMainPlayerFacingLeft = true;
-            MagePlayer.setVelocityX((DoesPlayerHasSpeedBuff ? -300 : -190) * (parent.run.isDown ? 1.5 : 1));
-            MagePlayer.anims.play(currentMage + '-' + (parent.run.isDown && !DoesPlayerHasStrengthBuff ? 'walk' : 'walk') + 'forward-left', true);
-            IsPlayerIdle = false;
+            playerInfo.IsWalkingLeft = true;
+            playerInfo.IsWalkingRight = false;
+            playerInfo.IsRunning = parent.run.isDown;
+            playerInfo.IsMainPlayerFacingLeft = true;
 
-            if (MagePlayer.anims.currentFrame.index % (parent.run.isDown ? 3 : 6) == 0) {
+            magePlayer.setVelocityX((game.DoesPlayerHasSpeedBuff ? -300 : -190) * (parent.run.isDown ? 1.5 : 1));
+            magePlayer.anims.play(currentMage + '-' + (parent.run.isDown && !game.DoesPlayerHasStrengthBuff ? 'walk' : 'walk') + 'forward-left', true);
+            
+            game.IsMainPlayerFacingLeft = true;
+            game.IsPlayerIdle = false;
+
+            if (magePlayer.anims.currentFrame.index % (parent.run.isDown ? 3 : 6) == 0) {
                 if (!PlayerStepSound.isPlaying) {
                     PlayerStepSound.play();
                 }
@@ -32,12 +42,18 @@ function MageController(parent) {
         }
         //Player Right
         else if (Cursors.right.isDown) {
-            IsMainPlayerFacingLeft = false;
-            MagePlayer.setVelocityX((DoesPlayerHasSpeedBuff ? 300 : 190) * (parent.run.isDown ? 1.5 : 1));
-            MagePlayer.anims.play(currentMage + '-' + (parent.run.isDown && !DoesPlayerHasStrengthBuff ? 'walk' : 'walk') + 'forward-right', true);
-            IsPlayerIdle = false;
+            playerInfo.IsWalkingLeft = false;
+            playerInfo.IsWalkingRight = true;
+            playerInfo.IsRunning = parent.run.isDown;
+            playerInfo.IsMainPlayerFacingLeft = false;
 
-            if (MagePlayer.anims.currentFrame.index % (parent.run.isDown ? 3 : 6) == 0) {
+            magePlayer.setVelocityX((game.DoesPlayerHasSpeedBuff ? 300 : 190) * (parent.run.isDown ? 1.5 : 1));
+            magePlayer.anims.play(currentMage + '-' + (parent.run.isDown && !game.DoesPlayerHasStrengthBuff ? 'walk' : 'walk') + 'forward-right', true);
+            
+            game.IsMainPlayerFacingLeft = false;
+            game.IsPlayerIdle = false;
+
+            if (magePlayer.anims.currentFrame.index % (parent.run.isDown ? 3 : 6) == 0) {
                 if (!PlayerStepSound.isPlaying) {
                     PlayerStepSound.play();
                 }
@@ -45,126 +61,159 @@ function MageController(parent) {
         }
         //Player Not Moving
         else {
+
             //Stop moving
-            MagePlayer.setVelocityX(0);
+            magePlayer.setVelocityX(0);
+
+            playerInfo.IsMainAttack1Down = parent.mainAttack1.isDown;
+            playerInfo.IsMainAttack2Down = parent.mainAttack2.isDown;
+            playerInfo.IsSpecialAttack1Down = parent.specialAttack1.isDown;
+            playerInfo.IsSpecialAttack2Down = parent.specialAttack2.isDown;
 
             //Main attack (regular)
-            if (parent.mainAttack1.isDown && !IsMageMainAttack1Used) {
-                IsPlayerIdle = false;
-                MagePlayer.anims.play(currentMage + '-attack1-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
+            if (parent.mainAttack1.isDown && !game.IsMageMainAttack1Used) {
+                playerInfo.IsPlayerIdle = false;
+
+                game.IsPlayerIdle = false;
+                magePlayer.anims.play(currentMage + '-attack1-' + (game.IsMainPlayerFacingLeft ? 'left' : 'right'), true);
 
                 //Only attack on the last animation frame
-                if (MagePlayer.anims.currentFrame.index >= 17) {
-                    MageMainAttack1 = CreateMageMainAttack1(parent);
+                if (magePlayer.anims.currentFrame.index >= 17) {
+                    playerInfo.UsingMageMainAttack1 = true;
+                    
+                    game.MageMainAttack1 = CreateMageMainAttack1(parent, magePlayer);
 
-                    if (IsMainPlayerFacingLeft) {
-                        MageMainAttack1.enableBody(true, MagePlayer.x - 16, MagePlayer.y, true, true);
-                        MageMainAttack1.setVelocityX(DoesPlayerHasStrengthBuff ? -500 : -350);
+                    if (game.IsMainPlayerFacingLeft) {
+                        game.MageMainAttack1.enableBody(true, magePlayer.x - 16, magePlayer.y, true, true);
+                        game.MageMainAttack1.setVelocityX(game.DoesPlayerHasStrengthBuff ? -500 : -350);
                     }
                     else {
-                        MageMainAttack1.enableBody(true, MagePlayer.x + 16, MagePlayer.y, true, true);
-                        MageMainAttack1.setVelocityX(DoesPlayerHasStrengthBuff ? 500 : 350);
+                        game.MageMainAttack1.enableBody(true, magePlayer.x + 16, magePlayer.y, true, true);
+                        game.MageMainAttack1.setVelocityX(game.DoesPlayerHasStrengthBuff ? 500 : 350);
                     }
+
                     game.sound.play('mageMainAttack1');
-                    IsMageMainAttack1Used = true;
+
+                    game.IsMageMainAttack1Used = true;
+                    playerInfo.IsMageMainAttack1Used = true;
                 }
             }
-            else if (parent.mainAttack2.isDown && !IsMageMainAttack2Used) {
-                IsPlayerIdle = false;
-                MagePlayer.anims.play(currentMage + '-attack2-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
+            else if (parent.mainAttack2.isDown && !game.IsMageMainAttack2Used) {
+                playerInfo.IsPlayerIdle = false;
 
-                if (MagePlayer.anims.currentFrame.index >= 20) {
-                    MageMainAttack2 = CreateMageMainAttack2(parent);
-                    MageMainAttack2.play('mage-mainAttack2');
+                game.IsPlayerIdle = false;
+                magePlayer.anims.play(currentMage + '-attack2-' + (game.IsMainPlayerFacingLeft ? 'left' : 'right'), true);
 
-                    if (IsMainPlayerFacingLeft) {
-                        MageMainAttack2.enableBody(true, MagePlayer.x - 32, MagePlayer.y, true, true);
-                        MageMainAttack2.setVelocityX(DoesPlayerHasStrengthBuff ? -350 : -250);
-                        MageMainAttack2.setAccelerationX(DoesPlayerHasStrengthBuff ? -300 : -150);
+                if (magePlayer.anims.currentFrame.index >= 20) {
+                    game.MageMainAttack2 = CreateMageMainAttack2(parent, magePlayer);
+                    game.MageMainAttack2.play('mage-mainAttack2');
+
+                    if (game.IsMainPlayerFacingLeft) {
+                        game.MageMainAttack2.enableBody(true, magePlayer.x - 32, magePlayer.y, true, true);
+                        game.MageMainAttack2.setVelocityX(game.DoesPlayerHasStrengthBuff ? -350 : -250);
+                        game.MageMainAttack2.setAccelerationX(game.DoesPlayerHasStrengthBuff ? -300 : -150);
                     }
                     else {
-                        MageMainAttack2.enableBody(true, MagePlayer.x + 32, MagePlayer.y, true, true);
-                        MageMainAttack2.setVelocityX(DoesPlayerHasStrengthBuff ? 350 : 250);
-                        MageMainAttack2.setAccelerationX(DoesPlayerHasStrengthBuff ? 300 : 150);
+                        game.MageMainAttack2.enableBody(true, magePlayer.x + 32, magePlayer.y, true, true);
+                        game.MageMainAttack2.setVelocityX(game.DoesPlayerHasStrengthBuff ? 350 : 250);
+                        game.MageMainAttack2.setAccelerationX(game.DoesPlayerHasStrengthBuff ? 300 : 150);
                     }
                     game.sound.play('mageMainAttack2');
-                    IsMageMainAttack2Used = true;
+                    game.IsMageMainAttack2Used = true;
                 }
 
             }
             //Cast Special Attack
-            else if (parent.specialAttack1.isDown && !IsMageSpecialAttack1Used) {
-                IsPlayerIdle = false;
-                MagePlayer.anims.play(currentMage + '-cast1-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
+            else if (parent.specialAttack1.isDown && !game.IsMageSpecialAttack1Used) {
+                playerInfo.IsPlayerIdle = false;
+
+                game.IsPlayerIdle = false;
+                magePlayer.anims.play(currentMage + '-cast1-' + (game.IsMainPlayerFacingLeft ? 'left' : 'right'), true);
 
                 //Only attack on the last animation frame
-                if (MagePlayer.anims.currentFrame.index >= 20) {
-                    MageSpecialAttack1 = CreateMageSpecialAttack1(parent);
+                if (magePlayer.anims.currentFrame.index >= 20) {
+                    game.MageSpecialAttack1 = CreateMageSpecialAttack1(parent, magePlayer);
 
-                    if (IsMainPlayerFacingLeft) {
-                        MageSpecialAttack1.enableBody(true, MagePlayer.x - 32, MagePlayer.y, true, true);
-                        MageSpecialAttack1.setVelocityX(DoesPlayerHasStrengthBuff ? -350 : -250);
-                        MageSpecialAttack1.setAccelerationX(DoesPlayerHasStrengthBuff ? -300 : -150);
+                    if (game.IsMainPlayerFacingLeft) {
+                        game.MageSpecialAttack1.enableBody(true, magePlayer.x - 32, magePlayer.y, true, true);
+                        game.MageSpecialAttack1.setVelocityX(game.DoesPlayerHasStrengthBuff ? -350 : -250);
+                        game.MageSpecialAttack1.setAccelerationX(game.DoesPlayerHasStrengthBuff ? -300 : -150);
                     }
                     else {
-                        MageSpecialAttack1.enableBody(true, MagePlayer.x + 32, MagePlayer.y, true, true);
-                        MageSpecialAttack1.setVelocityX(DoesPlayerHasStrengthBuff ? 350 : 250);
-                        MageSpecialAttack1.setAccelerationX(DoesPlayerHasStrengthBuff ? 300 : 150);
+                        game.MageSpecialAttack1.enableBody(true, magePlayer.x + 32, magePlayer.y, true, true);
+                        game.MageSpecialAttack1.setVelocityX(game.DoesPlayerHasStrengthBuff ? 350 : 250);
+                        game.MageSpecialAttack1.setAccelerationX(game.DoesPlayerHasStrengthBuff ? 300 : 150);
                     }
                     game.sound.play('mageSpecialAttack1');
-                    IsMageSpecialAttack1Used = true;
+                    game.IsMageSpecialAttack1Used = true;
                 }
             }
             //Cast Special Attack
-            else if (parent.specialAttack2.isDown && !IsMageSpecialAttack2Used) {
-                IsPlayerIdle = false;
-                MagePlayer.anims.play(currentMage + '-cast2-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
+            else if (parent.specialAttack2.isDown && !game.IsMageSpecialAttack2Used) {
+                playerInfo.IsPlayerIdle = false;
 
-                if (MagePlayer.anims.currentFrame.index >= 16) {
-                    MageSpecialAttack2 = CreateMageSpecialAttack2(parent);
+                game.IsPlayerIdle = false;
+                magePlayer.anims.play(currentMage + '-cast2-' + (game.IsMainPlayerFacingLeft ? 'left' : 'right'), true);
 
-                    if (IsMainPlayerFacingLeft) {
-                        MageSpecialAttack2.enableBody(true, MagePlayer.x, MagePlayer.y, true, true);
+                if (magePlayer.anims.currentFrame.index >= 16) {
+                    game.MageSpecialAttack2 = CreateMageSpecialAttack2(parent, magePlayer);
+
+                    if (game.IsMainPlayerFacingLeft) {
+                        game.MageSpecialAttack2.enableBody(true, magePlayer.x, magePlayer.y, true, true);
                     }
                     else {
-                        MageSpecialAttack2.enableBody(true, MagePlayer.x, MagePlayer.y, true, true);
+                        game.MageSpecialAttack2.enableBody(true, magePlayer.x, magePlayer.y, true, true);
                     }
 
                     //Make sure the buff goes away after sometime
                     setTimeout(DestroyMageSpecialAttack2, 10000);
 
                     game.sound.play('mageSpecialAttack2');
-                    IsMageSpecialAttack2Used = true;
+                    game.IsMageSpecialAttack2Used = true;
                 }
             }
             //Idle Left
-            else if (IsMainPlayerFacingLeft && !MagePlayer.body.isMoving) {
-                MagePlayer.anims.play(currentMage + '-idle1-left', true);
+            else if (game.IsMainPlayerFacingLeft && !magePlayer.body.isMoving) {
+                magePlayer.anims.play(currentMage + '-idle1-left', true);
             }
             //Idle Right
-            else if (!IsMainPlayerFacingLeft && !MagePlayer.body.isMoving) {
-                MagePlayer.anims.play(currentMage + '-idle1-right', true);
+            else if (!game.IsMainPlayerFacingLeft && !magePlayer.body.isMoving) {
+                magePlayer.anims.play(currentMage + '-idle1-right', true);
             }
         }
 
         //Player Jump
-        if ((Cursors.up.isDown || parent.jumpAlt.isDown) && MagePlayer.body.touching.down) {
-            IsPlayerIdle = false;
-            MagePlayer.setVelocityY((DoesPlayerHasStrengthBuff ? -600 : -550));
-            // MagePlayer.anims.play(currentMage + '-jump-' + (IsMainPlayerFacingLeft ? 'left' : 'right'), true);
+        if ((Cursors.up.isDown || parent.jumpAlt.isDown) && magePlayer.body.touching.down) {
+            game.IsPlayerIdle = false;
+            magePlayer.setVelocityY((game.DoesPlayerHasStrengthBuff ? -600 : -550));
+            magePlayer.anims.play(currentMage + '-jump-' + (game.IsMainPlayerFacingLeft ? 'left' : 'right'), true);
 
             //Jumping sound
             game.sound.play('jump');
         }
 
-        UpdateMageAttacks();
+        UpdateMageAttacks(magePlayer);
         DestroyMageAttacks();
-        MageParticlesOnPlayer(parent);
+        MageParticlesOnPlayer(parent, magePlayer);
+
+        playerInfo.IsMageMainAttack1Used = game.IsMageMainAttack1Used;
+        playerInfo.IsMageMainAttack2Used = game.IsMageMainAttack2Used;
+        playerInfo.IsMageSpecialAttack1Used = game.IsMageSpecialAttack1Used;
+        playerInfo.IsMageSpecialAttack2Used = game.IsMageSpecialAttack2Used;
+        playerInfo.DoesPlayerHasStrengthBuff = game.DoesPlayerHasStrengthBuff;
+        playerInfo.DoesPlayerHasSpeedBuff = game.DoesPlayerHasSpeedBuff;
+        playerInfo.IsMainPlayerFacingLeft = game.IsMainPlayerFacingLeft;
+        playerInfo.x = magePlayer.x;
+        playerInfo.y = magePlayer.y;
+        playerInfo.IsMageChar = true;
+        
+
+        Client.sendPlayerInfo(playerInfo);
     }
 }
 
-function CreateMageMainAttack1(parent) {
-    var mainAttack1 = parent.physics.add.sprite(MagePlayer.displayWidth, MagePlayer.displayHeight, 'mage-mainattack1');
+function CreateMageMainAttack1(parent, magePlayer) {
+    var mainAttack1 = parent.physics.add.sprite(magePlayer.displayWidth, magePlayer.displayHeight, 'mage-mainattack1');
 
     mainAttack1.setDisplaySize(mainAttack1.displayWidth / 10, mainAttack1.displayHeight / 10);
     mainAttack1.setCollideWorldBounds(true);
@@ -175,10 +224,10 @@ function CreateMageMainAttack1(parent) {
     return mainAttack1;
 }
 
-function CreateMageMainAttack2(parent) {
-    var mainAttack2 = parent.physics.add.sprite(MagePlayer.displayWidth, MagePlayer.displayHeight, 'mage2-mainAttack0');
+function CreateMageMainAttack2(parent, magePlayer) {
+    var mainAttack2 = parent.physics.add.sprite(magePlayer.displayWidth, magePlayer.displayHeight, 'mage2-mainAttack0');
 
-    mainAttack2.setDisplaySize(MageSpecialAttack1.displayWidth, MageSpecialAttack1.displayHeight);
+    mainAttack2.setDisplaySize(mainAttack2.displayWidth, mainAttack2.displayHeight);
     mainAttack2.setCollideWorldBounds(true);
     mainAttack2.setTint('0xff9955');
     mainAttack2.body.allowGravity = false;
@@ -187,8 +236,8 @@ function CreateMageMainAttack2(parent) {
     return mainAttack2;
 }
 
-function CreateMageSpecialAttack1(parent) {
-    var specialAttack1 = parent.physics.add.sprite(MagePlayer.displayWidth, MagePlayer.displayHeight, 'mage-specialAttack1');
+function CreateMageSpecialAttack1(parent, magePlayer) {
+    var specialAttack1 = parent.physics.add.sprite(magePlayer.displayWidth, magePlayer.displayHeight, 'mage-specialAttack1');
 
     specialAttack1.setDisplaySize(specialAttack1.displayWidth / 7, specialAttack1.displayHeight / 7);
     specialAttack1.setCollideWorldBounds(true);
@@ -199,8 +248,8 @@ function CreateMageSpecialAttack1(parent) {
     return specialAttack1;
 }
 
-function CreateMageSpecialAttack2(parent) {
-    var specialAttack2 = parent.physics.add.sprite(MagePlayer.displayWidth, MagePlayer.displayHeight, 'mage-specialAttack2');
+function CreateMageSpecialAttack2(parent, magePlayer) {
+    var specialAttack2 = parent.physics.add.sprite(magePlayer.displayWidth, magePlayer.displayHeight, 'mage-specialAttack2');
 
     specialAttack2.setDisplaySize(specialAttack2.displayWidth / 4, specialAttack2.displayHeight / 4);
     specialAttack2.setCollideWorldBounds(true);
@@ -213,67 +262,67 @@ function CreateMageSpecialAttack2(parent) {
 
 function DestroyMageAttacks() {
     //In case it hits a wall (side of the window)        
-    if (MageMainAttack1 != null && MageMainAttack1 != undefined && MageMainAttack1.body != null && MageMainAttack1.body != undefined) {
-        if (MageMainAttack1.body.onWall() && !MageMainAttack1.body.onFloor() && MageMainAttack1.body.enable) {
-            IsMageMainAttack1Used = false;
-            MageMainAttack1.destroy();
+    if (game.MageMainAttack1 != null && game.MageMainAttack1 != undefined && game.MageMainAttack1.body != null && game.MageMainAttack1.body != undefined) {
+        if (game.MageMainAttack1.body.onWall() && !game.MageMainAttack1.body.onFloor() && game.MageMainAttack1.body.enable) {
+            game.MageMainAttack1.destroy();
+            game.IsMageMainAttack1Used = false;
         }
     }
 
-    if (MageMainAttack2 != null && MageMainAttack2 != undefined && MageMainAttack2.body != null && MageMainAttack2.body != undefined) {
-        if (MageMainAttack2.body.onWall() && !MageMainAttack2.body.onFloor() && MageMainAttack2.body.enable) {
-            IsMageMainAttack2Used = false;
-            MageMainAttack2.destroy();
+    if (game.MageMainAttack2 != null && game.MageMainAttack2 != undefined && game.MageMainAttack2.body != null && game.MageMainAttack2.body != undefined) {
+        if (game.MageMainAttack2.body.onWall() && !game.MageMainAttack2.body.onFloor() && game.MageMainAttack2.body.enable) {
+            game.IsMageMainAttack2Used = false;
+            game.MageMainAttack2.destroy();
         }
     }
 
-    if (MageSpecialAttack1 != null && MageSpecialAttack1 != undefined && MageSpecialAttack1.body != null && MageSpecialAttack1.body != undefined) {
-        if (MageSpecialAttack1.body.onWall() && !MageSpecialAttack1.body.onFloor() && MageSpecialAttack1.body.enable) {
-            IsMageSpecialAttack1Used = false;
-            MageSpecialAttack1.destroy();
+    if (game.MageSpecialAttack1 != null && game.MageSpecialAttack1 != undefined && game.MageSpecialAttack1.body != null && game.MageSpecialAttack1.body != undefined) {
+        if (game.MageSpecialAttack1.body.onWall() && !game.MageSpecialAttack1.body.onFloor() && game.MageSpecialAttack1.body.enable) {
+            game.IsMageSpecialAttack1Used = false;
+            game.MageSpecialAttack1.destroy();
         }
     }
 }
 
 function DestroyMageMainAttack2() {
-    if (MageMainAttack2 != null && MageMainAttack2 != undefined && MageMainAttack2.on) {
-        MageMainAttack2.on = false;
-        IsMageMainAttack2Used = false;
+    if (game.MageMainAttack2 != null && game.MageMainAttack2 != undefined && game.MageMainAttack2.on) {
+        game.MageMainAttack2.on = false;
+        game.IsMageMainAttack2Used = false;
     }
 }
 
 //This is a buff so it has to be destroyed after a certain time
 function DestroyMageSpecialAttack2() {
-    if (MageSpecialAttack2 != null && MageSpecialAttack2 != undefined && MageSpecialAttack2.body != null && MageSpecialAttack2.body != undefined) {
-        IsMageSpecialAttack2Used = false;
-        MageSpecialAttack2.destroy();
+    if (game.MageSpecialAttack2 != null && game.MageSpecialAttack2 != undefined && game.MageSpecialAttack2.body != null && game.MageSpecialAttack2.body != undefined) {
+        game.IsMageSpecialAttack2Used = false;
+        game.MageSpecialAttack2.destroy();
     }
 }
 
-function UpdateMageAttacks() {
-    if (MageSpecialAttack1 != null && MageSpecialAttack1 != undefined) {
-        if (IsMainPlayerFacingLeft) {
-            MageSpecialAttack1.flipX = true;
-            MageSpecialAttack1.angle -= 3;
+function UpdateMageAttacks(magePlayer) {
+    if (game.MageSpecialAttack1 != null && game.MageSpecialAttack1 != undefined) {
+        if (game.IsMainPlayerFacingLeft) {
+            game.MageSpecialAttack1.flipX = true;
+            game.MageSpecialAttack1.angle -= 3;
         }
         else {
-            MageSpecialAttack1.flipX = false;
-            MageSpecialAttack1.angle += 3;
+            game.MageSpecialAttack1.flipX = false;
+            game.MageSpecialAttack1.angle += 3;
         }
     }
 
-    if (MageSpecialAttack2 != null && MageSpecialAttack2 != undefined) {
-        if (IsMainPlayerFacingLeft) {
-            MageSpecialAttack2.flipX = true;
-            MageSpecialAttack2.setPosition(MagePlayer.x + 16, MagePlayer.y);
+    if (game.MageSpecialAttack2 != null && game.MageSpecialAttack2 != undefined) {
+        if (game.IsMainPlayerFacingLeft) {
+            game.MageSpecialAttack2.flipX = true;
+            game.MageSpecialAttack2.setPosition(magePlayer.x + 16, magePlayer.y);
         }
         else {
-            MageSpecialAttack2.flipX = false;
-            MageSpecialAttack2.setPosition(MagePlayer.x - 16, MagePlayer.y);
+            game.MageSpecialAttack2.flipX = false;
+            game.MageSpecialAttack2.setPosition(magePlayer.x - 16, magePlayer.y);
         }
     }
 }
 
-function MageParticlesOnPlayer(parent) {
-    MageEmitter.setPosition(MagePlayer.x, MagePlayer.y + (MagePlayer.displayHeight / 2));
+function MageParticlesOnPlayer(parent, magePlayer) {
+    MageEmitter.setPosition(magePlayer.x, magePlayer.y + (magePlayer.displayHeight / 2));
 }

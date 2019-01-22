@@ -17,29 +17,29 @@ var MenuBgMusic;
 function MenuLoad(parent) {
     parent.load.image('menu-background', _AssetsDir + '/images/JoshsDaughter.jpg');
     // parent.load.image('menu-background', _AssetsDir + '/unity3d-assets/TooCubeForest/backgrounds/BG_cave_1024.png');
-    parent.load.image('warriorPlayer', _AssetsDir + '/unity3d-assets/SpritesWarriors/Warrior3/FantasyWarrior_01_Attack2_13right.png');
-    parent.load.image('magePlayer', _AssetsDir + '/unity3d-assets/SpritesMageHero/MageHeroRank03/MageHeroRank03_Cast_02/MageHeroRank03_Cast02_2right.png');
-    parent.load.image('archerPlayer', _AssetsDir + '/unity3d-assets/SpritesArchers/Archer3/FantasyArcher_03_Attack1_13right.png');
+    parent.load.image('warriorPlayer', _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior3/FantasyWarrior_01_Attack2_13right.png');
+    parent.load.image('magePlayer', _AssetsDir + '/images/Unity3D/SpritesMageHero/MageHeroRank03/MageHeroRank03_Cast02_2right.png');
+    parent.load.image('archerPlayer', _AssetsDir + '/images/Unity3D/SpritesArchers/Archer3/FantasyArcher_03_Attack1_13right.png');
 
-    parent.load.image('btn-background', _AssetsDir + '/unity3d-assets/FantasyWoodenGUI/UI_board_Large_parchment.png');
-    parent.load.image('cancel-btn', _AssetsDir + '/unity3d-assets/FantasyWoodenGUI/TextBTN_Cancel.png')
-    parent.load.image('start-btn', _AssetsDir + '/unity3d-assets/FantasyWoodenGUI/TextBTN_New-Start.png')
-    parent.load.image('rules-btn', _AssetsDir + '/unity3d-assets/FantasyWoodenGUI/RulesBtn.png');
-    parent.load.image('warrior-btn', _AssetsDir + '/unity3d-assets/FantasyWoodenGUI/warriorBtn.png');
-    parent.load.image('mage-btn', _AssetsDir + '/unity3d-assets/FantasyWoodenGUI/mageBtn.png');
-    parent.load.image('archer-btn', _AssetsDir + '/unity3d-assets/FantasyWoodenGUI/archerBtn.png');
-    parent.load.image('controllers-btn', _AssetsDir + '/unity3d-assets/FantasyWoodenGUI/Controllers.png');
-    parent.load.image('close-btn', _AssetsDir + '/unity3d-assets/FantasyWoodenGUI/Close_Button.png');
-    parent.load.image('Q-btn', _AssetsDir + '/unity3d-assets/FantasyWoodenGUI/Q_key.png');
-    parent.load.image('W-btn', _AssetsDir + '/unity3d-assets/FantasyWoodenGUI/W_key.png');
-    parent.load.image('E-btn', _AssetsDir + '/unity3d-assets/FantasyWoodenGUI/E_key.png');
-    parent.load.image('R-btn', _AssetsDir + '/unity3d-assets/FantasyWoodenGUI/R_key.png');
-    parent.load.image('Arrows-btn', _AssetsDir + '/unity3d-assets/FantasyWoodenGUI/Arrows_key.png');
-    parent.load.image('shift-btn', _AssetsDir + '/unity3d-assets/FantasyWoodenGUI/shift_key.png');
-    parent.load.image('space-btn', _AssetsDir + '/unity3d-assets/FantasyWoodenGUI/space_key.png');
+    parent.load.image('btn-background', _AssetsDir + '/images/Menu/UI_board_Large_parchment.png');
+    parent.load.image('cancel-btn', _AssetsDir + '/images/Menu/TextBTN_Cancel.png')
+    parent.load.image('start-btn', _AssetsDir + '/images/Menu/TextBTN_New-Start.png')
+    parent.load.image('rules-btn', _AssetsDir + '/images/Menu/RulesBtn.png');
+    parent.load.image('warrior-btn', _AssetsDir + '/images/Menu/warriorBtn.png');
+    parent.load.image('mage-btn', _AssetsDir + '/images/Menu/mageBtn.png');
+    parent.load.image('archer-btn', _AssetsDir + '/images/Menu/archerBtn.png');
+    parent.load.image('controllers-btn', _AssetsDir + '/images/Menu/Controllers.png');
+    parent.load.image('close-btn', _AssetsDir + '/images/Menu/Close_Button.png');
+    parent.load.image('Q-btn', _AssetsDir + '/images/Menu/Q_key.png');
+    parent.load.image('W-btn', _AssetsDir + '/images/Menu/W_key.png');
+    parent.load.image('E-btn', _AssetsDir + '/images/Menu/E_key.png');
+    parent.load.image('R-btn', _AssetsDir + '/images/Menu/R_key.png');
+    parent.load.image('Arrows-btn', _AssetsDir + '/images/Menu/Arrows_key.png');
+    parent.load.image('shift-btn', _AssetsDir + '/images/Menu/shift_key.png');
+    parent.load.image('space-btn', _AssetsDir + '/images/Menu/space_key.png');
 
-    parent.load.audio('btnClickSound', _AssetsDir + '/unity3d-assets/FantasySfx/Mp3/Menu_Select_00.mp3');
-    parent.load.audio('menuBgMusic', _AssetsDir + '/unity3d-assets/FantasySfx/Mp3/Ambience_Cave_00.mp3');
+    parent.load.audio('btnClickSound', _AssetsDir + '/audio/Unity3D/Menu_Select_00.wav');
+    parent.load.audio('menuBgMusic', _AssetsDir + '/audio/Unity3D/Ambience_Cave_00.wav');
 }
 /***************************************************** PRELOAD ******************************************************************/
 

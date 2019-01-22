@@ -1,20 +1,11 @@
 /********************************** CREATE *******************************************************/
 function create() {
+    //Will be useful later on to keep track of players
+    game.playerMap = {};
+
     Platform(this);
 
-    if (IsArcher) {
-        ArcherPlayerCreate(this);
-    }
-    else if (IsWarrior) {
-        WarriorPlayerCreate(this);
-    }
-    else if (IsMage) {
-        MagePlayerCreate(this);
-    }
-    else {
-        //Default to Archer
-        ArcherPlayerCreate(this);
-    }
+    console.log('this is in create ', this);
 
     ItemsToCollect(this);
     //ScoreDisplay(this);
@@ -26,6 +17,29 @@ function create() {
     ParticlesEffect(this);
     CheckIfPlayerIsIdle();
     MuteButton(this);
+
+
+    //Allows multiple players (It must stay at the end of the method)
+    Client.askNewPlayer();
+}
+
+function CreateNewPlayer(playerId, playerX, playerY) {
+    if (IsArcher) {
+        ArcherPlayerCreate(game.scene.scenes[1]);
+        return ArcherPlayer;
+    }
+    else if (IsWarrior) {
+        WarriorPlayerCreate(game.scene.scenes[1]);
+        return WarriorPlayer;
+    }
+    else if (IsMage) {
+        return MagePlayerCreate(game.scene.scenes[1], playerId, playerX, playerY);
+    }
+    else {
+        //Default to Archer
+        ArcherPlayerCreate(game.scene.scenes[1]);
+        return ArcherPlayer;
+    }
 }
 
 function CheckIfPlayerIsIdle() {
@@ -61,17 +75,19 @@ function ParticlesEffect(parent) {
         WarriorEmitter.on = false;
     }
 
-    if (MagePlayer != null && MagePlayer != undefined) {
-        MageParticles = parent.add.particles('fire3');
-        MageEmitter = MageParticles.createEmitter();
+    /* var magePlayer = game.playerMap[CurrentClientId];
 
-        MageEmitter.setPosition(MageParticles.x, MageParticles.y + (MageParticles.displayHeight / 2));
-        MageEmitter.setSpeed(100);
-        MageEmitter.setScale(0.05, 0.05);
-        MageEmitter.setAlpha(1, 0, 3000);
-        MageEmitter.maxParticles = 10;
-        MageEmitter.on = false;
-    }
+     if (magePlayer != null && magePlayer != undefined) {
+         MageParticles = parent.add.particles('fire3');
+         MageEmitter = MageParticles.createEmitter();
+
+         MageEmitter.setPosition(MageParticles.x, MageParticles.y + (MageParticles.displayHeight / 2));
+         MageEmitter.setSpeed(100);
+         MageEmitter.setScale(0.05, 0.05);
+         MageEmitter.setAlpha(1, 0, 3000);
+         MageEmitter.maxParticles = 10;
+         MageEmitter.on = false;
+     }*/
 
 }
 
@@ -84,9 +100,9 @@ function Collision(parent) {
         WarriorCollision(parent);
     }
 
-    if (MagePlayer != null && MagePlayer != undefined) {
-        MageCollision(parent);
-    }
+    /*if (magePlayer != null && magePlayer != undefined) {
+        //MageCollision(parent);
+    }*/
 }
 
 function LiveBackground(parent) {
@@ -177,9 +193,10 @@ function Platform(parent) {
 function GameSound(parent) {
     parent.sound.add('jumpSound');
 
-    BgMusic = parent.sound.add('gameMusic');
-    BgMusic.config.loop = true;
-    BgMusic.play();
+    //TODO: Uncomment once done testing
+    //BgMusic = parent.sound.add('gameMusic');
+    //BgMusic.config.loop = true;
+    //BgMusic.play();
 
     PlayerStepSound = parent.sound.add('playerStep');
 }
@@ -223,7 +240,7 @@ function CollectStar(player, star) {
 
     //Respawn the items to collect
     if (Stars.countActive(true) === 0) {
-        Stars.children.iterate(function (child) {
+        Stars.children.iterate(function(child) {
             child.enableBody(true, child.x, 0, true, true);
         });
     }
@@ -298,7 +315,8 @@ function ToggleMute(soundButton, muteButton) {
         this.game.sound.mute = true;
         muteButton.visible = true;
         soundButton.visible = false;
-    } else {
+    }
+    else {
         this.game.sound.mute = false;
         soundButton.visible = true;
         muteButton.visible = false;
