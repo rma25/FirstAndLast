@@ -30,7 +30,7 @@ function MageController(parent) {
 
             magePlayer.setVelocityX((game.DoesPlayerHasSpeedBuff ? -300 : -190) * (parent.run.isDown ? 1.5 : 1));
             magePlayer.anims.play(currentMage + '-' + (parent.run.isDown && !game.DoesPlayerHasStrengthBuff ? 'walk' : 'walk') + 'forward-left', true);
-            
+
             game.IsMainPlayerFacingLeft = true;
             game.IsPlayerIdle = false;
 
@@ -49,7 +49,7 @@ function MageController(parent) {
 
             magePlayer.setVelocityX((game.DoesPlayerHasSpeedBuff ? 300 : 190) * (parent.run.isDown ? 1.5 : 1));
             magePlayer.anims.play(currentMage + '-' + (parent.run.isDown && !game.DoesPlayerHasStrengthBuff ? 'walk' : 'walk') + 'forward-right', true);
-            
+
             game.IsMainPlayerFacingLeft = false;
             game.IsPlayerIdle = false;
 
@@ -80,7 +80,7 @@ function MageController(parent) {
                 //Only attack on the last animation frame
                 if (magePlayer.anims.currentFrame.index >= 17) {
                     playerInfo.UsingMageMainAttack1 = true;
-                    
+
                     game.MageMainAttack1 = CreateMageMainAttack1(parent, magePlayer);
 
                     if (game.IsMainPlayerFacingLeft) {
@@ -105,6 +105,7 @@ function MageController(parent) {
                 magePlayer.anims.play(currentMage + '-attack2-' + (game.IsMainPlayerFacingLeft ? 'left' : 'right'), true);
 
                 if (magePlayer.anims.currentFrame.index >= 20) {
+                    playerInfo.UsingMageMainAttack2 = true;
                     game.MageMainAttack2 = CreateMageMainAttack2(parent, magePlayer);
                     game.MageMainAttack2.play('mage-mainAttack2');
 
@@ -132,6 +133,7 @@ function MageController(parent) {
 
                 //Only attack on the last animation frame
                 if (magePlayer.anims.currentFrame.index >= 20) {
+                    playerInfo.UsingMageSpecialAttack1 = true;
                     game.MageSpecialAttack1 = CreateMageSpecialAttack1(parent, magePlayer);
 
                     if (game.IsMainPlayerFacingLeft) {
@@ -156,6 +158,7 @@ function MageController(parent) {
                 magePlayer.anims.play(currentMage + '-cast2-' + (game.IsMainPlayerFacingLeft ? 'left' : 'right'), true);
 
                 if (magePlayer.anims.currentFrame.index >= 16) {
+                    playerInfo.UsingMageSpecialAttack2 = true;
                     game.MageSpecialAttack2 = CreateMageSpecialAttack2(parent, magePlayer);
 
                     if (game.IsMainPlayerFacingLeft) {
@@ -206,9 +209,12 @@ function MageController(parent) {
         playerInfo.x = magePlayer.x;
         playerInfo.y = magePlayer.y;
         playerInfo.IsMageChar = true;
-        
+        game.IsMageChar = true;
+        playerInfo.DisplayHeight = magePlayer.displayHeight;
+        playerInfo.DisplayWidth = magePlayer.displayWidth;
 
-        Client.sendPlayerInfo(playerInfo);
+
+        Client.sendPlayerInfo(magePlayer);
     }
 }
 
@@ -324,5 +330,182 @@ function UpdateMageAttacks(magePlayer) {
 }
 
 function MageParticlesOnPlayer(parent, magePlayer) {
-    MageEmitter.setPosition(magePlayer.x, magePlayer.y + (magePlayer.displayHeight / 2));
+    game.MageEmitter.setPosition(magePlayer.x, magePlayer.y + (magePlayer.displayHeight / 2));
 }
+
+/*****************************************CLIENT UPDATE CODE******************************************/
+
+var ClientMageMainAttack1Sprite = {};
+var ClientMageMainAttack2Sprite = {};
+var ClientMageSpecialAttack1Sprite = {};
+var ClientMageSpecialAttack2Sprite = {};
+var ClientMagePlayer;
+
+var TEMPMage;
+
+function UpdateClientMage(playerInfo) {
+    if (CurrentClientId != -1) {
+        game.playerMap[playerInfo.PlayerId] = playerInfo;
+
+        /*ClientMagePlayer = game.playerMap[playerInfo.PlayerId];
+        ClientMagePlayer.setCollideWorldBounds(true);
+        ClientMagePlayer.body.setGravityY(400);
+        game.scene.getScene('MainGame').physics.add.collider(ClientMagePlayer, Platforms);
+
+        if (ClientMagePlayer != null && ClientMagePlayer != undefined) {
+            var currentMage = 'mage' + (playerInfo.DoesPlayerHasStrengthBuff ? '2' : '1');
+
+            TEMPMage = playerInfo;
+
+            ClientMagePlayer.x = playerInfo.x;
+            ClientMagePlayer.y = playerInfo.y;
+            ClientMagePlayer.setDisplaySize(playerInfo.DisplayWidth, playerInfo.DisplayHeight);
+
+
+            if (playerInfo.IsWalkingLeft) {
+                ClientMagePlayer.setVelocityX((playerInfo.DoesPlayerHasSpeedBuff ? -300 : -190) * (playerInfo.IsRunning ? 1.5 : 1));
+                ClientMagePlayer.anims.play(currentMage + '-walkforward-left', true);
+            }
+            //Player Right
+            else if (playerInfo.IsWalkingRight) {
+                ClientMagePlayer.setVelocityX((playerInfo.DoesPlayerHasSpeedBuff ? 300 : 190) * (playerInfo.IsRunning ? 1.5 : 1));
+                ClientMagePlayer.anims.play(currentMage + '-walkforward-right', true);
+            }
+            else {
+                ClientMagePlayer.setVelocityX(0);
+
+                if (playerInfo.IsMainAttack1Down && !playerInfo.IsMageMainAttack1Used) {
+                    ClientMagePlayer.anims.play(currentMage + '-attack1-' + (playerInfo.IsMainPlayerFacingLeft ? 'left' : 'right'), true);
+
+                    //Only attack on the last animation frame
+                    if (playerInfo.UsingMageMainAttack1 || ClientMagePlayer.anims.currentFrame.index >= 17) {
+                        try {
+                            console.log('Creating ClientMageMainAttack1Sprite');
+                            ClientMageMainAttack1Sprite = CreateMageMainAttack1(game.scene.getScene('MainGame'), ClientMagePlayer);
+                            console.log('Created ClientMageMainAttack1Sprite ', ClientMageMainAttack1Sprite);
+
+                            if (playerInfo.IsMainPlayerFacingLeft) {
+                                ClientMageMainAttack1Sprite.enableBody(true, ClientMagePlayer.x - 16, ClientMagePlayer.y, true, true);
+                                ClientMageMainAttack1Sprite.setVelocityX(playerInfo.DoesPlayerHasStrengthBuff ? -500 : -350);
+                            }
+                            else {
+                                ClientMageMainAttack1Sprite.enableBody(true, ClientMagePlayer.x + 16, ClientMagePlayer.y, true, true);
+                                ClientMageMainAttack1Sprite.setVelocityX(playerInfo.DoesPlayerHasStrengthBuff ? 500 : 350);
+                            }
+
+                            game.sound.play('mageMainAttack1');
+                        }
+                        catch (err) {
+                            console.log('Error happened', err);
+                        }
+                    }
+                }
+                else if (playerInfo.IsMainAttack2Down && !playerInfo.IsMageMainAttack2Used) {
+
+                    ClientMagePlayer.anims.play(currentMage + '-attack2-' + (playerInfo.IsMainPlayerFacingLeft ? 'left' : 'right'), true);
+
+                    if (ClientMagePlayer.anims.currentFrame.index >= 20) {
+                        ClientMageMainAttack2Sprite = CreateMageMainAttack2(game.scene.getScene('MainGame'), ClientMagePlayer);
+                        ClientMageMainAttack2Sprite.play('mage-mainAttack2');
+
+                        if (playerInfo.IsMainPlayerFacingLeft) {
+                            ClientMageMainAttack2Sprite.enableBody(true, ClientMagePlayer.x - 32, ClientMagePlayer.y, true, true);
+                            ClientMageMainAttack2Sprite.setVelocityX(playerInfo.DoesPlayerHasStrengthBuff ? -350 : -250);
+                            ClientMageMainAttack2Sprite.setAccelerationX(playerInfo.DoesPlayerHasStrengthBuff ? -300 : -150);
+                        }
+                        else {
+                            ClientMageMainAttack2Sprite.enableBody(true, ClientMagePlayer.x + 32, ClientMagePlayer.y, true, true);
+                            ClientMageMainAttack2Sprite.setVelocityX(playerInfo.DoesPlayerHasStrengthBuff ? 350 : 250);
+                            ClientMageMainAttack2Sprite.setAccelerationX(playerInfo.DoesPlayerHasStrengthBuff ? 300 : 150);
+                        }
+                        game.sound.play('mageMainAttack2');
+                    }
+
+                }
+                //Cast Special Attack
+                else if (playerInfo.IsSpecialAttack1Down && !playerInfo.IsMageSpecialAttack1Used) {
+                    ClientMagePlayer.anims.play(currentMage + '-cast1-' + (playerInfo.IsMainPlayerFacingLeft ? 'left' : 'right'), true);
+
+                    //Only attack on the last animation frame
+                    if (ClientMagePlayer.anims.currentFrame.index >= 20) {
+                        ClientMageSpecialAttack1Sprite = CreateMageSpecialAttack1(game.scene.getScene('MainGame'), ClientMagePlayer);
+
+                        if (playerInfo.IsMainPlayerFacingLeft) {
+                            ClientMageSpecialAttack1Sprite.enableBody(true, ClientMagePlayer.x - 32, ClientMagePlayer.y, true, true);
+                            ClientMageSpecialAttack1Sprite.setVelocityX(playerInfo.DoesPlayerHasStrengthBuff ? -350 : -250);
+                            ClientMageSpecialAttack1Sprite.setAccelerationX(playerInfo.DoesPlayerHasStrengthBuff ? -300 : -150);
+                        }
+                        else {
+                            ClientMageSpecialAttack1Sprite.enableBody(true, ClientMagePlayer.x + 32, ClientMagePlayer.y, true, true);
+                            ClientMageSpecialAttack1Sprite.setVelocityX(playerInfo.DoesPlayerHasStrengthBuff ? 350 : 250);
+                            ClientMageSpecialAttack1Sprite.setAccelerationX(playerInfo.DoesPlayerHasStrengthBuff ? 300 : 150);
+                        }
+
+                        game.sound.play('mageSpecialAttack1');
+                    }
+                }
+                //Cast Special Attack
+                else if (playerInfo.IsSpecialAttack2Down && !playerInfo.IsMageSpecialAttack2Used) {
+                    ClientMagePlayer.anims.play(currentMage + '-cast2-' + (ClientMagePlayer.IsMainPlayerFacingLeft ? 'left' : 'right'), true);
+
+                    if (ClientMagePlayer.anims.currentFrame.index >= 16) {
+                        ClientMageSpecialAttack2Sprite = CreateMageSpecialAttack2(game.scene.getScene('MainGame'), ClientMagePlayer);
+
+                        if (playerInfo.IsMainPlayerFacingLeft) {
+                            ClientMageSpecialAttack2Sprite.enableBody(true, ClientMagePlayer.x, ClientMagePlayer.y, true, true);
+                        }
+                        else {
+                            ClientMageSpecialAttack2Sprite.enableBody(true, ClientMagePlayer.x, ClientMagePlayer.y, true, true);
+                        }
+
+                        //Make sure the buff goes away after sometime
+                        setTimeout(DestroyClientMageSpecialAttack2, 10000);
+
+                        game.sound.play('mageSpecialAttack2');
+                    }
+                }
+                //Idle Left
+                else if (playerInfo.IsMainPlayerFacingLeft && !ClientMagePlayer.body.isMoving) {
+                    ClientMagePlayer.anims.play(currentMage + '-idle1-left', true);
+                }
+                //Idle Right
+                else if (!playerInfo.IsMainPlayerFacingLeft && !ClientMagePlayer.body.isMoving) {
+                    ClientMagePlayer.anims.play(currentMage + '-idle1-right', true);
+                }
+            }
+
+            DestroyClientMageAttacks();
+        }*/
+    }
+}
+
+function DestroyClientMageAttacks() {
+    //Destroy attacks
+    if (ClientMageMainAttack1Sprite != null && ClientMageMainAttack1Sprite != undefined && ClientMageMainAttack1Sprite.body != null && ClientMageMainAttack1Sprite.body != undefined) {
+        if (ClientMageMainAttack1Sprite.body.onWall() && !ClientMageMainAttack1Sprite.body.onFloor() && ClientMageMainAttack1Sprite.body.enable) {
+            console.log('Destroying mage main attack1 for client player');
+            ClientMageMainAttack1Sprite.destroy();
+        }
+    }
+
+    if (ClientMageSpecialAttack1Sprite != null && ClientMageSpecialAttack1Sprite != undefined && ClientMageSpecialAttack1Sprite.body != null && ClientMageSpecialAttack1Sprite.body != undefined) {
+        if (ClientMageSpecialAttack1Sprite.body.onWall() && !ClientMageSpecialAttack1Sprite.body.onFloor() && ClientMageSpecialAttack1Sprite.body.enable) {
+            ClientMageSpecialAttack1Sprite.destroy();
+        }
+    }
+
+    if (ClientMageMainAttack2Sprite != null && ClientMageMainAttack2Sprite != undefined && ClientMageMainAttack2Sprite.body != null && ClientMageMainAttack2Sprite.body != undefined) {
+        if (ClientMageMainAttack2Sprite.body.onWall() && !ClientMageMainAttack2Sprite.body.onFloor() && ClientMageMainAttack2Sprite.body.enable) {
+            ClientMageMainAttack2Sprite.destroy();
+        }
+    }
+}
+
+//This is a buff so it has to be destroyed after a certain time
+function DestroyClientMageSpecialAttack2() {
+    if (ClientMageSpecialAttack2Sprite != null && ClientMageSpecialAttack2Sprite != undefined && ClientMageSpecialAttack2Sprite.body != null && ClientMageSpecialAttack2Sprite.body != undefined) {
+        ClientMageSpecialAttack2Sprite.destroy();
+    }
+}
+
+/*****************************************CLIENT UPDATE CODE******************************************/

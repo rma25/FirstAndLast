@@ -68,26 +68,16 @@ function LoadingScreen(parent) {
 function GameLoad(parent) {
     //Audio
     GameAudio(parent);
-    
+
     BackgroundLoad(parent);
 
     //Particles
     ParticlesLoad(parent);
 
     //Load sprites for Main Player
-    if (IsArcher) {
-        ArcherPlayerLoad(parent);
-    }
-    else if (IsWarrior) {
-        WarriorPlayerLoad(parent);
-    }
-    else if (IsMage) {
-        MagePlayerLoad(parent);
-    }
-    else {
-        //Default
-        ArcherPlayerLoad(parent);
-    }
+    ArcherPlayerLoad(parent);
+    WarriorPlayerLoad(parent);
+    MagePlayerLoad(parent);
 
     //Buff
     BuffsLoad(parent);
@@ -224,24 +214,31 @@ function ArcherPlayerLoad(parent) {
 function WarriorPlayerLoad(parent) {
 
     for (var i = 0; i <= 14; i++) {
+        //Attack 1
         parent.load.image('warrior1-attack1-left' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior1/FantasyWarrior_01_Attack1_' + i + 'left.png');
         parent.load.image('warrior1-attack1-right' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior1/FantasyWarrior_01_Attack1_' + i + 'right.png');
         parent.load.image('warrior2-attack1-left' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior3/FantasyWarrior_01_Attack1_' + i + 'left.png');
         parent.load.image('warrior2-attack1-right' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior3/FantasyWarrior_01_Attack1_' + i + 'right.png');
-    }
-
-    for (var i = 0; i <= 14; i++) {
+        //Attack2
         parent.load.image('warrior1-attack2-left' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior1/FantasyWarrior_01_Attack2_' + i + 'left.png');
         parent.load.image('warrior1-attack2-right' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior1/FantasyWarrior_01_Attack2_' + i + 'right.png');
         parent.load.image('warrior2-attack2-left' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior3/FantasyWarrior_01_Attack2_' + i + 'left.png');
         parent.load.image('warrior2-attack2-right' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior3/FantasyWarrior_01_Attack2_' + i + 'right.png');
-    }
-
-    for (var i = 0; i <= 14; i++) {
+        //Death
         parent.load.image('warrior1-death-left' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior1/FantasyWarrior_01_Death_' + i + 'left.png');
         parent.load.image('warrior1-death-right' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior1/FantasyWarrior_01_Death_' + i + 'right.png');
         parent.load.image('warrior2-death-left' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior3/FantasyWarrior_01_Death_' + i + 'left.png');
         parent.load.image('warrior2-death-right' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior3/FantasyWarrior_01_Death_' + i + 'right.png');
+        //Walk
+        parent.load.image('warrior1-walk-left' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior1/FantasyWarrior_01_walk_' + i + 'left.png');
+        parent.load.image('warrior1-walk-right' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior1/FantasyWarrior_01_walk_' + i + 'right.png');
+        parent.load.image('warrior2-walk-left' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior3/FantasyWarrior_01_walk_' + i + 'left.png');
+        parent.load.image('warrior2-walk-right' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior3/FantasyWarrior_01_walk_' + i + 'right.png');
+        //Idle
+        parent.load.image('warrior1-idle1-left' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior1/FantasyWarrior_01_idle_' + i + 'left.png');
+        parent.load.image('warrior1-idle1-right' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior1/FantasyWarrior_01_idle_' + i + 'right.png');
+        parent.load.image('warrior2-idle1-left' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior3/FantasyWarrior_01_idle_' + i + 'left.png');
+        parent.load.image('warrior2-idle1-right' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior3/FantasyWarrior_01_idle_' + i + 'right.png');
     }
 
     for (var i = 0; i <= 4; i++) {
@@ -258,13 +255,6 @@ function WarriorPlayerLoad(parent) {
         parent.load.image('warrior2-idle2-right' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior3/FantasyWarrior_01_Idle2_' + i + 'right.png');
     }
 
-    for (var i = 0; i <= 14; i++) {
-        parent.load.image('warrior1-idle1-left' + i, _AssetsDir + '/images/Unity3Ds/SpritesWarriors/Warrior1/FantasyWarrior_01_idle_' + i + 'left.png');
-        parent.load.image('warrior1-idle1-right' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior1/FantasyWarrior_01_idle_' + i + 'right.png');
-        parent.load.image('warrior2-idle1-left' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior3/FantasyWarrior_01_idle_' + i + 'left.png');
-        parent.load.image('warrior2-idle1-right' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior3/FantasyWarrior_01_idle_' + i + 'right.png');
-    }
-
     for (var i = 0; i <= 12; i++) {
         parent.load.image('warrior1-jump-left' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior1/FantasyWarrior_01_Jump_' + i + 'left.png');
         parent.load.image('warrior1-jump-right' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior1/FantasyWarrior_01_Jump_' + i + 'right.png');
@@ -272,15 +262,8 @@ function WarriorPlayerLoad(parent) {
         parent.load.image('warrior2-jump-right' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior3/FantasyWarrior_01_Jump_' + i + 'right.png');
     }
 
-    for (var i = 0; i <= 14; i++) {
-        parent.load.image('warrior1-walk-left' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior1/FantasyWarrior_01_walk_' + i + 'left.png');
-        parent.load.image('warrior1-walk-right' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior1/FantasyWarrior_01_walk_' + i + 'right.png');
-        parent.load.image('warrior2-walk-left' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior3/FantasyWarrior_01_walk_' + i + 'left.png');
-        parent.load.image('warrior2-walk-right' + i, _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior3/FantasyWarrior_01_walk_' + i + 'right.png');
-    }
-
-    parent.load.image('warrior-specialAttack1', _AssetsDir + '/images/Unity3D/2DDeathTraps/warriorSpecialAttack1.png');
-    parent.load.image('warrior-specialAttack2', _AssetsDir + '/images/Unity3D/2DDeathTraps/warriorSpecialAttack2.png');
+    parent.load.image('warrior-specialAttack1', _AssetsDir + '/images/Unity3D/warriorSpecialAttack1.png');
+    parent.load.image('warrior-specialAttack2', _AssetsDir + '/images/Unity3D/warriorSpecialAttack2.png');
 }
 
 function MagePlayerLoad(parent) {

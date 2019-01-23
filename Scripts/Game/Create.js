@@ -24,21 +24,27 @@ function create() {
 }
 
 function CreateNewPlayer(playerId, playerX, playerY) {
+    //Create all Animations
+    CreateMageAnimations(game.scene.scenes[1]);
+    CreateWarriorAnimations(game.scene.scenes[1]);
+    CreateArcherAnimations(game.scene.scenes[1]);
+
     if (IsArcher) {
-        ArcherPlayerCreate(game.scene.scenes[1]);
-        return ArcherPlayer;
+        game.IsArcherChar = true;
+        return ArcherPlayerCreate(game.scene.scenes[1], playerId, playerX, playerY);
     }
     else if (IsWarrior) {
-        WarriorPlayerCreate(game.scene.scenes[1]);
-        return WarriorPlayer;
+        game.IsWarriorChar = true;
+        return WarriorPlayerCreate(game.scene.scenes[1], playerId, playerX, playerY);
     }
     else if (IsMage) {
+        game.IsMageChar = true;
         return MagePlayerCreate(game.scene.scenes[1], playerId, playerX, playerY);
     }
     else {
+        game.IsArcherChar = true;
         //Default to Archer
-        ArcherPlayerCreate(game.scene.scenes[1]);
-        return ArcherPlayer;
+        return ArcherPlayerCreate(game.scene.scenes[1], playerId, playerX, playerY);
     }
 }
 
@@ -62,33 +68,6 @@ function ParticlesEffect(parent) {
         ArcherEmitter.maxParticles = 10;
         ArcherEmitter.on = false;
     }
-
-    if (WarriorPlayer != null && WarriorPlayer != undefined) {
-        WarriorParticles = parent.add.particles('fire3');
-        WarriorEmitter = WarriorParticles.createEmitter();
-
-        WarriorEmitter.setPosition(WarriorPlayer.x, WarriorPlayer.y + (WarriorPlayer.displayHeight / 2));
-        WarriorEmitter.setSpeed(100);
-        WarriorEmitter.setScale(0.05, 0.05);
-        WarriorEmitter.setAlpha(1, 0, 3000);
-        WarriorEmitter.maxParticles = 10;
-        WarriorEmitter.on = false;
-    }
-
-    /* var magePlayer = game.playerMap[CurrentClientId];
-
-     if (magePlayer != null && magePlayer != undefined) {
-         MageParticles = parent.add.particles('fire3');
-         MageEmitter = MageParticles.createEmitter();
-
-         MageEmitter.setPosition(MageParticles.x, MageParticles.y + (MageParticles.displayHeight / 2));
-         MageEmitter.setSpeed(100);
-         MageEmitter.setScale(0.05, 0.05);
-         MageEmitter.setAlpha(1, 0, 3000);
-         MageEmitter.maxParticles = 10;
-         MageEmitter.on = false;
-     }*/
-
 }
 
 function Collision(parent) {
@@ -261,7 +240,7 @@ function CollectSpeedBuff(player, buff) {
     //Only allow player to collect buff once
     buff.disableBody(true, true);
 
-    if (!DoesPlayerHasSpeedBuff) {
+    if (!game.DoesPlayerHasSpeedBuff) {
         //display particle effects
         if (ArcherEmitter != null && ArcherEmitter != undefined) {
             ArcherEmitter.on = true;
@@ -277,7 +256,7 @@ function CollectSpeedBuff(player, buff) {
 
         game.sound.play('speedBuffSound');
     }
-    DoesPlayerHasSpeedBuff = true;
+    game.DoesPlayerHasSpeedBuff = true;
 
     //Disable buffs after some time
     setTimeout(DisableBuffs, 10000);
@@ -285,10 +264,10 @@ function CollectSpeedBuff(player, buff) {
 
 function CollectStrengthBuff(player, buff) {
     buff.disableBody(true, true);
-    if (!DoesPlayerHasStrengthBuff) {
+    if (!game.DoesPlayerHasStrengthBuff) {
         game.sound.play('strengthBuffSound');
     }
-    DoesPlayerHasStrengthBuff = true;
+    game.DoesPlayerHasStrengthBuff = true;
 }
 /** Collection **/
 

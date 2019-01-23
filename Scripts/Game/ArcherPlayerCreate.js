@@ -1,4 +1,19 @@
-function ArcherPlayerCreate(parent) {
+function ArcherPlayerCreate(parent, playerId, playerX, playerY) {
+    //Player    
+    //Add starting image of player, width, height
+    var archerPlayer = parent.physics.add.sprite(playerX, playerY, 'archer1-idle1-right0');
+    archerPlayer.setDisplaySize(81, 81);
+    archerPlayer.setCollideWorldBounds(true);
+    archerPlayer.body.setGravityY(400);
+
+    CreateArcherAnimations(parent);
+
+    PlayerArrow(parent, archerPlayer);
+
+    return archerPlayer;
+}
+
+function CreateArcherAnimations(parent) {
     var attack1FramesLeft = [];
     var attack1FramesRight = [];
     var attack2FramesLeft = [];
@@ -40,17 +55,6 @@ function ArcherPlayerCreate(parent) {
     var archerSpecialAttack2Frames1Right = [];
     var archerSpecialAttack2Frames1Left = [];
 
-    //Player    
-    //Add starting image of player, width, height
-    ArcherPlayer = parent.physics.add.sprite(100, (WindowHeight - GroundHeight - 91), 'archer1-idle1-right0');
-    ArcherPlayer.setDisplaySize(81, 81);
-    ArcherPlayer.setCollideWorldBounds(true);
-    ArcherPlayer.body.setGravityY(400);
-
-    //Set original player size
-    OriginalPlayerWidth = ArcherPlayer.displayWidth;
-    OriginalPlayerHeight = ArcherPlayer.displayHeight;
-
     //Frames
     for (var i = 0; i <= 14; i++) {
         attack1FramesLeft.push({ key: 'archer1-attack1-left' + i });
@@ -59,30 +63,37 @@ function ArcherPlayerCreate(parent) {
         attack1FramesRight2.push({ key: 'archer2-attack1-right' + i });
     }
 
-    parent.anims.create({
-        key: 'archer1-attack1-left',
-        frames: attack1FramesLeft,
-        frameRate: 15,
-        repeat: -1
-    });
-    parent.anims.create({
-        key: 'archer1-attack1-right',
-        frames: attack1FramesRight,
-        frameRate: 15,
-        repeat: -1
-    });
-    parent.anims.create({
-        key: 'archer2-attack1-left',
-        frames: attack1FramesLeft2,
-        frameRate: 15,
-        repeat: -1
-    });
-    parent.anims.create({
-        key: 'archer2-attack1-right',
-        frames: attack1FramesRight2,
-        frameRate: 15,
-        repeat: -1
-    });
+    if (!parent.anims.get('archer1-attack1-left'))
+        parent.anims.create({
+            key: 'archer1-attack1-left',
+            frames: attack1FramesLeft,
+            frameRate: 15,
+            repeat: -1
+        });
+
+    if (!parent.anims.get('archer1-attack1-right'))
+        parent.anims.create({
+            key: 'archer1-attack1-right',
+            frames: attack1FramesRight,
+            frameRate: 15,
+            repeat: -1
+        });
+
+    if (!parent.anims.get('archer2-attack1-left'))
+        parent.anims.create({
+            key: 'archer2-attack1-left',
+            frames: attack1FramesLeft2,
+            frameRate: 15,
+            repeat: -1
+        });
+
+    if (!parent.anims.get('archer2-attack1-right'))
+        parent.anims.create({
+            key: 'archer2-attack1-right',
+            frames: attack1FramesRight2,
+            frameRate: 15,
+            repeat: -1
+        });
 
 
     for (var i = 0; i <= 14; i++) {
@@ -92,30 +103,37 @@ function ArcherPlayerCreate(parent) {
         attack2FramesRight2.push({ key: 'archer2-attack2-right' + i });
     }
 
-    parent.anims.create({
-        key: 'archer1-attack2-left',
-        frames: attack2FramesLeft,
-        frameRate: 15,
-        repeat: -1
-    });
-    parent.anims.create({
-        key: 'archer1-attack2-right',
-        frames: attack2FramesRight,
-        frameRate: 15,
-        repeat: -1
-    });
-    parent.anims.create({
-        key: 'archer2-attack2-left',
-        frames: attack2FramesLeft2,
-        frameRate: 15,
-        repeat: -1
-    });
-    parent.anims.create({
-        key: 'archer2-attack2-right',
-        frames: attack2FramesRight2,
-        frameRate: 15,
-        repeat: -1
-    });
+    if (!parent.anims.get('archer1-attack2-left'))
+        parent.anims.create({
+            key: 'archer1-attack2-left',
+            frames: attack2FramesLeft,
+            frameRate: 15,
+            repeat: -1
+        });
+
+    if (!parent.anims.get('archer1-attack2-right'))
+        parent.anims.create({
+            key: 'archer1-attack2-right',
+            frames: attack2FramesRight,
+            frameRate: 15,
+            repeat: -1
+        });
+
+    if (!parent.anims.get('archer2-attack2-left'))
+        parent.anims.create({
+            key: 'archer2-attack2-left',
+            frames: attack2FramesLeft2,
+            frameRate: 15,
+            repeat: -1
+        });
+
+    if (!parent.anims.get('archer2-attack2-right'))
+        parent.anims.create({
+            key: 'archer2-attack2-right',
+            frames: attack2FramesRight2,
+            frameRate: 15,
+            repeat: -1
+        });
 
     for (var i = 0; i <= 14; i++) {
         deathFramesLeft.push({ key: 'archer1-death-left' + i });
@@ -124,30 +142,37 @@ function ArcherPlayerCreate(parent) {
         deathFramesRight2.push({ key: 'archer2-death-right' + i });
     }
 
-    parent.anims.create({
-        key: 'archer1-death-left',
-        frames: deathFramesLeft,
-        frameRate: 10,
-        repeat: -1
-    });
-    parent.anims.create({
-        key: 'archer1-death-right',
-        frames: deathFramesRight,
-        frameRate: 10,
-        repeat: -1
-    });
-    parent.anims.create({
-        key: 'archer2-death-left',
-        frames: deathFramesLeft2,
-        frameRate: 10,
-        repeat: -1
-    });
-    parent.anims.create({
-        key: 'archer2-death-right',
-        frames: deathFramesRight2,
-        frameRate: 10,
-        repeat: -1
-    });
+    if (!parent.anims.get('archer1-death-left'))
+        parent.anims.create({
+            key: 'archer1-death-left',
+            frames: deathFramesLeft,
+            frameRate: 10,
+            repeat: -1
+        });
+
+    if (!parent.anims.get('archer1-death-right'))
+        parent.anims.create({
+            key: 'archer1-death-right',
+            frames: deathFramesRight,
+            frameRate: 10,
+            repeat: -1
+        });
+
+    if (!parent.anims.get('archer2-death-left'))
+        parent.anims.create({
+            key: 'archer2-death-left',
+            frames: deathFramesLeft2,
+            frameRate: 10,
+            repeat: -1
+        });
+
+    if (!parent.anims.get('archer2-death-right'))
+        parent.anims.create({
+            key: 'archer2-death-right',
+            frames: deathFramesRight2,
+            frameRate: 10,
+            repeat: -1
+        });
 
     for (var i = 0; i <= 4; i++) {
         hitFramesLeft.push({ key: 'archer1-hit-left' + i });
@@ -156,30 +181,37 @@ function ArcherPlayerCreate(parent) {
         hitFramesRight2.push({ key: 'archer2-hit-right' + i });
     }
 
-    parent.anims.create({
-        key: 'archer1-hit-left',
-        frames: hitFramesLeft,
-        frameRate: 10,
-        repeat: -1
-    });
-    parent.anims.create({
-        key: 'archer1-hit-right',
-        frames: hitFramesRight,
-        frameRate: 10,
-        repeat: -1
-    });
-    parent.anims.create({
-        key: 'archer2-hit-left',
-        frames: hitFramesLeft2,
-        frameRate: 10,
-        repeat: -1
-    });
-    parent.anims.create({
-        key: 'archer2-hit-right',
-        frames: hitFramesRight2,
-        frameRate: 10,
-        repeat: -1
-    });
+    if (!parent.anims.get('archer1-hit-left'))
+        parent.anims.create({
+            key: 'archer1-hit-left',
+            frames: hitFramesLeft,
+            frameRate: 10,
+            repeat: -1
+        });
+
+    if (!parent.anims.get('archer1-hit-right'))
+        parent.anims.create({
+            key: 'archer1-hit-right',
+            frames: hitFramesRight,
+            frameRate: 10,
+            repeat: -1
+        });
+
+    if (!parent.anims.get('archer2-hit-left'))
+        parent.anims.create({
+            key: 'archer2-hit-left',
+            frames: hitFramesLeft2,
+            frameRate: 10,
+            repeat: -1
+        });
+
+    if (!parent.anims.get('archer2-hit-right'))
+        parent.anims.create({
+            key: 'archer2-hit-right',
+            frames: hitFramesRight2,
+            frameRate: 10,
+            repeat: -1
+        });
 
     for (var i = 0; i <= 29; i++) {
         idle2FramesLeft.push({ key: 'archer1-idle2-left' + i });
@@ -188,30 +220,37 @@ function ArcherPlayerCreate(parent) {
         idle2FramesRight2.push({ key: 'archer2-idle2-right' + i });
     }
 
-    parent.anims.create({
-        key: 'archer1-idle2-left',
-        frames: idle2FramesLeft,
-        frameRate: 10,
-        repeat: 1
-    });
-    parent.anims.create({
-        key: 'archer1-idle2-right',
-        frames: idle2FramesRight,
-        frameRate: 10,
-        repeat: 1
-    });
-    parent.anims.create({
-        key: 'archer2-idle2-left',
-        frames: idle2FramesLeft2,
-        frameRate: 10,
-        repeat: 1
-    });
-    parent.anims.create({
-        key: 'archer2-idle2-right',
-        frames: idle2FramesRight2,
-        frameRate: 10,
-        repeat: 1
-    });
+    if (!parent.anims.get('archer1-idle2-left'))
+        parent.anims.create({
+            key: 'archer1-idle2-left',
+            frames: idle2FramesLeft,
+            frameRate: 10,
+            repeat: 1
+        });
+
+    if (!parent.anims.get('archer1-idle2-right'))
+        parent.anims.create({
+            key: 'archer1-idle2-right',
+            frames: idle2FramesRight,
+            frameRate: 10,
+            repeat: 1
+        });
+
+    if (!parent.anims.get('archer2-idle2-left'))
+        parent.anims.create({
+            key: 'archer2-idle2-left',
+            frames: idle2FramesLeft2,
+            frameRate: 10,
+            repeat: 1
+        });
+
+    if (!parent.anims.get('archer2-idle2-right'))
+        parent.anims.create({
+            key: 'archer2-idle2-right',
+            frames: idle2FramesRight2,
+            frameRate: 10,
+            repeat: 1
+        });
 
     for (var i = 0; i <= 14; i++) {
         idle1FramesLeft.push({ key: 'archer1-idle1-left' + i });
@@ -220,30 +259,37 @@ function ArcherPlayerCreate(parent) {
         idle1FramesRight2.push({ key: 'archer2-idle1-right' + i });
     }
 
-    parent.anims.create({
-        key: 'archer1-idle1-left',
-        frames: idle1FramesLeft,
-        frameRate: 10,
-        repeat: 1
-    });
-    parent.anims.create({
-        key: 'archer1-idle1-right',
-        frames: idle1FramesRight,
-        frameRate: 10,
-        repeat: 1
-    });
-    parent.anims.create({
-        key: 'archer2-idle1-left',
-        frames: idle1FramesLeft2,
-        frameRate: 10,
-        repeat: 1
-    });
-    parent.anims.create({
-        key: 'archer2-idle1-right',
-        frames: idle1FramesRight2,
-        frameRate: 10,
-        repeat: 1
-    });
+    if (!parent.anims.get('archer1-idle1-left'))
+        parent.anims.create({
+            key: 'archer1-idle1-left',
+            frames: idle1FramesLeft,
+            frameRate: 10,
+            repeat: 1
+        });
+
+    if (!parent.anims.get('archer1-idle1-right'))
+        parent.anims.create({
+            key: 'archer1-idle1-right',
+            frames: idle1FramesRight,
+            frameRate: 10,
+            repeat: 1
+        });
+
+    if (!parent.anims.get('archer2-idle1-left'))
+        parent.anims.create({
+            key: 'archer2-idle1-left',
+            frames: idle1FramesLeft2,
+            frameRate: 10,
+            repeat: 1
+        });
+
+    if (!parent.anims.get('archer2-idle1-right'))
+        parent.anims.create({
+            key: 'archer2-idle1-right',
+            frames: idle1FramesRight2,
+            frameRate: 10,
+            repeat: 1
+        });
 
     for (var i = 0; i <= 12; i++) {
         jumpFramesLeft.push({ key: 'archer1-jump-left' + i });
@@ -252,30 +298,37 @@ function ArcherPlayerCreate(parent) {
         jumpFramesRight2.push({ key: 'archer2-jump-right' + i });
     }
 
-    parent.anims.create({
-        key: 'archer1-jump-left',
-        frames: jumpFramesLeft,
-        frameRate: 10,
-        repeat: -1
-    });
-    parent.anims.create({
-        key: 'archer1-jump-right',
-        frames: jumpFramesRight,
-        frameRate: 10,
-        repeat: -1
-    });
-    parent.anims.create({
-        key: 'archer2-jump-left',
-        frames: jumpFramesLeft2,
-        frameRate: 10,
-        repeat: -1
-    });
-    parent.anims.create({
-        key: 'archer2-jump-right',
-        frames: jumpFramesRight2,
-        frameRate: 10,
-        repeat: -1
-    });
+    if (!parent.anims.get('archer1-jump-left'))
+        parent.anims.create({
+            key: 'archer1-jump-left',
+            frames: jumpFramesLeft,
+            frameRate: 10,
+            repeat: -1
+        });
+
+    if (!parent.anims.get('archer1-jump-right'))
+        parent.anims.create({
+            key: 'archer1-jump-right',
+            frames: jumpFramesRight,
+            frameRate: 10,
+            repeat: -1
+        });
+
+    if (!parent.anims.get('archer2-jump-left'))
+        parent.anims.create({
+            key: 'archer2-jump-left',
+            frames: jumpFramesLeft2,
+            frameRate: 10,
+            repeat: -1
+        });
+
+    if (!parent.anims.get('archer2-jump-right'))
+        parent.anims.create({
+            key: 'archer2-jump-right',
+            frames: jumpFramesRight2,
+            frameRate: 10,
+            repeat: -1
+        });
 
     for (var i = 0; i <= 14; i++) {
         walkRightFramesLeft.push({ key: 'archer1-walk-left' + i });
@@ -284,30 +337,37 @@ function ArcherPlayerCreate(parent) {
         walkRightFramesRight2.push({ key: 'archer2-walk-right' + i });
     }
 
-    parent.anims.create({
-        key: 'archer1-walk-left',
-        frames: walkRightFramesLeft,
-        frameRate: 10,
-        repeat: -1
-    });
-    parent.anims.create({
-        key: 'archer1-walk-right',
-        frames: walkRightFramesRight,
-        frameRate: 10,
-        repeat: -1
-    });
-    parent.anims.create({
-        key: 'archer2-walk-left',
-        frames: walkRightFramesLeft2,
-        frameRate: 10,
-        repeat: -1
-    });
-    parent.anims.create({
-        key: 'archer2-walk-right',
-        frames: walkRightFramesRight2,
-        frameRate: 10,
-        repeat: -1
-    });
+    if (!parent.anims.get('archer1-walk-left'))
+        parent.anims.create({
+            key: 'archer1-walk-left',
+            frames: walkRightFramesLeft,
+            frameRate: 10,
+            repeat: -1
+        });
+
+    if (!parent.anims.get('archer1-walk-right'))
+        parent.anims.create({
+            key: 'archer1-walk-right',
+            frames: walkRightFramesRight,
+            frameRate: 10,
+            repeat: -1
+        });
+
+    if (!parent.anims.get('archer2-walk-left'))
+        parent.anims.create({
+            key: 'archer2-walk-left',
+            frames: walkRightFramesLeft2,
+            frameRate: 10,
+            repeat: -1
+        });
+
+    if (!parent.anims.get('archer2-walk-right'))
+        parent.anims.create({
+            key: 'archer2-walk-right',
+            frames: walkRightFramesRight2,
+            frameRate: 10,
+            repeat: -1
+        });
 
     for (var i = 7; i <= 9; i++) {
         specialAttackFrames1Left.push({ key: 'archer1-death-left' + i });
@@ -316,30 +376,37 @@ function ArcherPlayerCreate(parent) {
         specialAttackFrames2Right.push({ key: 'archer2-death-right' + i });
     }
 
-    parent.anims.create({
-        key: 'archer1-specialAttack1-left',
-        frames: specialAttackFrames1Left,
-        frameRate: 3,
-        repeat: -1
-    });
-    parent.anims.create({
-        key: 'archer1-specialAttack1-right',
-        frames: specialAttackFrames1Right,
-        frameRate: 3,
-        repeat: -1
-    });
-    parent.anims.create({
-        key: 'archer2-specialAttack1-left',
-        frames: specialAttackFrames2Left,
-        frameRate: 3,
-        repeat: -1
-    });
-    parent.anims.create({
-        key: 'archer2-specialAttack1-right',
-        frames: specialAttackFrames2Right,
-        frameRate: 3,
-        repeat: -1
-    });
+    if (!parent.anims.get('archer1-specialAttack1-left'))
+        parent.anims.create({
+            key: 'archer1-specialAttack1-left',
+            frames: specialAttackFrames1Left,
+            frameRate: 3,
+            repeat: -1
+        });
+
+    if (!parent.anims.get('archer1-specialAttack1-right'))
+        parent.anims.create({
+            key: 'archer1-specialAttack1-right',
+            frames: specialAttackFrames1Right,
+            frameRate: 3,
+            repeat: -1
+        });
+
+    if (!parent.anims.get('archer2-specialAttack1-left'))
+        parent.anims.create({
+            key: 'archer2-specialAttack1-left',
+            frames: specialAttackFrames2Left,
+            frameRate: 3,
+            repeat: -1
+        });
+
+    if (!parent.anims.get('archer2-specialAttack1-right'))
+        parent.anims.create({
+            key: 'archer2-specialAttack1-right',
+            frames: specialAttackFrames2Right,
+            frameRate: 3,
+            repeat: -1
+        });
 
     for (var j = 0; j <= 3; j++) {
         for (var i = 0; i <= 2; i++) {
@@ -347,12 +414,13 @@ function ArcherPlayerCreate(parent) {
         }
     }
 
-    parent.anims.create({
-        key: 'archer-specialAttack-1',
-        frames: archerSpecialAttackFrames,
-        frameRate: 1,
-        repeat: -1
-    });
+    if (!parent.anims.get('archer-specialAttack-1'))
+        parent.anims.create({
+            key: 'archer-specialAttack-1',
+            frames: archerSpecialAttackFrames,
+            frameRate: 1,
+            repeat: -1
+        });
 
     for (var i = 0; i <= 5; i++) {
         archerSpecialAttack2Frames1Right.push({ key: 'archer-specialAttack2-' + i + 'right' });
@@ -362,12 +430,13 @@ function ArcherPlayerCreate(parent) {
     archerSpecialAttack2Frames1Right.push({ key: 'archer-specialAttack2-5right' });
     archerSpecialAttack2Frames1Right.push({ key: 'archer-specialAttack2-5right' });
 
-    parent.anims.create({
-        key: 'archer-specialAttack-2-0-right',
-        frames: archerSpecialAttack2Frames1Right,
-        frameRate: 5,
-        repeat: -1
-    });
+    if (!parent.anims.get('archer-specialAttack-2-0-right'))
+        parent.anims.create({
+            key: 'archer-specialAttack-2-0-right',
+            frames: archerSpecialAttack2Frames1Right,
+            frameRate: 5,
+            repeat: -1
+        });
 
     for (var i = 0; i <= 5; i++) {
         archerSpecialAttack2Frames1Left.push({ key: 'archer-specialAttack2-' + i + 'left' });
@@ -377,41 +446,42 @@ function ArcherPlayerCreate(parent) {
     archerSpecialAttack2Frames1Left.push({ key: 'archer-specialAttack2-5left' });
     archerSpecialAttack2Frames1Left.push({ key: 'archer-specialAttack2-5left' });
 
-    parent.anims.create({
-        key: 'archer-specialAttack-2-0-left',
-        frames: archerSpecialAttack2Frames1Left,
-        frameRate: 5,
-        repeat: -1
-    });
+    if (!parent.anims.get('archer-specialAttack-2-0-left'))
+        parent.anims.create({
+            key: 'archer-specialAttack-2-0-left',
+            frames: archerSpecialAttack2Frames1Left,
+            frameRate: 5,
+            repeat: -1
+        });
 
     for (var i = 6; i <= 7; i++) {
         archerSpecialAttack2Frames2.push({ key: 'archer-specialAttack2-' + i + 'ball' });
     }
 
-    parent.anims.create({
-        key: 'archer-specialAttack-2-1',
-        frames: archerSpecialAttack2Frames2,
-        frameRate: 4,
-        repeat: -1
-    });
+    if (!parent.anims.get('archer-specialAttack-2-1'))
+        parent.anims.create({
+            key: 'archer-specialAttack-2-1',
+            frames: archerSpecialAttack2Frames2,
+            frameRate: 4,
+            repeat: -1
+        });
 
-    PlayerArrow(parent);
 }
 
-function PlayerArrow(parent) {
-    if (ArcherPlayer != null & ArcherPlayer != undefined) {
+function PlayerArrow(parent, archerPlayer) {
+    if (archerPlayer != null & archerPlayer != undefined) {
 
-        ArrowsRight = parent.physics.add.sprite(ArcherPlayer.displayWidth, ArcherPlayer.displayHeight, 'arrow-right');
-        ArrowsRight.setDisplaySize(ArrowsRight.displayWidth / 2.5, ArrowsRight.displayHeight / 2.5);
-        ArrowsRight.setCollideWorldBounds(true);
-        ArrowsRight.body.setGravityY(0);
-        ArrowsRight.disableBody(true, true);
+        game.ArrowsRight = parent.physics.add.sprite(archerPlayer.displayWidth, archerPlayer.displayHeight, 'arrow-right');
+        game.ArrowsRight.setDisplaySize(game.ArrowsRight.displayWidth / 2.5, game.ArrowsRight.displayHeight / 2.5);
+        game.ArrowsRight.setCollideWorldBounds(true);
+        game.ArrowsRight.body.setGravityY(0);
+        game.ArrowsRight.disableBody(true, true);
 
-        ArrowsLeft = parent.physics.add.sprite(ArcherPlayer.displayWidth, ArcherPlayer.displayHeight, 'arrow-left');
-        ArrowsLeft.setDisplaySize(ArrowsLeft.displayWidth / 2.5, ArrowsLeft.displayHeight / 2.5);
-        ArrowsLeft.setCollideWorldBounds(true);
-        ArrowsLeft.body.setGravityY(0);
-        ArrowsLeft.disableBody(true, true);
+        game.ArrowsLeft = parent.physics.add.sprite(archerPlayer.displayWidth, archerPlayer.displayHeight, 'arrow-left');
+        game.ArrowsLeft.setDisplaySize(game.ArrowsLeft.displayWidth / 2.5, game.ArrowsLeft.displayHeight / 2.5);
+        game.ArrowsLeft.setCollideWorldBounds(true);
+        game.ArrowsLeft.body.setGravityY(0);
+        game.ArrowsLeft.disableBody(true, true);
     }
 }
 

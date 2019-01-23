@@ -1,5 +1,6 @@
 /*MENU*/
 function preloadMenu() {
+    LoadingScreen(this);
     MenuLoad(this);
 }
 
@@ -15,6 +16,7 @@ var MenuBgMusic;
 
 /***************************************************** PRELOAD ******************************************************************/
 function MenuLoad(parent) {
+    parent.load.audio('menuBgMusic', _AssetsDir + '/audio/Unity3D/Ambience_Cave_00.wav');
     parent.load.image('menu-background', _AssetsDir + '/images/JoshsDaughter.jpg');
     // parent.load.image('menu-background', _AssetsDir + '/unity3d-assets/TooCubeForest/backgrounds/BG_cave_1024.png');
     parent.load.image('warriorPlayer', _AssetsDir + '/images/Unity3D/SpritesWarriors/Warrior3/FantasyWarrior_01_Attack2_13right.png');
@@ -39,17 +41,12 @@ function MenuLoad(parent) {
     parent.load.image('space-btn', _AssetsDir + '/images/Menu/space_key.png');
 
     parent.load.audio('btnClickSound', _AssetsDir + '/audio/Unity3D/Menu_Select_00.wav');
-    parent.load.audio('menuBgMusic', _AssetsDir + '/audio/Unity3D/Ambience_Cave_00.wav');
 }
 /***************************************************** PRELOAD ******************************************************************/
 
 
 /***************************************************** CREATE ******************************************************************/
 function MenuCreate(parent) {
-    MenuBgMusic = parent.sound.add('menuBgMusic');
-    MenuBgMusic.loop = true;
-    MenuBgMusic.play();
-
     var menuBGImage = parent.add.image(0, 0, 'menu-background');
     menuBGImage.setOrigin(0, 0);
     menuBGImage.setDisplaySize(WindowWidth, WindowHeight);
@@ -65,6 +62,10 @@ function MenuCreate(parent) {
     ControllersBtn = parent.add.image(CenterWidth, CenterHeight - 25, 'controllers-btn');
     ControllersBtn.setDisplaySize(ControllersBtn.displayWidth / 2, ControllersBtn.displayHeight / 2);
     ControllersBtn.setInteractive({ userHandCursor: true });
+
+    MenuBgMusic = parent.sound.add('menuBgMusic');
+    MenuBgMusic.loop = true;
+    MenuBgMusic.play();
 
     StartBtn.on('pointerdown', () => { SelectPlayer(parent); });
     ControllersBtn.on('pointerdown', () => { ControllersInfo(parent); });

@@ -4,17 +4,13 @@ function update() {
         GameOver(this);
     }
     else {
-        if (ArcherPlayer != null && ArcherPlayer != undefined) {
+        if (game.IsArcherChar) {
             ArcherController(this);
         }
-
-        if (WarriorPlayer != null && WarriorPlayer != undefined) {
+        else if (game.IsWarriorChar) {
             WarriorController(this);
         }
-
-        var magePlayer = game.playerMap[CurrentClientId];
-
-        if (magePlayer != null && magePlayer != undefined) {
+        else if (game.IsMageChar) {
             MageController(this);
         }
 
