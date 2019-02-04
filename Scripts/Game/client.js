@@ -1,12 +1,7 @@
-console.log('Starting Client');
-
 var CurrentClientId = -1;
 var Client = {};
 //This will connect to locahost if not specified otherwise to parentheses
 Client.socket = io.connect();
-
-console.log('connected to client');
-console.log('Client = ', Client);
 
 
 //This will be used in the Create of Game
@@ -16,9 +11,7 @@ Client.askNewPlayer = function() {
 };
 
 Client.socket.on('newplayer', function(data) {
-    console.log('Adding new player ', data);
-
-    game.addNewPlayer(data.id, data.x, data.y, data.allPlayers);
+    game.addNewPlayer(data.id, data.x, data.y);
 });
 
 Client.socket.on('currentClientId', function(id) {

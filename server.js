@@ -5,11 +5,6 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io').listen(server);
 var bodyParser = require('body-parser');
-var players = {};
-var scores = {
-  blue: 0,
-  red: 0
-};
 
 //Allow it to use scripts
 app.use('/GameJs', express.static('./Scripts/Game'));
@@ -27,51 +22,6 @@ app.set('view engine', 'ejs');
 //******************************************GAME*************************************************/
 server.lastPlayderID = 0; // Keep track of the last id assigned to a new player
 
-//Listen to everytime Socket.IO makes a connection (meaning a new player connected)
-io.on('connection', function(socket) {
-
-    socket.on('newplayer', function() {
-        //check to make sure id doesn't exist already
-
-        socket.player = {
-            id: GetUniquePlayerId(),
-            x: 100, //randomInt(100,400),
-            y: 400, //(WindowHeight - GroundHeight - 91)//randomInt(100,400)
-        };
-        socket.emit('currentClientId', socket.player.id);
-        socket.emit('allplayers', getAllPlayers());
-        socket.broadcast.emit('newplayer', socket.player);
-
-        //Sends the update message to all players except the one that sent
-        socket.on('PlayerInfo', function(playerInfo) {
-            socket.broadcast.emit('updatePlayer', playerInfo);
-        });
-
-        //Sends the message to all players even the one that sent
-        socket.on('disconnect', function() {
-            io.emit('remove', socket.player.id);
-        });
-    });
-});
-//******************************************GAME*************************************************/
-
-//******************************************SERVER*************************************************/
-
-//Go to the main page where the game starts
-app.get('/', function(req, res) {
-    console.log('Rendering First And Last Game...For user ' + req.headers['x-forwarded-for']);
-
-    //res.send('Welcome to the home page!') ;
-    // res.render("index");
-    res.render("index");
-});
-
-server.listen(process.env.PORT, function() {
-    console.log('Listening on ' + server.address().port);
-});
-//******************************************SERVER*************************************************/
-
-//******************************************UTILS*************************************************/
 function getAllPlayers() {
     var players = [];
     Object.keys(io.sockets.connected).forEach(function(socketID) {
@@ -82,13 +32,6 @@ function getAllPlayers() {
         if (player) players.push(player);
     });
     return players;
-}
-
-function guid() {
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-    }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
 }
 
 function randomInt(low, high) {
@@ -117,4 +60,49 @@ function GetUniquePlayerId() {
 
     return uniquePlayerId;
 }
-//******************************************UTILS*************************************************/
+
+//Listen to everytime Socket.IO makes a connection (meaning a new player connected)
+io.on('connection', function(socket) {
+
+    socket.on('newplayer', function() {
+        //check to make sure id doesn't exist already
+
+        socket.player = {
+            id: GetUniquePlayerId(),
+            x: 100,
+            y: 500
+        };
+        socket.emit('currentClientId', socket.player.id);
+        socket.emit('allplayers', getAllPlayers());
+        socket.broadcast.emit('newplayer', socket.player);
+
+        //Sends the update message to all players except the one that sent
+        socket.on('PlayerInfo', function(playerInfo) {
+            socket.broadcast.emit('updatePlayer', playerInfo);
+        });
+
+        //Sends the message to all players even the one that sent
+        socket.on('disconnect', function() {
+            io.emit('remove', socket.player.id);
+        });
+    });
+});
+
+function guid() {
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+    }
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+}
+//******************************************GAME*************************************************/
+
+//******************************************SERVER*************************************************/
+
+app.get('/', function(req, res) {
+    res.render("index");
+});
+
+server.listen(process.env.PORT, function() {
+    console.log('Listening on ' + server.address().port);
+});
+//******************************************SERVER*************************************************/

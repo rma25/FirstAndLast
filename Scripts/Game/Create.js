@@ -5,14 +5,11 @@ function create() {
 
     Platform(this);
 
-    console.log('this is in create ', this);
-
     ItemsToCollect(this);
     //ScoreDisplay(this);
     //TODO: Implement this later
     // Enemy(this);
     KeybindingConfig(this);
-    Collision(this);
     GameSound(this);
     ParticlesEffect(this);
     CheckIfPlayerIsIdle();
@@ -25,10 +22,6 @@ function create() {
 
 function CreateNewPlayer(playerId, playerX, playerY) {
     //Create all Animations
-    CreateMageAnimations(game.scene.scenes[1]);
-    CreateWarriorAnimations(game.scene.scenes[1]);
-    CreateArcherAnimations(game.scene.scenes[1]);
-
     if (IsArcher) {
         game.IsArcherChar = true;
         return ArcherPlayerCreate(game.scene.scenes[1], playerId, playerX, playerY);
@@ -38,7 +31,7 @@ function CreateNewPlayer(playerId, playerX, playerY) {
         return WarriorPlayerCreate(game.scene.scenes[1], playerId, playerX, playerY);
     }
     else if (IsMage) {
-        game.IsMageChar = true;
+        game.IsMageChar = true
         return MagePlayerCreate(game.scene.scenes[1], playerId, playerX, playerY);
     }
     else {
@@ -68,20 +61,6 @@ function ParticlesEffect(parent) {
         ArcherEmitter.maxParticles = 10;
         ArcherEmitter.on = false;
     }
-}
-
-function Collision(parent) {
-    if (ArcherPlayer != null && ArcherPlayer != undefined) {
-        ArcherCollision(parent);
-    }
-
-    if (WarriorPlayer != null && WarriorPlayer != undefined) {
-        WarriorCollision(parent);
-    }
-
-    /*if (magePlayer != null && magePlayer != undefined) {
-        //MageCollision(parent);
-    }*/
 }
 
 function LiveBackground(parent) {
@@ -171,11 +150,10 @@ function Platform(parent) {
 
 function GameSound(parent) {
     parent.sound.add('jumpSound');
-
-    //TODO: Uncomment once done testing
-    //BgMusic = parent.sound.add('gameMusic');
-    //BgMusic.config.loop = true;
-    //BgMusic.play();
+    
+    BgMusic = parent.sound.add('gameMusic');
+    BgMusic.config.loop = true;
+    BgMusic.play();
 
     PlayerStepSound = parent.sound.add('playerStep');
 }

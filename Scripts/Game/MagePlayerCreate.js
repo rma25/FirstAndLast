@@ -1,66 +1,18 @@
+//This is the main function to create the Mage
 function MagePlayerCreate(parent, playerId, playerX, playerY) {
     //Player    
     //Add starting image of player, width, height
-    /*magePlayer = parent.physics.add.sprite(100, (WindowHeight - GroundHeight - 91), 'mage1-idle1-right0');*/
     var magePlayer = parent.physics.add.sprite(playerX, playerY, 'mage1-idle1-right0');
     magePlayer.setDisplaySize(71, 81);
     magePlayer.setCollideWorldBounds(true);
     magePlayer.body.setGravityY(400);
 
     CreateMageAnimations(parent);
-
-    if (magePlayer != null & magePlayer != undefined) {
-        game.MageMainAttack1 = parent.physics.add.sprite(magePlayer.displayWidth, magePlayer.displayHeight, 'mage-mainattack1');
-        game.MageMainAttack1.setDisplaySize(game.MageMainAttack1.displayWidth / 10, game.MageMainAttack1.displayHeight / 10);
-        game.MageMainAttack1.setCollideWorldBounds(true);
-        game.MageMainAttack1.body.allowGravity = false;
-        game.MageMainAttack1.disableBody(true, true);
-    }
-
-    if (magePlayer != null & magePlayer != undefined) {
-        game.MageSpecialAttack1 = parent.physics.add.sprite(magePlayer.displayWidth, magePlayer.displayHeight, 'mage-specialAttack1');
-        game.MageSpecialAttack1.setDisplaySize(game.MageSpecialAttack1.displayWidth / 7, game.MageSpecialAttack1.displayHeight / 7);
-        game.MageSpecialAttack1.setCollideWorldBounds(true);
-        game.MageSpecialAttack1.setTint('0xff9955');
-        game.MageSpecialAttack1.body.allowGravity = false;
-        game.MageSpecialAttack1.disableBody(true, true);
-    }
-
-    if (magePlayer != null && magePlayer != undefined) {
-        game.MageParticles = parent.add.particles('fire3');
-        game.MageEmitter = game.MageParticles.createEmitter();
-        game.MageEmitter.setPosition(game.MageParticles.x, game.MageParticles.y + (game.MageParticles.displayHeight / 2));
-        game.MageEmitter.setSpeed(100);
-        game.MageEmitter.setScale(0.05, 0.05);
-        game.MageEmitter.setAlpha(1, 0, 3000);
-        game.MageEmitter.maxParticles = 10;
-        game.MageEmitter.on = false;
-    }
-
-    //Allows the player to collide with the platforms
-    parent.physics.add.collider(magePlayer, Platforms);
-
-    //Only this group will collide with each other
-    // parent.physics.add.collider(Stars, Platforms);
-
-    //Allow player to overlap with a star
-    // parent.physics.add.overlap(ArcherPlayer, Stars, CollectStar, null, parent);
-
-    //Allow player to interact with speed buff
-    parent.physics.add.collider(SpeedBuff, Platforms);
-    parent.physics.add.overlap(magePlayer, SpeedBuff, CollectSpeedBuff, null, parent);
-
-    //Allow player to interact with speed buff
-    parent.physics.add.collider(StrengthBuff, Platforms);
-    parent.physics.add.overlap(magePlayer, StrengthBuff, CollectStrengthBuff, null, parent);
-
-    //Attacks
-    parent.physics.add.collider(game.MageMainAttack1, Platforms, CollideWithMageMainAttack1, null, parent);
-    parent.physics.add.collider(game.MageSpecialAttack1, Platforms, CollideWithMageSpecialAttack1, null, parent);
-
-    /*MageMainAttack1Create(parent);
-    MageSpecialAttack1Create(parent);*/
-
+    MageMainAttack1Create(parent, magePlayer);
+    MageSpecialAttack1Create(parent, magePlayer);
+    MageParticlesEmitterCreate(parent, magePlayer);
+    MageCollision(parent, magePlayer);
+  
     return magePlayer;
 }
 
@@ -491,7 +443,20 @@ function MageSpecialAttack1Create(parent, magePlayer) {
     }
 }
 
-function MageCollision(parent) {
+function MageParticlesEmitterCreate(parent, magePlayer) {
+    if (magePlayer != null && magePlayer != undefined) {
+        var mageParticles = parent.add.particles('fire3');
+        MageEmitter = mageParticles.createEmitter();
+        MageEmitter.setPosition(mageParticles.x, mageParticles.y + (mageParticles.displayHeight / 2));
+        MageEmitter.setSpeed(100);
+        MageEmitter.setScale(0.05, 0.05);
+        MageEmitter.setAlpha(1, 0, 3000);
+        MageEmitter.maxParticles = 10;
+        MageEmitter.on = false;
+    }
+}
+
+function MageCollision(parent, magePlayer) {
     //Allows the player to collide with the platforms
     parent.physics.add.collider(magePlayer, Platforms);
 
@@ -510,8 +475,8 @@ function MageCollision(parent) {
     parent.physics.add.overlap(magePlayer, StrengthBuff, CollectStrengthBuff, null, parent);
 
     //Attacks
-    parent.physics.add.collider(MageMainAttack1, Platforms, CollideWithMageMainAttack1, null, parent);
-    parent.physics.add.collider(MageSpecialAttack1, Platforms, CollideWithMageSpecialAttack1, null, parent);
+    parent.physics.add.collider(game.MageMainAttack1, Platforms, CollideWithMageMainAttack1, null, parent);
+    parent.physics.add.collider(game.MageSpecialAttack1, Platforms, CollideWithMageSpecialAttack1, null, parent);
 }
 
 

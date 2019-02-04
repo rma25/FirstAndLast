@@ -1,3 +1,4 @@
+//Main function where the archer will be created
 function ArcherPlayerCreate(parent, playerId, playerX, playerY) {
     //Player    
     //Add starting image of player, width, height
@@ -9,7 +10,10 @@ function ArcherPlayerCreate(parent, playerId, playerX, playerY) {
     CreateArcherAnimations(parent);
 
     PlayerArrow(parent, archerPlayer);
-
+    PlayerSpecialAttack1(parent, archerPlayer);
+    ArcherParticlesEmitterCreate(parent, archerPlayer);
+    ArcherCollision(parent, archerPlayer);
+ 
     return archerPlayer;
 }
 
@@ -485,17 +489,32 @@ function PlayerArrow(parent, archerPlayer) {
     }
 }
 
-function PlayerSpecialAttack1(parent) {
-    ArcherSpecialAttack1 = parent.physics.add.sprite(ArcherPlayer.displayWidth, ArcherPlayer.displayHeight, 'archer-specialAttack1-0');
-    ArcherSpecialAttack1.setDisplaySize(ArcherSpecialAttack1.displayWidth / 5, ArcherSpecialAttack1.displayHeight / 5);
-    ArcherSpecialAttack1.setCollideWorldBounds(true);
-    ArcherSpecialAttack1.body.setGravityY(0);
-    ArcherSpecialAttack1.disableBody(true, true);
+function PlayerSpecialAttack1(parent, archerPlayer) {
+    if (archerPlayer != null && archerPlayer != undefined) {
+        game.ArcherSpecialAttack1 = parent.physics.add.sprite(archerPlayer.displayWidth, archerPlayer.displayHeight, 'archer-specialAttack1-0');
+        game.ArcherSpecialAttack1.setDisplaySize(game.ArcherSpecialAttack1.displayWidth / 5, game.ArcherSpecialAttack1.displayHeight / 5);
+        game.ArcherSpecialAttack1.setCollideWorldBounds(true);
+        game.ArcherSpecialAttack1.body.setGravityY(0);
+        game.ArcherSpecialAttack1.disableBody(true, true);
+    }
 }
 
-function ArcherCollision(parent) {
+function ArcherParticlesEmitterCreate(parent, archerPlayer) {
+    if (archerPlayer != null && archerPlayer != undefined) {
+        var archerParticles = parent.add.particles('fire3');
+        ArcherEmitter = archerParticles.createEmitter();
+        ArcherEmitter.setPosition(archerPlayer.x, archerPlayer.y + (archerPlayer.displayHeight / 2));
+        ArcherEmitter.setSpeed(100);
+        ArcherEmitter.setScale(0.05, 0.05);
+        ArcherEmitter.setAlpha(1, 0, 3000);
+        ArcherEmitter.maxParticles = 10;
+        ArcherEmitter.on = false;
+    }
+}
+
+function ArcherCollision(parent, archerPlayer) {
     //Allows the player to collide with the platforms
-    parent.physics.add.collider(ArcherPlayer, Platforms);
+    parent.physics.add.collider(archerPlayer, Platforms);
 
     //Only this group will collide with each other
     // parent.physics.add.collider(Stars, Platforms);
@@ -505,20 +524,20 @@ function ArcherCollision(parent) {
 
     //Allow player to interact with speed buff
     parent.physics.add.collider(SpeedBuff, Platforms);
-    parent.physics.add.overlap(ArcherPlayer, SpeedBuff, CollectSpeedBuff, null, parent);
+    parent.physics.add.overlap(archerPlayer, SpeedBuff, CollectSpeedBuff, null, parent);
 
     //Allow player to interact with speed buff
     parent.physics.add.collider(StrengthBuff, Platforms);
-    parent.physics.add.overlap(ArcherPlayer, StrengthBuff, CollectStrengthBuff, null, parent);
+    parent.physics.add.overlap(archerPlayer, StrengthBuff, CollectStrengthBuff, null, parent);
 
-    parent.physics.add.collider(ArrowsRight, Platforms, CollideWithArrow, null, parent);
-    parent.physics.add.collider(ArrowsLeft, Platforms, CollideWithArrow, null, parent);
+    parent.physics.add.collider(game.ArrowsRight, Platforms, CollideWithArrow, null, parent);
+    parent.physics.add.collider(game.ArrowsLeft, Platforms, CollideWithArrow, null, parent);
 
     // parent.physics.add.collider(ArcherSpecialAttack1, Platforms);
 }
 
 function CollideWithArrow(arrow, platform) {
-    IsArrowShot = false;
+    game.IsArrowShot = false;
     arrow.setAngle(0);
     arrow.disableBody(true, true);
     game.sound.play('arrowHit');
@@ -526,7 +545,7 @@ function CollideWithArrow(arrow, platform) {
 
 
 function CollideTrapWithPlayer(trap, platform) {
-    IsArrowShot = false;
+    game.IsArrowShot = false;
     trap.setAngle(0);
     trap.disableBody(true, true);
     game.sound.play('arrowHit');

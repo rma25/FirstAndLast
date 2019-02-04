@@ -122,7 +122,7 @@ var config = {
         arcade: {
             gravity: { y: 300 },
             //Set to true to see the collision boxes
-            debug: true
+            debug: false
         }
     },
     scene: [MenuScene, MainGameScene]
@@ -135,8 +135,8 @@ var game = new Phaser.Game(config);
     game.stage.disableVisibilityChange = true;
 }*/
 
-game.addNewPlayer = function(id, x, y, allPlayers) {
-    console.log('Id is ', id, 'X is ', x, 'Y is ', y, 'All Players ', allPlayers);
+game.addNewPlayer = function(id, x, y) {
+    console.log('Adding new player');
     if (game.playerMap != null && game.playerMap != undefined) {
         game.playerMap[id] = CreateNewPlayer(id, x, y);
     }
@@ -145,8 +145,6 @@ game.addNewPlayer = function(id, x, y, allPlayers) {
 game.removePlayer = function(id) {
     if (id != null && id != undefined && game != null && game != undefined && game.playerMap != null && game.playerMap != undefined) {
         game.playerMap[id].destroy();
-
-        console.log('calling delete player');
         delete game.playerMap[id];
     }
 };

@@ -6,39 +6,9 @@ function WarriorPlayerCreate(parent, playerId, playerX, playerY) {
     warriorPlayer.setCollideWorldBounds(true);
     warriorPlayer.body.setGravityY(450);
 
-    //Set original player size
-    OriginalPlayerWidth = warriorPlayer.displayWidth;
-    OriginalPlayerHeight = warriorPlayer.displayHeight;
-
     CreateWarriorAnimations(parent);
-
-    if (warriorPlayer != null && warriorPlayer != undefined) {
-        game.WarriorParticles = parent.add.particles('fire3');
-        game.WarriorEmitter = game.WarriorParticles.createEmitter();
-        game.WarriorEmitter.setPosition(warriorPlayer.x, warriorPlayer.y + (warriorPlayer.displayHeight / 2));
-        game.WarriorEmitter.setSpeed(100);
-        game.WarriorEmitter.setScale(0.05, 0.05);
-        game.WarriorEmitter.setAlpha(1, 0, 3000);
-        game.WarriorEmitter.maxParticles = 10;
-        game.WarriorEmitter.on = false;
-    }
-
-    //Allows the player to collide with the platforms
-    parent.physics.add.collider(warriorPlayer, Platforms);
-
-    //Only this group will collide with each other
-    // parent.physics.add.collider(Stars, Platforms);
-
-    //Allow player to overlap with a star
-    // parent.physics.add.overlap(WarriorPlayer, Stars, CollectStar, null, parent);
-
-    //Allow player to interact with speed buff
-    parent.physics.add.collider(SpeedBuff, Platforms);
-    parent.physics.add.overlap(warriorPlayer, SpeedBuff, CollectSpeedBuff, null, parent);
-
-    //Allow player to interact with speed buff
-    parent.physics.add.collider(StrengthBuff, Platforms);
-    parent.physics.add.overlap(warriorPlayer, StrengthBuff, CollectStrengthBuff, null, parent);
+    WarriorParticlesEmitterCreate(parent, warriorPlayer);
+    WarriorCollision(parent, warriorPlayer);
 
     return warriorPlayer;
 }
@@ -393,22 +363,36 @@ function CreateWarriorAnimations(parent) {
         });
 }
 
+function WarriorParticlesEmitterCreate(parent, warriorPlayer) {
+    if (warriorPlayer != null && warriorPlayer != undefined) {
+        var warriorParticles = parent.add.particles('fire3');
+        WarriorEmitter = warriorParticles.createEmitter();
+        WarriorEmitter.setPosition(warriorPlayer.x, warriorPlayer.y + (warriorPlayer.displayHeight / 2));
+        WarriorEmitter.setSpeed(100);
+        WarriorEmitter.setScale(0.05, 0.05);
+        WarriorEmitter.setAlpha(1, 0, 3000);
+        WarriorEmitter.maxParticles = 10;
+        WarriorEmitter.on = false;
+    }
+}
 
-function WarriorCollision(parent) {
-    //Allows the player to collide with the platforms
-    parent.physics.add.collider(WarriorPlayer, Platforms);
+function WarriorCollision(parent, warriorPlayer) {
+    if (warriorPlayer != null && warriorPlayer != undefined) {
+        //Allows the player to collide with the platforms
+        parent.physics.add.collider(warriorPlayer, Platforms);
 
-    //Only this group will collide with each other
-    // parent.physics.add.collider(Stars, Platforms);
+        //Only this group will collide with each other
+        // parent.physics.add.collider(Stars, Platforms);
 
-    //Allow player to overlap with a star
-    // parent.physics.add.overlap(WarriorPlayer, Stars, CollectStar, null, parent);
+        //Allow player to overlap with a star
+        // parent.physics.add.overlap(WarriorPlayer, Stars, CollectStar, null, parent);
 
-    //Allow player to interact with speed buff
-    parent.physics.add.collider(SpeedBuff, Platforms);
-    parent.physics.add.overlap(WarriorPlayer, SpeedBuff, CollectSpeedBuff, null, parent);
+        //Allow player to interact with speed buff
+        parent.physics.add.collider(SpeedBuff, Platforms);
+        parent.physics.add.overlap(warriorPlayer, SpeedBuff, CollectSpeedBuff, null, parent);
 
-    //Allow player to interact with speed buff
-    parent.physics.add.collider(StrengthBuff, Platforms);
-    parent.physics.add.overlap(WarriorPlayer, StrengthBuff, CollectStrengthBuff, null, parent);
+        //Allow player to interact with speed buff
+        parent.physics.add.collider(StrengthBuff, Platforms);
+        parent.physics.add.overlap(warriorPlayer, StrengthBuff, CollectStrengthBuff, null, parent);
+    }
 }

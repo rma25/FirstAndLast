@@ -330,7 +330,7 @@ function UpdateMageAttacks(magePlayer) {
 }
 
 function MageParticlesOnPlayer(parent, magePlayer) {
-    game.MageEmitter.setPosition(magePlayer.x, magePlayer.y + (magePlayer.displayHeight / 2));
+    MageEmitter.setPosition(magePlayer.x, magePlayer.y + (magePlayer.displayHeight / 2));
 }
 
 /*****************************************CLIENT UPDATE CODE******************************************/
@@ -347,7 +347,7 @@ function UpdateClientMage(playerInfo) {
     if (CurrentClientId != -1) {
         game.playerMap[playerInfo.PlayerId] = playerInfo;
 
-        /*ClientMagePlayer = game.playerMap[playerInfo.PlayerId];
+        ClientMagePlayer = game.playerMap[playerInfo.PlayerId];
         ClientMagePlayer.setCollideWorldBounds(true);
         ClientMagePlayer.body.setGravityY(400);
         game.scene.getScene('MainGame').physics.add.collider(ClientMagePlayer, Platforms);
@@ -475,7 +475,7 @@ function UpdateClientMage(playerInfo) {
             }
 
             DestroyClientMageAttacks();
-        }*/
+        }
     }
 }
 

@@ -202,7 +202,7 @@ function WarriorController(parent) {
 }
 
 function WarriorParticlesOnPlayer(warriorPlayer) {
-    if (WarriorEmitter != null && WarriorEmitter != undefined) {
+    if (warriorPlayer != null && warriorPlayer != undefined) {
         WarriorEmitter.setPosition(warriorPlayer.x, warriorPlayer.y + (warriorPlayer.displayHeight / 2));
     }
 }
@@ -289,7 +289,7 @@ function UpdateClientWarrior(playerInfo) {
             player.setDisplaySize(playerInfo.DisplayWidth, playerInfo.DisplayHeight);
             player.setCollideWorldBounds(true);
             player.body.setGravityY(400);
-            
+
             TEMPWarrior = playerInfo;
 
             if (playerInfo.IsWalkingLeft) {
