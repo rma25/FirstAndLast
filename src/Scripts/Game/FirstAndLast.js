@@ -1,6 +1,6 @@
 /********************************** GLOBAL *******************************************************/
-const _ParentDir = './GameJs';
-const _AssetsDir = './GameAssets';
+const _ParentDir = './Game';
+const _AssetsDir = './Assets';
 var WindowHeight = window.innerHeight;
 var WindowWidth = window.innerWidth;
 var CenterWidth = (WindowWidth / 2);
@@ -23,7 +23,7 @@ var ArrowsRight;
 var ArrowsLeft;
 var SpeedBuff;
 var StrengthBuff;
-var DoesPlayerHasSpeedBuff = false;
+var DoesPlayerHasSpeedBuff = false; 
 var DoesPlayerHasStrengthBuff = false;
 var GrassGroundHeight = 27;
 var GrassGroundWidth = 87;
