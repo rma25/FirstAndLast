@@ -8,6 +8,7 @@ function update() {
             ArcherController(this);
         }
         else if (game.IsWarriorChar) {
+            console.log('Updating...');
             WarriorController(this);
         }
         else if (game.IsMageChar) {

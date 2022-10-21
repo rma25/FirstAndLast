@@ -1,7 +1,9 @@
 function MageController(parent) {
     Cursors = parent.input.keyboard.createCursorKeys();
 
-    var magePlayer = game.playerMap[CurrentClientId];
+    // TODO: Multiplayer
+    // var magePlayer = game.playerMap[CurrentClientId];
+    var magePlayer = game.player;
     var playerInfo = {};
     playerInfo.PlayerId = CurrentClientId;
 
@@ -188,7 +190,7 @@ function MageController(parent) {
         //Player Jump
         if ((Cursors.up.isDown || parent.jumpAlt.isDown) && magePlayer.body.touching.down) {
             game.IsPlayerIdle = false;
-            magePlayer.setVelocityY((game.DoesPlayerHasStrengthBuff ? -600 : -550));
+            magePlayer.setVelocityY((game.DoesPlayerHasStrengthBuff ? game.jumpVelocityHigh : game.jumpVelocityNormal));
             magePlayer.anims.play(currentMage + '-jump-' + (game.IsMainPlayerFacingLeft ? 'left' : 'right'), true);
 
             //Jumping sound
@@ -214,7 +216,7 @@ function MageController(parent) {
         playerInfo.DisplayWidth = magePlayer.displayWidth;
 
 
-        Client.sendPlayerInfo(magePlayer);
+        // Client.sendPlayerInfo(magePlayer);
     }
 }
 

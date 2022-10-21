@@ -1,6 +1,6 @@
 /********************************** GLOBAL *******************************************************/
-const _ParentDir = './Game';
-const _AssetsDir = './Assets';
+const _ParentDir = '/src/Scripts/Game';
+const _AssetsDir = '/src/Assets';
 var WindowHeight = window.innerHeight;
 var WindowWidth = window.innerWidth;
 var CenterWidth = (WindowWidth / 2);
